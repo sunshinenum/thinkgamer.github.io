@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>回归分析之理论篇 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读">
+  <meta name="description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读 一：一些名词定义1）指数分布族指数分布族">
 <meta name="keywords" content="回归分析,正态分布">
 <meta property="og:type" content="article">
 <meta property="og:title" content="回归分析之理论篇">
 <meta property="og:url" content="http://thinkgamer.cn/2017/09/17/机器学习/回归分析之理论篇/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读">
+<meta property="og:description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读 一：一些名词定义1）指数分布族指数分布族">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Normal_distribution_pdf.png/650px-Normal_distribution_pdf.png">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.106Z">
+<meta property="og:updated_time" content="2019-04-13T04:36:36.569Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="回归分析之理论篇">
-<meta name="twitter:description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读">
+<meta name="twitter:description" content="2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。 CSDN链接：点击阅读 一：一些名词定义1）指数分布族指数分布族">
 <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Normal_distribution_pdf.png/650px-Normal_distribution_pdf.png">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -55,7 +55,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -63,15 +63,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -131,11 +129,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -175,17 +171,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -221,7 +215,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。</p>
-<p>CSDN链接：<a href="http://blog.csdn.net/gamer_gyt/article/details/78008144" target="_blank" rel="external">点击阅读</a><br><a id="more"></a></p>
+<p>CSDN链接：<a href="http://blog.csdn.net/gamer_gyt/article/details/78008144" target="_blank" rel="external">点击阅读</a></p>
 <h1 id="一：一些名词定义"><a href="#一：一些名词定义" class="headerlink" title="一：一些名词定义"></a>一：一些名词定义</h1><h2 id="1）指数分布族"><a href="#1）指数分布族" class="headerlink" title="1）指数分布族"></a>1）指数分布族</h2><p>指数分布族是指可以表示为指数形式的概率分布。</p>
 <script type="math/tex; mode=display">
 f_X(x\mid\theta) = h(x) \exp \left (\eta(\theta) \cdot T(x) -A(\theta)\right )</script><p>其中，η为自然参数(nature parameter)，T(x)是充分统计量（sufficient statistic）。当参数A，h，T都固定以后，就定义了一个以η为参数的函数族。</p>

@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>linux-ifconfig命令配置ip地址 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。">
+  <meta name="description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。  ifconfig 是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息   加上参数eth0的话是查看eth0网卡的信息   网卡信息的一些解释：第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）  第二三行：网卡的">
 <meta name="keywords" content="linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux-ifconfig命令配置ip地址">
 <meta property="og:url" content="http://thinkgamer.cn/2015/07/08/Linux/linux-ifconfig命令配置ip地址/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。">
+<meta property="og:description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。  ifconfig 是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息   加上参数eth0的话是查看eth0网卡的信息   网卡信息的一些解释：第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）  第二三行：网卡的">
 <meta property="og:image" content="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="og:image" content="http://img.blog.csdn.net/20150708123456712?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="og:image" content="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.099Z">
+<meta property="og:updated_time" content="2019-04-13T04:39:07.460Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux-ifconfig命令配置ip地址">
-<meta name="twitter:description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。">
+<meta name="twitter:description" content="Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。  ifconfig 是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息   加上参数eth0的话是查看eth0网卡的信息   网卡信息的一些解释：第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）  第二三行：网卡的">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -57,7 +57,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -65,15 +65,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -133,11 +131,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -177,17 +173,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -223,7 +217,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。<br>lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。 </p>
- <a id="more"></a>
 <p>ifconfig</p>
 <p>是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息 </p>
 <p><img src="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>

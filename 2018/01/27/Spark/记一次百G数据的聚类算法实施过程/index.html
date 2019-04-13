@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>记一次百G数据的聚类算法实施过程 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉）">
+  <meta name="description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉） 需求数据格式为三列，第一列为类别I">
 <meta name="keywords" content="Spark">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次百G数据的聚类算法实施过程">
 <meta property="og:url" content="http://thinkgamer.cn/2018/01/27/Spark/记一次百G数据的聚类算法实施过程/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉）">
+<meta property="og:description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉） 需求数据格式为三列，第一列为类别I">
 <meta property="og:image" content="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.101Z">
+<meta property="og:updated_time" content="2019-04-13T04:39:30.187Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一次百G数据的聚类算法实施过程">
-<meta name="twitter:description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉）">
+<meta name="twitter:description" content="如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉） 需求数据格式为三列，第一列为类别I">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -55,7 +55,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -63,15 +63,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -131,11 +129,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -175,17 +171,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -221,7 +215,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉）</p>
-<a id="more"></a>
 <h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>数据格式为三列，第一列为类别ID，第二列为商品ID，第三列为价格，数据格式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1000    2000    45.3</span><br><span class="line">1000    2001    121.3</span><br><span class="line">1001    2002    4125.3</span><br><span class="line">1000    2003    225.3</span><br><span class="line">1001    2004    3415.3</span><br><span class="line">1000    2005    12245.3   </span><br><span class="line">...     ...     ....</span><br></pre></td></tr></table></figure></p>
 <p>数据有很多条，数据量为将近100G，存储在hdfs上，第一列品类ID不唯一，每个品类ID下有多个商品ID，商品ID唯一，价格为浮点型数据</p>
 <p>现在要对每个品类下的价格进行聚类，得到1~7个价格level（7level的价格要比6level的价格高，以此类推）</p>

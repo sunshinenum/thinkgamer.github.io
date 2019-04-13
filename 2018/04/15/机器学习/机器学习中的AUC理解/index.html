@@ -8,23 +8,23 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>机器学习中的AUC理解 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵">
+  <meta name="description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵  转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/79945987博主">
 <meta name="keywords" content="机器学习,AUC">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习中的AUC理解">
 <meta property="og:url" content="http://thinkgamer.cn/2018/04/15/机器学习/机器学习中的AUC理解/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵">
+<meta property="og:description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵  转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/79945987博主">
 <meta property="og:image" content="https://img-blog.csdn.net/20180415002706538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/2018041500331853?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180415015350726?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180415024426171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180415024524722?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180415024654878?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.107Z">
+<meta property="og:updated_time" content="2019-04-13T04:37:08.183Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习中的AUC理解">
-<meta name="twitter:description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵">
+<meta name="twitter:description" content="最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。  混淆矩阵(Confusion matrix)混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵  转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/79945987博主">
 <meta name="twitter:image" content="https://img-blog.csdn.net/20180415002706538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -60,7 +60,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -68,15 +68,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -136,11 +134,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -180,17 +176,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -229,7 +223,6 @@
 <p>最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。</p>
 </blockquote>
 <h1 id="混淆矩阵-Confusion-matrix"><a href="#混淆矩阵-Confusion-matrix" class="headerlink" title="混淆矩阵(Confusion matrix)"></a>混淆矩阵(Confusion matrix)</h1><p>混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵</p>
-<a id="more"></a>
 <hr>
 <p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/79945987" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/79945987</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>

@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
 <meta property="og:description" content="我们知道，MapReduce是分为Mapper任务和Reducer任务，Mapper任务的输出，通过网络传输到Reducer任务端，作为输入。 在Reducer任务中，通常做的事情是对数据进行归约处理。既然数据来源是Mapper任务的输出，那么是否可以在Mapper端对数据进行归约处理，业务逻辑与Reducer端做的完全相同。处理后的数据再传送到Reducer端，再做一次归约。这样的好处是减少了网">
 <meta property="og:image" content="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.096Z">
+<meta property="og:updated_time" content="2019-04-13T04:38:45.469Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MapReducer中的多次归约处理">
 <meta name="twitter:description" content="我们知道，MapReduce是分为Mapper任务和Reducer任务，Mapper任务的输出，通过网络传输到Reducer任务端，作为输入。 在Reducer任务中，通常做的事情是对数据进行归约处理。既然数据来源是Mapper任务的输出，那么是否可以在Mapper端对数据进行归约处理，业务逻辑与Reducer端做的完全相同。处理后的数据再传送到Reducer端，再做一次归约。这样的好处是减少了网">
@@ -55,7 +55,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -63,15 +63,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -131,11 +129,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -175,17 +171,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -222,7 +216,6 @@
       
         <p>我们知道，MapReduce是分为Mapper任务和Reducer任务，Mapper任务的输出，通过网络传输到Reducer任务端，作为输入。</p>
 <p>在Reducer任务中，通常做的事情是对数据进行归约处理。既然数据来源是Mapper任务的输出，那么是否可以在Mapper端对数据进行归约处理，业务逻辑与Reducer端做的完全相同。处理后的数据再传送到Reducer端，再做一次归约。这样的好处是减少了网络传输的数量。</p>
-<a id="more"></a>
 <p>可能有人疑惑几个问题：</p>
 <p>为什么需要在Mapper端进行归约处理？</p>
 <p>为什么可以在Mapper端进行归约处理？</p>

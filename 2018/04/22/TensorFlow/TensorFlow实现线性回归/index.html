@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>TensorFlow实现线性回归 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo">
+  <meta name="description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo   转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/80038679博主微博：http://weibo.com/234654758Github：https://g">
 <meta name="keywords" content="深度学习,TensorFlow">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TensorFlow实现线性回归">
 <meta property="og:url" content="http://thinkgamer.cn/2018/04/22/TensorFlow/TensorFlow实现线性回归/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo">
+<meta property="og:description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo   转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/80038679博主微博：http://weibo.com/234654758Github：https://g">
 <meta property="og:image" content="https://img-blog.csdn.net/20180422142414284?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180422142454345?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.102Z">
+<meta property="og:updated_time" content="2019-04-13T04:39:48.163Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TensorFlow实现线性回归">
-<meta name="twitter:description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo">
+<meta name="twitter:description" content="TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo   转载请注明出处：https://blog.csdn.net/gamer_gyt/article/details/80038679博主微博：http://weibo.com/234654758Github：https://g">
 <meta name="twitter:image" content="https://img-blog.csdn.net/20180422142414284?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -57,7 +57,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -65,15 +65,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -133,11 +131,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -177,17 +173,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -225,7 +219,6 @@
         <blockquote>
 <p>TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo</p>
 </blockquote>
-<a id="more"></a>
 <hr>
 <p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80038679" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80038679</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>

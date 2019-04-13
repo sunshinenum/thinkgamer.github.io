@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>Elasticsearch-DSL部分集合 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃">
+  <meta name="description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃 DSL中遇到的错误及解决办法分片限制错误1Trying to query 2632 shards, which is over the limit of 1000. This limit exists because querying many shards at the same ti">
 <meta name="keywords" content="ELK,ES">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elasticsearch-DSL部分集合">
 <meta property="og:url" content="http://thinkgamer.cn/2017/11/14/ELK/Elasticsearch-DSL部分集合/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.095Z">
+<meta property="og:description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃 DSL中遇到的错误及解决办法分片限制错误1Trying to query 2632 shards, which is over the limit of 1000. This limit exists because querying many shards at the same ti">
+<meta property="og:updated_time" content="2019-04-13T04:38:30.277Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch-DSL部分集合">
-<meta name="twitter:description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃">
+<meta name="twitter:description" content="ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。 点击阅读：ELK Stack 从入门到放弃 DSL中遇到的错误及解决办法分片限制错误1Trying to query 2632 shards, which is over the limit of 1000. This limit exists because querying many shards at the same ti">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
   
@@ -53,7 +53,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -61,15 +61,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -129,11 +127,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -173,17 +169,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -219,7 +213,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。</p>
-<p>点击阅读：<a href="http://blog.csdn.net/column/details/13079.html" target="_blank" rel="external">ELK Stack 从入门到放弃</a><br><a id="more"></a></p>
+<p>点击阅读：<a href="http://blog.csdn.net/column/details/13079.html" target="_blank" rel="external">ELK Stack 从入门到放弃</a></p>
 <h1 id="DSL中遇到的错误及解决办法"><a href="#DSL中遇到的错误及解决办法" class="headerlink" title="DSL中遇到的错误及解决办法"></a>DSL中遇到的错误及解决办法</h1><h2 id="分片限制错误"><a href="#分片限制错误" class="headerlink" title="分片限制错误"></a>分片限制错误</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Trying to query 2632 shards, which is over the limit of 1000. This limit exists because querying many shards at the same time can make the job of the coordinating node very CPU and/or memory intensive. It is usually a better idea to have a smaller number of larger shards. Update [action.search.shard_count.limit] to a greater value if you really want to query that many shards at the same time.</span><br></pre></td></tr></table></figure>
 <p>解决办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">修改该限制数目</span><br><span class="line"></span><br><span class="line">curl -k -u admin:admin -XPUT &apos;http://localhost:9200/_cluster/settings&apos; -H &apos;Content-Type: application/json&apos; -d&apos; </span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot; : &#123;</span><br><span class="line">        &quot;action.search.shard_count.limit&quot; : &quot;5000&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br><span class="line"></span><br><span class="line">-k -u admin:admin 表述如果有权限保护的话可以加上</span><br></pre></td></tr></table></figure></p>
 <h2 id="Fileddate-错误"><a href="#Fileddate-错误" class="headerlink" title="Fileddate 错误"></a>Fileddate 错误</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fielddata is disabled on text fields by default. Set fielddata=true on [make] in order to load fielddata in memory by uninverting the inverted index. Note that this can however use significant memory.</span><br></pre></td></tr></table></figure>

@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>推荐系统的一些思考 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。">
+  <meta name="description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。  学术界的推荐系统其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的">
 <meta name="keywords" content="推荐系统,机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="推荐系统的一些思考">
 <meta property="og:url" content="http://thinkgamer.cn/2018/03/26/机器学习/推荐系统的一些思考/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.106Z">
+<meta property="og:description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。  学术界的推荐系统其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的">
+<meta property="og:updated_time" content="2019-04-13T04:36:53.568Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="推荐系统的一些思考">
-<meta name="twitter:description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。">
+<meta name="twitter:description" content="推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。  学术界的推荐系统其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
   
@@ -53,7 +53,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -61,15 +61,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -129,11 +127,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -173,17 +169,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -221,7 +215,6 @@
         <blockquote>
 <p>推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。</p>
 </blockquote>
-<a id="more"></a>
 <h1 id="学术界的推荐系统"><a href="#学术界的推荐系统" class="headerlink" title="学术界的推荐系统"></a>学术界的推荐系统</h1><p>其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的大门，当然在真实环境中这是远远不够的。</p>
 <p>传统的推荐系统无非就是评分和排序两种方案，评分即计算出用户对item的可能评分，根据评分的高低进行排序，排序则不关心具体的评分是多少，只是为了得到一个顺序（其实这一点和推荐系统即为相似）。传统的推荐算法典型的有协同过滤和基于内容的过滤。如果你不明白什么是协同过滤算法可以参考：<a href="https://blog.csdn.net/gamer_gyt/article/details/51346159" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/51346159</a> ,如果你不知道协同过滤与基于内容的过滤的区别可参考：<a href="https://www.zhihu.com/question/19971859。" target="_blank" rel="external">https://www.zhihu.com/question/19971859。</a></p>
 <p>大学数学术界关于推荐算法的论文都是对协同过滤的改进，而最终得到一个相对于原先的算法有很大的提升的结果，但是这些都过于理想化了，真实的环境远比实验要复杂的多，网上最有名的推荐系统数据集莫过于那个电影评分数据了，里边只有用户对电影的评分，和电影的一些信息数据。建立在这些数据上的推荐算法其实有点理想化了，他并不能模拟出真实的电商环境，数据的缺乏也是导致协同过滤算法大行其道的原因。</p>

@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>Spark多路径输出和二次排序 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。">
+  <meta name="description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。  二次排序假设我们的数据是这样的：123456781   21   31   11   61   42   52   82   3 我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列 定义一个SecondSortKey类：12345678">
 <meta name="keywords" content="Spark">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark多路径输出和二次排序">
 <meta property="og:url" content="http://thinkgamer.cn/2018/01/25/Spark/Spark多路径输出和二次排序/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。">
+<meta property="og:description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。  二次排序假设我们的数据是这样的：123456781   21   31   11   61   42   52   82   3 我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列 定义一个SecondSortKey类：12345678">
 <meta property="og:image" content="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.101Z">
+<meta property="og:updated_time" content="2019-04-13T04:39:35.147Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark多路径输出和二次排序">
-<meta name="twitter:description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。">
+<meta name="twitter:description" content="在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。  二次排序假设我们的数据是这样的：123456781   21   31   11   61   42   52   82   3 我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列 定义一个SecondSortKey类：12345678">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -55,7 +55,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -63,15 +63,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -131,11 +129,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -175,17 +171,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -223,7 +217,6 @@
         <blockquote>
 <p>在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。</p>
 </blockquote>
-<a id="more"></a>
 <h1 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h1><p>假设我们的数据是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1   2</span><br><span class="line">1   3</span><br><span class="line">1   1</span><br><span class="line">1   6</span><br><span class="line">1   4</span><br><span class="line">2   5</span><br><span class="line">2   8</span><br><span class="line">2   3</span><br></pre></td></tr></table></figure></p>
 <p>我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列</p>
 <p>定义一个SecondSortKey类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first == 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>

@@ -8,22 +8,22 @@
   <link rel="dns-prefetch" href="http://thinkgamer.cn">
   <title>几种距离计算公式在数据挖掘中的应用场景分析 | 文艺与Code | Thinkgamer的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度">
+  <meta name="description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度  之前整理过一篇关于距离相关的文章：机器学习算法中的距离和相似性计算公式，分析以及python实现 闵可夫斯基距离两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为： \sqrt[p]{ \sum_">
 <meta name="keywords" content="距离计算">
 <meta property="og:type" content="article">
 <meta property="og:title" content="几种距离计算公式在数据挖掘中的应用场景分析">
 <meta property="og:url" content="http://thinkgamer.cn/2017/09/20/机器学习/几种距离计算公式在数据挖掘中的应用场景分析/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
-<meta property="og:description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度">
+<meta property="og:description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度  之前整理过一篇关于距离相关的文章：机器学习算法中的距离和相似性计算公式，分析以及python实现 闵可夫斯基距离两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为： \sqrt[p]{ \sum_">
 <meta property="og:image" content="http://img.blog.csdn.net/20170920102356159?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170920111425007?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170920112804525?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170920114015874?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20170920114326883?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.105Z">
+<meta property="og:updated_time" content="2019-04-13T04:36:32.960Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="几种距离计算公式在数据挖掘中的应用场景分析">
-<meta name="twitter:description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度">
+<meta name="twitter:description" content="本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》  曼哈顿距离 欧几里得距离 闵可夫斯基距离 皮尔逊相关系数 余弦相似度  之前整理过一篇关于距离相关的文章：机器学习算法中的距离和相似性计算公式，分析以及python实现 闵可夫斯基距离两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为： \sqrt[p]{ \sum_">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20170920102356159?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
   
     <link rel="alternative" href="/atom.xml" title="文艺与Code | Thinkgamer的博客" type="application/atom+xml">
@@ -59,7 +59,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -67,15 +67,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -135,11 +133,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -179,17 +175,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -232,7 +226,6 @@
 <li>皮尔逊相关系数</li>
 <li>余弦相似度</li>
 </ul>
-<a id="more"></a>
 <p>之前整理过一篇关于距离相关的文章：<a href="">机器学习算法中的距离和相似性计算公式，分析以及python实现</a></p>
 <h1 id="闵可夫斯基距离"><a href="#闵可夫斯基距离" class="headerlink" title="闵可夫斯基距离"></a>闵可夫斯基距离</h1><p>两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为：</p>
 <script type="math/tex; mode=display">\sqrt[p]{ \sum_{k=1}^{n} \left | x_{1k}-x_{2k} \right |^p}</script><p>其中p是一个变参数。</p>

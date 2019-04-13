@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://thinkgamer.cn/2018/03/28/机器学习/Softmax-Regression/index.html">
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
 <meta property="og:description" content="简介在本节中，我们介绍Softmax回归模型，该模型是logistic回归模型在多分类问题上的推广，在多分类问题中，类标签 \textstyle y 可以取两个以上的值。 Softmax回归模型对于诸如MNIST手写数字分类等问题是很有用的，该问题的目的是辨识10个不同的单个数字。Softmax回归是有监督的，不过后面也会介绍它与深度学习/无监督学习方法的结合。（译者注： MNIST 是一个手写数">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.105Z">
+<meta property="og:updated_time" content="2019-04-13T04:37:32.192Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Softmax-Regression">
 <meta name="twitter:description" content="简介在本节中，我们介绍Softmax回归模型，该模型是logistic回归模型在多分类问题上的推广，在多分类问题中，类标签 \textstyle y 可以取两个以上的值。 Softmax回归模型对于诸如MNIST手写数字分类等问题是很有用的，该问题的目的是辨识10个不同的单个数字。Softmax回归是有监督的，不过后面也会介绍它与深度学习/无监督学习方法的结合。（译者注： MNIST 是一个手写数">
@@ -53,7 +53,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -61,15 +61,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -129,11 +127,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -173,17 +169,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -219,7 +213,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在本节中，我们介绍Softmax回归模型，该模型是logistic回归模型在多分类问题上的推广，在多分类问题中，类标签 \textstyle y 可以取两个以上的值。 Softmax回归模型对于诸如MNIST手写数字分类等问题是很有用的，该问题的目的是辨识10个不同的单个数字。Softmax回归是有监督的，不过后面也会介绍它与深度学习/无监督学习方法的结合。（译者注： MNIST 是一个手写数字识别库，由NYU 的Yann LeCun 等人维护。<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="external">http://yann.lecun.com/exdb/mnist/</a> ）</p>
-<a id="more"></a>
 <p>回想一下在 logistic 回归中，我们的训练集由 \textstyle m 个已标记的样本构成：$ \{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \} $ ，其中输入特征$ x^{(i)} \in \Re^{n+1} $（我们对符号的约定如下：特征向量<br>$ \textstyle x $ 的维度为 \textstyle n+1，其中 \textstyle x_0 = 1 对应截距项 。） 由于 logistic 回归是针对二分类问题的，因此类标记 $ y^{(i)} \in \{0,1\}$。假设函数(hypothesis function) 如下：</p>
 <script type="math/tex; mode=display">
 \begin{align}

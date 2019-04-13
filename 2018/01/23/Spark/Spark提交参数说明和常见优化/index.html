@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="文艺与Code | Thinkgamer的博客">
 <meta property="og:description" content="最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相">
 <meta property="og:image" content="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2019-04-12T16:11:08.101Z">
+<meta property="og:updated_time" content="2019-04-13T04:39:38.020Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark提交参数说明和常见优化">
 <meta name="twitter:description" content="最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相">
@@ -55,7 +55,7 @@
 		  <h1 class="header-author"><a href="/">Thinkgamer</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">推荐系统／机器学习／云计算</p>
+		<p class="header-subtitle">CTR/DL/ML/RL</p>
 		
 
 		<nav class="header-menu">
@@ -63,15 +63,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/photos">相册</a></li>
-	        
 				<li><a href="/categories/技术篇/">技术篇</a></li>
 	        
 				<li><a href="/categories/随手记/">随手记</a></li>
 	        
 				<li><a href="/categories/夏未眠/">夏未眠</a></li>
 	        
-				<li><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+				<li><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 	        
 			</ul>
 		</nav>
@@ -131,11 +129,9 @@
 			  <h1 class="header-author js-header-author">Thinkgamer</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>推荐系统／机器学习／云计算<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>CTR/DL/ML/RL<i class="icon icon-quo-right"></i></p>
 			
 			
-			
-				
 			
 				
 			
@@ -175,17 +171,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/photos">相册</a></li>
+					<li style="width: 20%"><a href="/categories/技术篇/">技术篇</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/技术篇/">技术篇</a></li>
+					<li style="width: 20%"><a href="/categories/随手记/">随手记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/随手记/">随手记</a></li>
+					<li style="width: 20%"><a href="/categories/夏未眠/">夏未眠</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="/categories/夏未眠/">夏未眠</a></li>
-		        
-					<li style="width: 16.666666666666668%"><a href="https://mp.weixin.qq.com/s/PtX9ukKRBmazAWARprGIAg">--&gt; 商务合作 &lt;--</a></li>
+					<li style="width: 20%"><a href="/6666/06/06/商务合作介绍">🔥商务合作 🔥</a></li>
 		        
 				</ul>
 			</nav>
@@ -220,7 +214,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相关知识，在后续文章会具体涉及到相关的”实战经历“。<br><a id="more"></a></p>
+        <p>最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相关知识，在后续文章会具体涉及到相关的”实战经历“。</p>
 <h1 id="对Spark的认识"><a href="#对Spark的认识" class="headerlink" title="对Spark的认识"></a>对Spark的认识</h1><p>由于之前接触过Hadoop，对Spark也是了解一些皮毛，但中间隔了好久才重新使用spark，期间也产生过一些错误的认识。</p>
 <p>之前觉得MapReduce耗费时间，写一个同等效果的Spark程序很快就能执行完，很长一段时间自己都是在本地的单机环境进行测试学习，所以这种错误的认知就会更加深刻，但事实却并非如此，MR之所以慢是因为每一次操作数据都写在了磁盘上，大量的IO造成了时间和资源的浪费，但是Spark是基于内存的计算引擎，相比MR，减少的是大量的IO，但并不是说给一个Spark程序足够的资源，就可以为所欲为了，在提交一个spark程序时，不仅要考虑所在资源队列的总体情况，还要考虑代码本身的高效性，要尽量避免大量的shuffle操作和action操作，尽量使用同一个rdd。</p>
 <p>会用spark，会调api和能用好spark是两回事，在进行开发的过程中，不仅要了解运行原理，还要了解业务，将合适的方法和业务场景合适的结合在一起，才能发挥最大的价值。</p>
