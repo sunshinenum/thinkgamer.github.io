@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/TensorFlow实现线性回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TensorFlow/TensorFlow的MNIST学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/">TensorFlow实现线性回归</a>
+      <a class="article-title" href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/">TensorFlow的MNIST学习</a>
     </h1>
   
 
         
-        <a href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/" class="archive-article-date">
-  	<time datetime="2018-04-22T06:27:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
+        <a href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/" class="archive-article-date">
+  	<time datetime="2018-04-22T07:21:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
 </a>
         
       </header>
@@ -214,26 +214,49 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo</p>
+<p>MNIST是在机器学习领域中的一个经典问题。该问题解决的是把28x28像素的灰度手写数字图片识别为相应的数字，其中数字的范围从0到9.</p>
 </blockquote>
 <hr>
-<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80038679" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80038679</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80039242" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80039242</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<p>首先引入tf包的相关的package，并初始化100个点。这里我们假定线性回归中的w为0.1 b为0.3，并设置一个随机数保证在y=0.1X + 0.3 上下浮动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># coding: utf-8</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">create by: Thinkgamer</span><br><span class="line">create time: 2018/04/22</span><br><span class="line">desc: 使用tensorflow创建线性回归模型</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"># 随机生成100个点</span><br><span class="line">num_points = 100</span><br><span class="line">vectors_set = list()</span><br><span class="line">for i in range(num_points):</span><br><span class="line">    x1 = np.random.normal(0.00,00.55)</span><br><span class="line">    y1 = x1* 0.1 + 0.3 + np.random.normal(0.0,0.03)</span><br><span class="line">    vectors_set.append([x1,y1])</span><br><span class="line"></span><br><span class="line"># 生成一些样本</span><br><span class="line">x_data = [v[0] for v in vectors_set]</span><br><span class="line">y_data = [v[1] for v in vectors_set]</span><br><span class="line"># print(x_data)</span><br><span class="line"># print(y_data)</span><br><span class="line">plt.scatter(x_data,y_data,c=&apos;r&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>生成的图如下所示：<br><img src="https://img-blog.csdn.net/20180422142414284?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>用刚才生成的数据进行线性回归拟合</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 构造线性回归模型</span><br><span class="line"></span><br><span class="line"># 生成一维的W矩阵，取值是[-1,1]之间的随机数</span><br><span class="line">W = tf.Variable(tf.random_uniform([1],-1,1),name=&apos;W&apos;)</span><br><span class="line"># 生成一维的b矩阵，初始值为0</span><br><span class="line">b = tf.Variable(tf.zeros([1]),name=&apos;b&apos;)</span><br><span class="line"># 经过计算得出预估值y</span><br><span class="line">y=W*x_data + b</span><br><span class="line"></span><br><span class="line"># 定义损失函数，以预估值y和y_data之间的均方误差作为损失</span><br><span class="line">loss = tf.reduce_mean(tf.square(y - y_data),name=&apos;loss&apos;)</span><br><span class="line"># 采用地图下降算法来优化参数</span><br><span class="line">optimizer = tf.train.GradientDescentOptimizer(0.5)</span><br><span class="line"># 训练过程就是最小化误差</span><br><span class="line">train = optimizer.minimize(loss,name=&apos;train&apos;)</span><br><span class="line"></span><br><span class="line">sess = tf.Session()</span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"># 初始化W 和 b</span><br><span class="line">print(&quot;初始化值：  W = &quot;,sess.run(W), &quot;b= &quot;,sess.run(b))</span><br><span class="line">for step in range(20):</span><br><span class="line">    sess.run(train)</span><br><span class="line">    # 打印出每次训练后的w和b</span><br><span class="line">    print(&quot;第 %s 步：  W = &quot; % step,sess.run(W), &quot;b= &quot;,sess.run(b))</span><br><span class="line">    </span><br><span class="line"># 展示</span><br><span class="line">plt.scatter(x_data,y_data,c=&apos;r&apos;)</span><br><span class="line">plt.plot(x_data,sess.run(W)*x_data+sess.run(b),c=&apos;b&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-<p>对应的输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">初始化值：  W =  [-0.300848] b=  [0.]</span><br><span class="line">第 0 步：  W =  [-0.17744449] b=  [0.3065566]</span><br><span class="line">第 1 步：  W =  [-0.09421768] b=  [0.30550653]</span><br><span class="line">第 2 步：  W =  [-0.03631891] b=  [0.3047983]</span><br><span class="line">第 3 步：  W =  [0.0039596] b=  [0.3043056]</span><br><span class="line">第 4 步：  W =  [0.0319802] b=  [0.3039629]</span><br><span class="line">第 5 步：  W =  [0.05147332] b=  [0.30372444]</span><br><span class="line">第 6 步：  W =  [0.06503413] b=  [0.30355856]</span><br><span class="line">第 7 步：  W =  [0.07446799] b=  [0.30344316]</span><br><span class="line">第 8 步：  W =  [0.08103085] b=  [0.30336288]</span><br><span class="line">第 9 步：  W =  [0.08559645] b=  [0.30330706]</span><br><span class="line">第 10 步：  W =  [0.0887726] b=  [0.3032682]</span><br><span class="line">第 11 步：  W =  [0.09098216] b=  [0.30324116]</span><br><span class="line">第 12 步：  W =  [0.09251929] b=  [0.30322236]</span><br><span class="line">第 13 步：  W =  [0.09358863] b=  [0.30320928]</span><br><span class="line">第 14 步：  W =  [0.09433253] b=  [0.3032002]</span><br><span class="line">第 15 步：  W =  [0.09485004] b=  [0.30319384]</span><br><span class="line">第 16 步：  W =  [0.09521006] b=  [0.30318946]</span><br><span class="line">第 17 步：  W =  [0.09546052] b=  [0.3031864]</span><br><span class="line">第 18 步：  W =  [0.09563475] b=  [0.30318424]</span><br><span class="line">第 19 步：  W =  [0.09575596] b=  [0.30318278]</span><br></pre></td></tr></table></figure></p>
-<p>生成的图如下：<br><img src="https://img-blog.csdn.net/20180422142454345?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>数据集</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data_sets.train</td>
+<td>55000 组 图片和标签, 用于训练。</td>
+</tr>
+<tr>
+<td>data_sets.validation</td>
+<td>5000 组 图片和标签, 用于迭代验证训练的准确性。</td>
+</tr>
+<tr>
+<td>data_sets.test</td>
+<td>10000 组 图片和标签, 用于最终测试训练的准确性。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="数据集简介"><a href="#数据集简介" class="headerlink" title="数据集简介"></a>数据集简介</h1><p>MNIST数据集加载有两种办法，第一是直接从网上下载，第二是下载到本地进行load（跟第一种类似，只不过是事先下载好，从本地进行加载）。从网上下载到本地方式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 加载mnist数据集</span><br><span class="line">from tensorflow.examples.tutorials.mnist import input_data</span><br><span class="line">print(&quot;load finish&quot;)</span><br><span class="line"></span><br><span class="line">mnist = input_data.read_data_sets(&quot;MNIST_data/&quot;,one_hot=True)</span><br><span class="line">print(type(mnist))</span><br></pre></td></tr></table></figure>
+<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">load finish</span><br><span class="line">Extracting MNIST_data/train-images-idx3-ubyte.gz</span><br><span class="line">Extracting MNIST_data/train-labels-idx1-ubyte.gz</span><br><span class="line">Extracting MNIST_data/t10k-images-idx3-ubyte.gz</span><br><span class="line">Extracting MNIST_data/t10k-labels-idx1-ubyte.gz</span><br><span class="line">&lt;class &apos;tensorflow.contrib.learn.python.learn.datasets.base.Datasets&apos;&gt;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;MNIST 训练集数据条数：&quot; ,mnist.train.num_examples)</span><br><span class="line">print(&quot;MNIST 测试集数据条数：&quot; ,mnist.test.num_examples)</span><br><span class="line"></span><br><span class="line">train_img = mnist.train.images</span><br><span class="line">train_label = mnist.train.labels</span><br><span class="line">print(&quot;训练集类型：&quot;,type(train_img))</span><br><span class="line">print(&quot;训练集维度：&quot;,train_img.shape)</span><br><span class="line"></span><br><span class="line">test_img = mnist.test.images</span><br><span class="line">test_label = mnist.test.labels</span><br><span class="line">print(&quot;测试集类型：&quot;,type(test_img))</span><br><span class="line">print(&quot;测试集维度：&quot;,test_img.shape)</span><br></pre></td></tr></table></figure>
+<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MNIST 训练集数据条数： 55000</span><br><span class="line">MNIST 测试集数据条数： 10000</span><br><span class="line">训练集类型： &lt;class &apos;numpy.ndarray&apos;&gt;</span><br><span class="line">训练集维度： (55000, 784)</span><br><span class="line">测试集类型： &lt;class &apos;numpy.ndarray&apos;&gt;</span><br><span class="line">测试集维度： (10000, 784)</span><br></pre></td></tr></table></figure></p>
+<p>打开当前运行代码的目录，我们会发现一个MNIST_data的文件夹，里边包含的文件如下：<br>文件    | 内容<br>—|—<br>train-images-idx3-ubyte.gz |    训练集图片 - 55000 张 训练图片, 5000 张 验证图片<br>train-labels-idx1-ubyte.gz |    训练集图片对应的数字标签<br>t10k-images-idx3-ubyte.gz |    测试集图片 - 10000 张 图片<br>t10k-labels-idx1-ubyte.gz |    测试集图片对应的数字标签</p>
+<p>使用next_batch函数加载指定条数的数据集<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 关于next_batch函数</span><br><span class="line">batchSize = 100</span><br><span class="line">batch_x,batch_y = mnist.train.next_batch(batch_size=batchSize)</span><br><span class="line">print(batch_x.shape)</span><br><span class="line">print(batch_y.shape)</span><br></pre></td></tr></table></figure></p>
+<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(100, 784)</span><br><span class="line">(100, 10)</span><br></pre></td></tr></table></figure></p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="50%" height="50%">
 打开微信扫一扫，加入数据与算法交流大群
 </center>
-
-
-
-
 
       
 
@@ -272,7 +295,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/">展开全文 >></a>
         </p>
       
 
@@ -304,7 +327,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -505,6 +528,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">

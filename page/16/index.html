@@ -193,89 +193,63 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Spark提交参数说明和常见优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/Spark多路径输出和二次排序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">Spark提交参数说明和常见优化</a>
+      <a class="article-title" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">Spark多路径输出和二次排序</a>
     </h1>
   
 
         
-        <a href="/2018/01/23/Spark/Spark提交参数说明和常见优化/" class="archive-article-date">
-  	<time datetime="2018-01-22T16:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-23</time>
+        <a href="/2018/01/25/Spark/Spark多路径输出和二次排序/" class="archive-article-date">
+  	<time datetime="2018-01-24T16:22:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相关知识，在后续文章会具体涉及到相关的”实战经历“。</p>
-<h1 id="对Spark的认识"><a href="#对Spark的认识" class="headerlink" title="对Spark的认识"></a>对Spark的认识</h1><p>由于之前接触过Hadoop，对Spark也是了解一些皮毛，但中间隔了好久才重新使用spark，期间也产生过一些错误的认识。</p>
-<p>之前觉得MapReduce耗费时间，写一个同等效果的Spark程序很快就能执行完，很长一段时间自己都是在本地的单机环境进行测试学习，所以这种错误的认知就会更加深刻，但事实却并非如此，MR之所以慢是因为每一次操作数据都写在了磁盘上，大量的IO造成了时间和资源的浪费，但是Spark是基于内存的计算引擎，相比MR，减少的是大量的IO，但并不是说给一个Spark程序足够的资源，就可以为所欲为了，在提交一个spark程序时，不仅要考虑所在资源队列的总体情况，还要考虑代码本身的高效性，要尽量避免大量的shuffle操作和action操作，尽量使用同一个rdd。</p>
-<p>会用spark，会调api和能用好spark是两回事，在进行开发的过程中，不仅要了解运行原理，还要了解业务，将合适的方法和业务场景合适的结合在一起，才能发挥最大的价值。</p>
-<h1 id="spark-submit"><a href="#spark-submit" class="headerlink" title="spark-submit"></a>spark-submit</h1><p>进入spark的home目录，执行以下命令查看帮助<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/spark-submit --help</span><br></pre></td></tr></table></figure></p>
-<p>spark提交任务常见的两种模式<br>1：local/local[K]</p>
+        <blockquote>
+<p>在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。</p>
+</blockquote>
+<h1 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h1><p>假设我们的数据是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1   2</span><br><span class="line">1   3</span><br><span class="line">1   1</span><br><span class="line">1   6</span><br><span class="line">1   4</span><br><span class="line">2   5</span><br><span class="line">2   8</span><br><span class="line">2   3</span><br></pre></td></tr></table></figure></p>
+<p>我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列</p>
+<p>定义一个SecondSortKey类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first == 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后这样去使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val pairs = lines.map &#123; x =&gt;</span><br><span class="line">      (new SecondSortKey(x.split(&quot;\\s+&quot;)(0).toInt,</span><br><span class="line">        x.split(&quot;\\s+&quot;)(1).toInt), x)</span><br><span class="line">    &#125;</span><br><span class="line">val sortedPairs = pairs.sortByKey(false);</span><br><span class="line">sortedPairs.map(_._2).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<p>当然这里如果想按第一列升序，当第一列相同时，第二列升序的顺序排列，只需要对SecondSoryKey做如下修改即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first !== 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当时使用的使用去掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pairs.sortByKey(false)</span><br></pre></td></tr></table></figure></p>
+<p>中的false</p>
+<h1 id="Top-N"><a href="#Top-N" class="headerlink" title="Top N"></a>Top N</h1><p>同样还是上边的数据，假设我们要得到第一列中的前五位<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val rdd = lines</span><br><span class="line">        .map(x =&gt; x.split(&quot;\\s+&quot;))</span><br><span class="line">        .map(x =&gt; (x(0),x(1)))</span><br><span class="line">        .sortByKey()</span><br><span class="line">rdd.take(N).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<h1 id="多路径输出"><a href="#多路径输出" class="headerlink" title="多路径输出"></a>多路径输出</h1><p>自己在使用的过程中，通过搜索发现了两种方法<br>1：调用saveAsHadoopFile函数并自定义一个OutputFormat类</p>
+<p>自定义RDDMultipleTextOutputFormat类</p>
+<p>RDDMultipleTextOutputFormat类中的generateFileNameForKeyValue函数有三个参数，key和value就是我们RDD的Key和Value，而name参数是每个Reduce的编号。本例中没有使用该参数，而是直接将同一个Key的数据输出到同一个文件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat  </span><br><span class="line">  </span><br><span class="line">class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] &#123;  </span><br><span class="line">  override def generateFileNameForKeyValue(key: Any, value: Any, name: String): String =  </span><br><span class="line">    key.asInstanceOf[String]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sc.parallelize(List((&quot;w&quot;, &quot;www&quot;), (&quot;b&quot;, &quot;blog&quot;), (&quot;c&quot;, &quot;com&quot;), (&quot;w&quot;, &quot;bt&quot;)))  </span><br><span class="line">      .map(value =&gt; (value._1, value._2 + &quot;Test&quot;))  </span><br><span class="line">      .partitionBy(new HashPartitioner(3))  </span><br><span class="line">      .saveAsHadoopFile(&quot;/iteblog&quot;, classOf[String],classOf[String],classOf[RDDMultipleTextOutputFormat])</span><br></pre></td></tr></table></figure></p>
+<p>这里的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new HashPartitioner(3)</span><br></pre></td></tr></table></figure></p>
+<p>中的3是有key的种类决定的，当然在实际应用场景中，我们可能并不知道有多少k，这个时候就可以通过一个rdd 的 distinct操作来得到唯一key的数目。</p>
+<p>2：使用dataframe<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">people_rdd = sc.parallelize([(1, &quot;alice&quot;), (1, &quot;bob&quot;), (2,&quot;charlie&quot;)])</span><br><span class="line">people_df = people_rdd.toDF([&quot;number&quot;, &quot;name&quot;])</span><br><span class="line">people_df.write.partitionBy(&quot;number&quot;).format(&quot;text&quot;).save(path  )</span><br></pre></td></tr></table></figure></p>
+<p>当然这两种方法都有一个缺陷，就是当数据量特别大的时候，数据在repartition的过程中特别耗费资源，也会容易出现任务failed的情况，小编采用的解决办法是，适当的对原rdd进行split，然后遍历每个rdd，进行multioutput操作</p>
+<p>形似如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd = sc.textFile(input)</span><br><span class="line">var split_rdd = rdd.randomSplit(Array(1.0,1.0,1.0,1.0))</span><br><span class="line">for (one &lt;- Array(1,2,3,4))</span><br><span class="line">&#123;</span><br><span class="line">    split_rdd(one)XXXX</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>参考：</p>
 <ul>
-<li>本地使用一个worker线程运行spark程序</li>
-<li>本地使用K个worker线程运行spark程序</li>
-</ul>
-<p>此种模式下适合小批量数据在本地调试代码</p>
-<p>2：yarn-client/yarn-cluster</p>
-<ul>
-<li>yarn-client：以client方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver在client运行。</li>
-<li>yarn-cluster：以cluster方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver也在集群中运行。</li>
-</ul>
-<p>注意：若使用的是本地文件需要在file路径前加：file://</p>
-<p>在提交任务时的几个重要参数</p>
-<ul>
-<li>executor-cores —— 每个executor使用的内核数，默认为1</li>
-<li>num-executors —— 启动executors的数量，默认为2</li>
-<li>executor-memory —— executor内存大小，默认1G</li>
-<li>driver-cores —— driver使用内核数，默认为1</li>
-<li>driver-memory —— driver内存大小，默认512M</li>
-</ul>
-<p>下边给一个提交任务的样式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">spark-submit \</span><br><span class="line">  --master local[5]  \</span><br><span class="line">  --driver-cores 2   \</span><br><span class="line">  --driver-memory 8g \</span><br><span class="line">  --executor-cores 4 \</span><br><span class="line">  --num-executors 10 \</span><br><span class="line">  --executor-memory 8g \</span><br><span class="line">  --class PackageName.ClassName XXXX.jar \</span><br><span class="line">  --name &quot;Spark Job Name&quot; \</span><br><span class="line">  InputPath      \</span><br><span class="line">  OutputPath</span><br><span class="line">  </span><br><span class="line">如果这里通过--queue 指定了队列，那么可以免去写--master</span><br></pre></td></tr></table></figure></p>
-<p>以上就是通过spark-submit来提交一个任务</p>
-<h1 id="几个参数的常规设置"><a href="#几个参数的常规设置" class="headerlink" title="几个参数的常规设置"></a>几个参数的常规设置</h1><ul>
-<li><p>executor_cores*num_executors<br>表示的是能够并行执行Task的数目<br>不宜太小或太大！一般不超过总队列 cores 的 25%，比如队列总 cores 400，最大不要超过100，最小不建议低于 40，除非日志量很小。</p>
-</li>
-<li><p>executor_cores<br>不宜为1！否则 work 进程中线程数过少，一般 2~4 为宜。</p>
-</li>
-<li><p>executor_memory<br>一般 6~10g 为宜，最大不超过20G，否则会导致GC代价过高，或资源浪费严重。</p>
-</li>
-<li><p>driver-memory<br>driver 不做任何计算和存储，只是下发任务与yarn资源管理器和task交互，除非你是 spark-shell，否则一般 1-2g</p>
-</li>
+<li><a href="https://andone1cc.github.io/2017/03/04/Spark/%E4%BA%8C%E6%AC%A1%E6%8E%92%E5%BA%8Ftopn/" target="_blank" rel="external">Spark学习笔记——二次排序，TopN，TopNByGroup</a></li>
+<li><a href="https://www.iteblog.com/archives/1281.html" target="_blank" rel="external">Spark多文件输出(MultipleOutputFormat)</a></li>
+<li><a href="https://code.i-harness.com/en/q/16e22a0" target="_blank" rel="external">scala - Write to multiple outputs by key Spark - one Spark job</a></li>
+<li><a href="https://stackoverflow.com/questions/23995040/write-to-multiple-outputs-by-key-spark-one-spark-job/26051042#26051042" target="_blank" rel="external">Write to multiple outputs by key Spark - one Spark job
+</a></li>
 </ul>
 <hr>
-<p>增加每个executor的内存量，增加了内存量以后，对性能的提升，有三点：</p>
-<ul>
-<li>1、如果需要对RDD进行cache，那么更多的内存，就可以缓存更多的数据，将更少的数据写入磁盘，<br>甚至不写入磁盘。减少了磁盘IO。</li>
-<li>2、对于shuffle操作，reduce端，会需要内存来存放拉取的数据并进行聚合。如果内存不够，也会写入磁盘。如果给executor分配更多内存以后，就有更少的数据，需要写入磁盘，甚至不需要写入磁盘。减少了磁盘IO，提升了性能。</li>
-<li>3、对于task的执行，可能会创建很多对象。如果内存比较小，可能会频繁导致JVM堆内存满了，然后频繁GC，垃圾回收，minor GC和full GC。（速度很慢）。内存加大以后，带来更少的GC，垃圾回收，避免了速度变慢，性能提升。</li>
-</ul>
-<h1 id="常规注意事项"><a href="#常规注意事项" class="headerlink" title="常规注意事项"></a>常规注意事项</h1><ul>
-<li>预处理数据，丢掉一些不必要的数据</li>
-<li>增加Task的数量</li>
-<li>过滤掉一些容易导致发生倾斜的key</li>
-<li>避免创建重复的RDD</li>
-<li>尽可能复用一个RDD</li>
-<li>对多次使用的RDD进行持久化</li>
-<li>尽量避免使用shuffle算子</li>
-<li>在要使用groupByKey算子的时候,尽量用reduceByKey或者aggregateByKey算子替代.因为调用groupByKey时候,按照相同的key进行分组,形成RDD[key,Iterable[value]]的形式,此时所有的键值对都将被重新洗牌,移动,对网络数据传输造成理论上的最大影响.</li>
-<li>使用高性能的算子</li>
-</ul>
-<hr>
-<p>参考：<br>1：<a href="http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html" target="_blank" rel="external">http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html</a><br>2：<a href="https://www.jianshu.com/p/4c584a3bac7d" target="_blank" rel="external">https://www.jianshu.com/p/4c584a3bac7d</a></p>
 <center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
+<img src="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<br>
+打开微信扫一扫，关注微信公众号【数据与算法联盟】 
 </center>
 
+<p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 
       
 
@@ -310,7 +284,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">展开全文 >></a>
         </p>
       
 
@@ -342,7 +316,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
     </nav>
   
 
@@ -543,6 +517,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">

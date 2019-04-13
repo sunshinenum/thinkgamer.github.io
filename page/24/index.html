@@ -193,30 +193,28 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-数据结构/数据结构算法之合并两个有序序列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据结构/数据结构算法之链表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">数据结构算法之合并两个有序序列</a>
+      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之链表/">数据结构算法之链表</a>
     </h1>
   
 
         
-        <a href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/" class="archive-article-date">
-  	<time datetime="2017-11-12T16:55:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
+        <a href="/2017/11/13/数据结构/数据结构算法之链表/" class="archive-article-date">
+  	<time datetime="2017-11-12T16:58:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>有序序列的合并，python实现。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line"></span><br><span class="line">a = [2,4,6,8,10]</span><br><span class="line">b = [3,5,7,9,11,13,15]</span><br><span class="line">c = []</span><br><span class="line"></span><br><span class="line">def merge(a,b):</span><br><span class="line">    i,j = 0,0</span><br><span class="line">    while i&lt;=len(a)-1 and j&lt;=len(b)-1:</span><br><span class="line">        if a[i]&lt;b[j]:</span><br><span class="line">            c.append(a[i])</span><br><span class="line">            i+=1</span><br><span class="line">        else:</span><br><span class="line">            c.append(b[j])</span><br><span class="line">            j+=1</span><br><span class="line">    if i&lt;=len(a)-1:</span><br><span class="line">        for m in a[i:]:</span><br><span class="line">            c.append(m)</span><br><span class="line">    </span><br><span class="line">    if j&lt;=len(b)-1:</span><br><span class="line">        for n in b[j:]:</span><br><span class="line">            c.append(n)</span><br><span class="line">    print(c)</span><br><span class="line"></span><br><span class="line">merge(a,b)</span><br></pre></td></tr></table></figure>
-<p>运行结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15]</span><br></pre></td></tr></table></figure></p>
-
+        <p>链表面试总结，使用python实现，参考：<a href="https://www.cnblogs.com/lixiaohui-ambition/archive/2012/09/25/2703195.html" target="_blank" rel="external">https://www.cnblogs.com/lixiaohui-ambition/archive/2012/09/25/2703195.html</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line"></span><br><span class="line"># 定义链表</span><br><span class="line">class ListNode:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.data = None</span><br><span class="line">        self.pnext = None</span><br><span class="line"></span><br><span class="line"># 链表操作类</span><br><span class="line">class ListNode_handle:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.cur_node = None</span><br><span class="line">    </span><br><span class="line">    # 链表添加元素</span><br><span class="line">    def add(self,data):</span><br><span class="line">        ln = ListNode()</span><br><span class="line">        ln.data = data</span><br><span class="line">        </span><br><span class="line">        ln.pnext = self.cur_node</span><br><span class="line">        self.cur_node = ln</span><br><span class="line">        return ln</span><br><span class="line">    </span><br><span class="line">    # 打印链表</span><br><span class="line">    def prt(self,ln):</span><br><span class="line">        while ln:</span><br><span class="line">            print(ln.data,end=&quot;  &quot;)</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">    # 逆序输出</span><br><span class="line">    def _reverse(self,ln):</span><br><span class="line">        _list = []</span><br><span class="line">        while ln:</span><br><span class="line">            _list.append(ln.data)</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        ln_2 = ListNode()</span><br><span class="line">        ln_h = ListNode_handle()</span><br><span class="line">        for i in _list:</span><br><span class="line">            ln_2 = ln_h.add(i)</span><br><span class="line">        return ln_2</span><br><span class="line">    </span><br><span class="line">    # 求链表的长度</span><br><span class="line">    def _length(self,ln):</span><br><span class="line">        _len = 0</span><br><span class="line">        while ln:</span><br><span class="line">            _len += 1</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return _len</span><br><span class="line">    </span><br><span class="line">    # 查找指定位置的节点</span><br><span class="line">    def _find_loc(self,ln,loc):</span><br><span class="line">        _sum = 0</span><br><span class="line">        while ln and _sum != loc:</span><br><span class="line">            _sum += 1</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return ln.data</span><br><span class="line">    </span><br><span class="line">    # 判断某个节点是否在链表中</span><br><span class="line">    def _exist(self,ln,data):</span><br><span class="line">        flag = False</span><br><span class="line">        while ln and data != ln.data:</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return flag</span><br><span class="line"></span><br><span class="line"># 创建链表   </span><br><span class="line">ln = ListNode()</span><br><span class="line">ln_h = ListNode_handle()</span><br><span class="line">a = [1,4,2,5,8,5,7,9]</span><br><span class="line">for i in a:</span><br><span class="line">    ln = ln_h.add(i)</span><br><span class="line"></span><br><span class="line">print(&quot;正序输出...&quot;)</span><br><span class="line">ln_h.prt(ln)</span><br><span class="line"></span><br><span class="line">print(&quot;\n\n逆序输出...&quot;)</span><br><span class="line">ln_2 = ln_h._reverse(ln)</span><br><span class="line">ln_h.prt(ln_2)</span><br><span class="line"></span><br><span class="line"># 求链表ln的长度</span><br><span class="line">length = ln_h._length(ln)</span><br><span class="line">print(&quot;\n\nln的长度为:&quot;,length)</span><br><span class="line"></span><br><span class="line"># 查找链表ln中的倒数第３个节点</span><br><span class="line">data = ln_h._find_loc(ln,ln_h._length(ln)-3)</span><br><span class="line">print(&quot;\n\n倒数第三个节点为:&quot;,data)</span><br><span class="line"></span><br><span class="line"># 返回某个节点在链表中的位置</span><br><span class="line">loc = ln_h._loc(ln,5)</span><br><span class="line"></span><br><span class="line">#　判断某个节点是否在链表中</span><br><span class="line">flag = ln_h._exist(ln,5)</span><br><span class="line">print(&quot;\n\n５是否存在与链表ln中:&quot;,end=&quot; &quot;)</span><br><span class="line">if flag:</span><br><span class="line">    print(&quot;Yes&quot;)</span><br><span class="line">else:</span><br><span class="line">    print(&quot;No&quot;)</span><br></pre></td></tr></table></figure>
       
 
       
@@ -250,7 +248,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之链表/">展开全文 >></a>
         </p>
       
 
@@ -282,7 +280,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
     </nav>
   
 
@@ -483,6 +481,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">

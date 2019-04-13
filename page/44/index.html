@@ -193,34 +193,67 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Python/MySQLdb的安装与使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hadoop/二、hadoop伪分布搭建" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/05/Python/MySQLdb的安装与使用/">MySQLdb的安装与使用</a>
+      <a class="article-title" href="/2015/07/07/Hadoop/二、hadoop伪分布搭建/">二、hadoop伪分布搭建</a>
     </h1>
   
 
         
-        <a href="/2015/07/05/Python/MySQLdb的安装与使用/" class="archive-article-date">
-  	<time datetime="2015-07-05T03:44:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-05</time>
+        <a href="/2015/07/07/Hadoop/二、hadoop伪分布搭建/" class="archive-article-date">
+  	<time datetime="2015-07-07T12:14:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-07</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h1><p>安装已编译版本(此方法简便快捷):</p>
-<p><a href="http://www.codegood.com/downloads" target="_blank" rel="external">http://www.codegood.com/downloads</a></p>
-<p>根据自己系统下载，双击安装，搞定</p>
-<p>然后import MySQLdb，查看是否成功</p>
-<p>我的，win7,32位，2.7版本</p>
-<p>MySQL-python-1.2.3.win-amd32-py2.7.exe</p>
-<h1 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># encoding: utf-8</span><br><span class="line">import time,MySQLdb</span><br><span class="line"># 打开数据库连接</span><br><span class="line">db = MySQLdb.connect(&quot;localhost&quot;,&quot;root&quot;,&quot;root&quot;,&quot;Python&quot; )</span><br><span class="line"># 使用cursor()方法获取操作游标</span><br><span class="line">cursor = db.cursor()</span><br><span class="line"></span><br><span class="line">#删除表</span><br><span class="line">sql = &quot;drop table if exists thinkgamer&quot;</span><br><span class="line">cursor.execute(sql)</span><br><span class="line"></span><br><span class="line">#创建</span><br><span class="line">sql = &quot;create table if not exists thinkgamer(name varchar(128) primary key,created int(10))&quot;</span><br><span class="line">cursor.execute(sql)</span><br><span class="line"></span><br><span class="line">#写入</span><br><span class="line">sql = &quot;insert into thinkgamer(name,created) values(%s,%s)&quot;</span><br><span class="line">param = (&quot;aaa&quot;,int(time.time()))</span><br><span class="line">n = cursor.execute(sql,param)</span><br><span class="line">print &apos;insert&apos;,n</span><br><span class="line"></span><br><span class="line">#写入多行</span><br><span class="line">sql = &quot;insert into thinkgamer(name,created) values(%s,%s)&quot;</span><br><span class="line">param = ((&quot;bbb&quot;,int(time.time())),(&quot;ccc&quot;,33),(&quot;ddd&quot;,44))</span><br><span class="line">n = cursor.executemany(sql,param)</span><br><span class="line">print &quot;insertmany&quot;,n</span><br><span class="line"></span><br><span class="line">#更新</span><br><span class="line">sql= &quot;update thinkgamer set name=%s where name=&apos;aaa&apos;&quot;</span><br><span class="line">param = (&quot;zzz&quot;)</span><br><span class="line">n = cursor.execute(sql,param)</span><br><span class="line">print &quot;updata&quot;,n</span><br><span class="line"></span><br><span class="line">#查询</span><br><span class="line">n = cursor.execute(&quot;select * from thinkgamer&quot;)</span><br><span class="line">for row in cursor.fetchall():</span><br><span class="line">    print row</span><br><span class="line">    for r in row:</span><br><span class="line">        print r</span><br><span class="line"></span><br><span class="line">#删除</span><br><span class="line">sql = &quot;delete from thinkgamer where name =%s&quot;</span><br><span class="line">param = (&quot;bbb&quot;)</span><br><span class="line">n = cursor.execute(sql,param)</span><br><span class="line">print &quot;delete&quot;,n</span><br><span class="line"></span><br><span class="line">#查询</span><br><span class="line">n = cursor.execute(&quot;select * from thinkgamer&quot;)</span><br><span class="line">print cursor.fetchall()</span><br><span class="line"></span><br><span class="line">cursor.close()</span><br><span class="line"></span><br><span class="line">#提交</span><br><span class="line">db.commit()</span><br><span class="line">#关闭</span><br><span class="line">db.close()</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line"></span><br><span class="line">insert 1</span><br><span class="line">insertmany 3</span><br><span class="line">updata 1</span><br><span class="line">(&apos;zzz&apos;, 1436067892L)</span><br><span class="line">zzz</span><br><span class="line">1436067892</span><br><span class="line">(&apos;bbb&apos;, 1436067892L)</span><br><span class="line">bbb</span><br><span class="line">1436067892</span><br><span class="line">(&apos;ccc&apos;, 33L)</span><br><span class="line">ccc</span><br><span class="line">33</span><br><span class="line">(&apos;ddd&apos;, 44L)</span><br><span class="line">ddd</span><br><span class="line">44</span><br><span class="line">delete 1</span><br><span class="line">((&apos;zzz&apos;, 1436067892L), (&apos;ccc&apos;, 33L), (&apos;ddd&apos;, 44L))</span><br></pre></td></tr></table></figure>
-<p>更多详情请戳：<a href="http://mysql-python.sourceforge.net/MySQLdb.html" target="_blank" rel="external">MySQLdb User’s Guide</a></p>
+        <h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>虚拟机：VirtualBox<br>Ubuntu:14.04<br>hadoop:2.6</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="1、创建hadoop用户"><a href="#1、创建hadoop用户" class="headerlink" title="1、创建hadoop用户"></a>1、创建hadoop用户</h2><p>sudo useradd -m hadoop -s/bin/bash<br>【Ubuntu终端复制粘贴快捷键】<br>【在Ubuntu终端窗口中，复制粘贴的快捷键需要加上shift，即粘贴是 ctrl+shift+v。】<br>使用如下命令修改密码，按提示输入两次密码 hadoop :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo passwd hadoop</span><br></pre></td></tr></table></figure></p>
+<p>可为 hadoop 用户增加管理员权限，方便部署，避免一些对新手来说比较棘手的权限问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser hadoop sudo</span><br></pre></td></tr></table></figure></p>
+<h2 id="2、切换到hadoop用户下"><a href="#2、切换到hadoop用户下" class="headerlink" title="2、切换到hadoop用户下"></a>2、切换到hadoop用户下</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su hadoop</span><br></pre></td></tr></table></figure>
+<h2 id="3、安装SSH-server、配置SSH无密码登陆"><a href="#3、安装SSH-server、配置SSH无密码登陆" class="headerlink" title="3、安装SSH server、配置SSH无密码登陆"></a>3、安装SSH server、配置SSH无密码登陆</h2><p>集群、单节点模式都需要用到SSH登陆（类似于远程登陆，你可以登录某台Linux电脑，并且在上面运行命令），Ubuntu 默认已安装了 SSH client，此外还需要安装 SSH server：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure></p>
+<p>安装后，可以使用如下命令登陆本机：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh localhost</span><br></pre></td></tr></table></figure></p>
+<p>此时会有提示(SSH首次登陆提示)，输入 yes 。然后按提示输入密码hadoop，这样就登陆到本机了。</p>
+<p>但这样登陆是需要每次输入密码的，我们需要配置成SSH无密码登陆比较方便。</p>
+<p>首先退出刚才的 ssh，就回到了我们原先的终端窗口，然后利用 ssh-keygen 生成密钥，并将密钥加入到授权中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit                                   # 退出刚才的 ssh localhost</span><br><span class="line">cd ~/.ssh/                             # 若没有该目录，请先执行一次ssh localhost</span><br><span class="line">ssh-keygen -t rsa                      # 会有提示，都按回车就可以</span><br><span class="line">cat id_rsa.pub &gt;&gt; authorized_keys     # 加入授权</span><br></pre></td></tr></table></figure></p>
+<p>此时再用 ssh localhost 命令，无需输入密码就可以直接登陆此时再用 ssh localhost 命令，无需输入密码就可以直接登陆</p>
+<p><img src="http://img.blog.csdn.net/20150707210848767?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<h2 id="4、安装Java环境"><a href="#4、安装Java环境" class="headerlink" title="4、安装Java环境"></a>4、安装Java环境</h2><p>Java环境可选择 Oracle 的 JDK，或是 OpenJDK，按<a href="http://wiki.apache.org/hadoop/HadoopJavaVersions中说的，新版本在" target="_blank" rel="external">http://wiki.apache.org/hadoop/HadoopJavaVersions中说的，新版本在</a> OpenJDK 1.7 下是没问题的。为图方便，这边直接通过命令安装 OpenJDK 7。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openjdk-7-jre openjdk-7-jdk</span><br></pre></td></tr></table></figure></p>
+<p>OpenJDK 默认的安装位置为: /usr/lib/jvm/java-7-openjdk-amd64 (32位系统则是 /usr/lib/jvm/java-7-openjdk-i86 ，可通过命令dpkg -L openjdk-7-jdk查看到)。安装完后就可以使用了，可以用java -version 检查一下。</p>
+<p>接着需要配置一下 JAVA_HOME 环境变量，为方便，我们在 ~/.bashrc 中进行设置（扩展阅读:设置Linux环境变量的方法和区别）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.bashrc</span><br></pre></td></tr></table></figure></p>
+<p>在文件最前面添加如下单独一行（注意 = 号前后不能有空格），并保存：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64</span><br></pre></td></tr></table></figure></p>
+<p>如下图所示（该文件原本可能不存在，内容为空，这不影响）：</p>
+<p><img src="http://img.blog.csdn.net/20150707210939550?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>配置JAVA_HOME变量</p>
+<p>接着还需要让该环境变量生效，执行如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc# 使变量设置生效</span><br><span class="line">echo $JAVA_HOME# 检验是否设置正确</span><br></pre></td></tr></table></figure></p>
+<p>设置正确的话，会输出如下结果：</p>
+<p><img src="http://img.blog.csdn.net/20150707211039921?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>成功配置JAVA_HOME变量</p>
+<h2 id="5、安装hadoop"><a href="#5、安装hadoop" class="headerlink" title="5、安装hadoop"></a>5、安装hadoop</h2><p>进入hadoop所在的目录将其解压到/usr/local/hadoop<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxvf ./hadoop-2.6.0.tar.gz -C /usr/local  # 解压到/usr/local中</span><br><span class="line"></span><br><span class="line">cd /usr/local/</span><br><span class="line">sudo mv ./hadoop-2.6.0/ ./hadoop            # 将文件夹名改为hadoop</span><br><span class="line">sudo chown -R hadoop:hadoop ./hadoop        # 修改文件权限</span><br></pre></td></tr></table></figure></p>
+<p>Hadoop解压后即可使用。输入如下命令来检查 Hadoop<br>是否可用，成功则会显示命令用法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ./hadoop</span><br><span class="line">./bin/hadoop</span><br></pre></td></tr></table></figure></p>
+<h2 id="6、hadoop伪分布配置"><a href="#6、hadoop伪分布配置" class="headerlink" title="6、hadoop伪分布配置"></a>6、hadoop伪分布配置</h2><p>Hadoop 的配置文件位于 /usr/local/hadoop/etc/hadoop/ 中，伪分布式需要修改2个配置文件core-site.xml 和hdfs-site.xml 。Hadoop的配置文件是 xml 格式，每个配置以声明 property 的 name 和 value 的方式来实现。</p>
+<p>修改配置文件 core-site.xml (vim /usr/local/hadoop/etc/hadoop/core-site.xml)，将当中的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改为下面配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:/usr/local/hadoop/tmp&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Abase for other temporary directories.&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>同样的，修改配置文件 hdfs-site.xml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/name&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;file:/usr/local/hadoop/tmp/dfs/data&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改配置文件yarn-site.xml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt; </span><br><span class="line">     &lt;property&gt;  </span><br><span class="line">        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;  </span><br><span class="line">        &lt;value&gt;yarn&lt;/value&gt; </span><br><span class="line">    &lt;/property&gt;  </span><br><span class="line">    &lt;property&gt; </span><br><span class="line">        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;  </span><br><span class="line">        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;  </span><br><span class="line">   &lt;/property&gt; </span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure></p>
+<p>配置完成后，执行 namenode 的格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/hdfs namenode -format</span><br></pre></td></tr></table></figure></p>
+<p>成功的话，会看到successfully formatted 的提示，且倒数第5行的提示如下，Exitting with status 0 表示成功，若为Exitting with status 1 则是出错</p>
+<p>接着开启如下进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sbin/start-dfs.sh</span><br><span class="line">sbin/start-yarn.sh</span><br></pre></td></tr></table></figure></p>
+<p>至此，所有的已经安装完事，且所有服务都已经启动</p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p><a href="http://127.0.0.1:8088" target="_blank" rel="external">http://127.0.0.1:8088</a></p>
+<p><img src="http://img.blog.csdn.net/20150707220733097?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p><a href="http://localhost:50070" target="_blank" rel="external">http://localhost:50070</a></p>
+<p><img src="http://img.blog.csdn.net/20150708115937081?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"><br><img src="http://img.blog.csdn.net/20150707220808406?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<h1 id="提示"><a href="#提示" class="headerlink" title="提示"></a>提示</h1><p>每次进入虚拟机系统时必须先进入hadoop用户下（su hadoop），才能开启服务，否则会报错<br>参考文章：www.powerxing.com/install-hadoop/</p>
+<p>QQ交流：1923361654</p>
+<p>hadoop完全分布式部署参考：<a href="http://blog.csdn.net/gamer_gyt/article/details/51991893" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/51991893</a></p>
+<p>hadoop单机版部署参考：<a href="http://blog.csdn.net/gamer_gyt/article/details/46545303" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/46545303</a></p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -242,7 +275,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
         		</li>
       		
 		</ul>
@@ -263,7 +296,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/05/Python/MySQLdb的安装与使用/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/07/07/Hadoop/二、hadoop伪分布搭建/">展开全文 >></a>
         </p>
       
 
@@ -295,7 +328,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/43/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="page-number" href="/page/43/">43</a><span class="page-number current">44</span><a class="page-number" href="/page/45/">45</a><a class="page-number" href="/page/46/">46</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/45/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/43/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="page-number" href="/page/43/">43</a><span class="page-number current">44</span><a class="page-number" href="/page/45/">45</a><a class="page-number" href="/page/46/">46</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/45/">Next &raquo;</a>
     </nav>
   
 
@@ -496,6 +529,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
