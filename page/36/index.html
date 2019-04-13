@@ -193,34 +193,61 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-夏未眠/这夏未眠-前言" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/梯度算法之批量梯度下降，随机梯度下降和小批量梯度下降" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/17/夏未眠/这夏未眠-前言/">这夏未眠.前言</a>
+      <a class="article-title" href="/2017/12/14/机器学习/梯度算法之批量梯度下降，随机梯度下降和小批量梯度下降/">梯度算法之批量梯度下降，随机梯度下降和小批量梯度下降</a>
     </h1>
   
 
         
-        <a href="/2016/09/17/夏未眠/这夏未眠-前言/" class="archive-article-date">
-  	<time datetime="2016-09-17T07:02:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-17</time>
+        <a href="/2017/12/14/机器学习/梯度算法之批量梯度下降，随机梯度下降和小批量梯度下降/" class="archive-article-date">
+  	<time datetime="2017-12-14T06:40:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>青春在岁月中葬送了开始，用悲字调刻画的年轮在那片草地上画上了最后一圈，漫天飞舞的纸片如此刻房费的心一样苍白无力，尘埃落定，一切都已结束。你用对不起作结了那段美好时光，我用没关系掩饰心痛的泪水，转身离去，用空白再见。</p>
-<p>难以割舍的流河里，有你荡起的微笑，我回忆着，慢慢就流下了眼泪，此刻我想把记忆封存，我不想在若干年后拿起来温习时，只剩下一些虚无缥缈的梦幻，宁愿再看到一些文字而流下当初所认为的幸福的泪水，或许最无力的是如果，但我仍想说，如果时光循环到那年起点，我亦然会爱，因为夏未眠。</p>
-<p>没有人永远青春，却永远有人正在青春着，是呀，那夏，他们平行的爱情会以最美丽的姿态延后，永远会有人经历着，或许分手，或许继续在一起，但那早已与他们无关，他只希望她幸福，她只希望他幸福。但结果呢？两个人都没有幸福！</p>
-<p>我们没有权利去质疑在那个年龄他们的感情有没有权利，只要快乐，为什么不能在一起，他可以为了她放弃自己，只要她愿意，他可以放弃所拥有的一切，可是结果呢？谁又能料到，他毁了，她成功了，却没有一个人心安理得。</p>
-<p>夏天因为他们变得那么美，又因为他们变得那么悲。谁也不想，谁也不愿意去想，回忆总是短暂的，记忆却是痛的。</p>
-<p>最难熬的便是这痛苦的时段，或许每一次闭上眼，泪水便在打转，熬过一夏晴天，幻化成瓢泼的雨季。让心在哭泣中成长，茁壮了，坚强了，淡忘了！</p>
-<p>曾经萌动在稚嫩青春里的唯一一朵留恋，在这一个夏末彻底的枯萎了。</p>
-<p>看着窗外尘埃落满天，依稀记得已错过的昨天。时间是贼偷走一切，捉住了那只蝉，原来并不代表留住了整个夏天，爱我的与我爱的，I Miss You，But I Missed You！</p>
+        <p>在机器学习领域，体梯度下降算法分为三种</p>
+<ul>
+<li>批量梯度下降算法（BGD，Batch gradient descent algorithm）</li>
+<li>随机梯度下降算法（SGD，Stochastic gradient descent algorithm）</li>
+<li>小批量梯度下降算法（MBGD，Mini-batch gradient descent algorithm）</li>
+</ul>
+<h1 id="批量梯度下降算法"><a href="#批量梯度下降算法" class="headerlink" title="批量梯度下降算法"></a>批量梯度下降算法</h1><p>BGD是最原始的梯度下降算法，每一次迭代使用全部的样本，即权重的迭代公式中(公式中用$\theta$代替$\theta_i$)，</p>
+<script type="math/tex; mode=display">
+\jmath (\theta _0,\theta _1,...,\theta _n)=\sum_{i=0}^{m}( h_\theta(x_0,x_1,...,x_n)-y_i )^2</script><script type="math/tex; mode=display">
+\theta _i = \theta _i - \alpha \frac{\partial \jmath (\theta _1,\theta _2,...,\theta _n)}{\partial \theta _i}</script><script type="math/tex; mode=display">
+公式(1)</script><p>这里的m代表所有的样本，表示从第一个样本遍历到最后一个样本。</p>
+<p>特点：</p>
+<ul>
+<li>能达到全局最优解，易于并行实现</li>
+<li>当样本数目很多时，训练过程缓慢</li>
+</ul>
+<h1 id="随机梯度下降算法"><a href="#随机梯度下降算法" class="headerlink" title="随机梯度下降算法"></a>随机梯度下降算法</h1><p>SGD的思想是更新每一个参数时都使用一个样本来进行更新，即公式（1）中m为1。每次更新参数都只使用一个样本，进行多次更新。这样在样本量很大的情况下，可能只用到其中的一部分样本就能得到最优解了。<br>但是，SGD伴随的一个问题是噪音较BGD要多，使得SGD并不是每次迭代都向着整体最优化方向。</p>
+<p>特点：</p>
+<ul>
+<li>训练速度快</li>
+<li>准确度下降，并不是最优解，不易于并行实现</li>
+</ul>
+<h1 id="小批量梯度下降算法"><a href="#小批量梯度下降算法" class="headerlink" title="小批量梯度下降算法"></a>小批量梯度下降算法</h1><p>MBGD的算法思想就是在更新每一参数时都使用一部分样本来进行更新，也就是公式（1）中的m的值大于1小于所有样本的数量。</p>
+<p>相对于随机梯度下降，Mini-batch梯度下降降低了收敛波动性，即降低了参数更新的方差，使得更新更加稳定。相对于批量梯度下降，其提高了每次学习的速度。并且其不用担心内存瓶颈从而可以利用矩阵运算进行高效计算。一般而言每次更新随机选择[50,256]个样本进行学习，但是也要根据具体问题而选择，实践中可以进行多次试验，选择一个更新速度与更次次数都较适合的样本数。mini-batch梯度下降可以保证收敛性，常用于神经网络中。</p>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>在样本量较小的情况下，可以使用批量梯度下降算法，样本量较大的情况或者线上，可以使用随机梯度下降算法或者小批量梯度下降算法。</p>
+<p>在机器学习中的无约束优化算法，除了梯度下降以外，还有前面提到的最小二乘法，此外还有牛顿法和拟牛顿法。</p>
+<p>梯度下降法和最小二乘法相比，梯度下降法需要选择步长，而最小二乘法不需要。梯度下降法是迭代求解，最小二乘法是计算解析解。如果样本量不算很大，且存在解析解，最小二乘法比起梯度下降法要有优势，计算速度很快。但是如果样本量很大，用最小二乘法由于需要求一个超级大的逆矩阵，这时就很难或者很慢才能求解解析解了，使用迭代的梯度下降法比较有优势。</p>
+<p>梯度下降法和牛顿法/拟牛顿法相比，两者都是迭代求解，不过梯度下降法是梯度求解，而牛顿法/拟牛顿法是用二阶的海森矩阵的逆矩阵或伪逆矩阵求解。相对而言，使用牛顿法/拟牛顿法收敛更快。但是每次迭代的时间比梯度下降法长。</p>
+<h1 id="sklearn中的SGD"><a href="#sklearn中的SGD" class="headerlink" title="sklearn中的SGD"></a>sklearn中的SGD</h1><p>sklearn官网上查了一下，并没有找到BGD和MBGD的相关文档，只是看到可SGD的，感兴趣的可以直接去官网看英文文档，点击SGD查看：<a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html" target="_blank" rel="external">SGD</a>，这也有一个中文的 <a href="http://sklearn.lzjqsdd.com/modules/sgd.html" target="_blank" rel="external">SGD</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">In [1]: from sklearn.linear_model import SGDClassifier</span><br><span class="line"></span><br><span class="line">In [2]: X = [[0., 0.], [1., 1.]]</span><br><span class="line"></span><br><span class="line">In [3]: y = [0, 1]</span><br><span class="line"></span><br><span class="line">In [4]: clf = SGDClassifier(loss=&quot;hinge&quot;, penalty=&quot;l2&quot;)</span><br><span class="line"></span><br><span class="line">In [5]: clf.fit(X, y)</span><br><span class="line">Out[5]: </span><br><span class="line">SGDClassifier(alpha=0.0001, average=False, class_weight=None, epsilon=0.1,</span><br><span class="line">       eta0=0.0, fit_intercept=True, l1_ratio=0.15,</span><br><span class="line">       learning_rate=&apos;optimal&apos;, loss=&apos;hinge&apos;, n_iter=5, n_jobs=1,</span><br><span class="line">       penalty=&apos;l2&apos;, power_t=0.5, random_state=None, shuffle=True,</span><br><span class="line">       verbose=0, warm_start=False)</span><br><span class="line"></span><br><span class="line">In [6]:  clf.predict([[2., 2.]])</span><br><span class="line">Out[6]: array([1])</span><br><span class="line"></span><br><span class="line">In [7]: clf.coef_ </span><br><span class="line">Out[7]: array([[ 9.91080278,  9.91080278]])</span><br><span class="line"></span><br><span class="line">In [8]: clf.intercept_ </span><br><span class="line">Out[8]: array([-9.97004991])</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/pinard/p/5970503.html" target="_blank" rel="external">https://www.cnblogs.com/pinard/p/5970503.html</a></li>
+<li><a href="http://blog.csdn.net/uestc_c2_403/article/details/74910107" target="_blank" rel="external">http://blog.csdn.net/uestc_c2_403/article/details/74910107</a></li>
+</ul>
 
       
 
@@ -234,7 +261,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">夏未眠</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">梯度下降</a>
         		</li>
       		
 		</ul>
@@ -246,7 +273,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/夏未眠//" class="article-tag-list-link color4">夏未眠</a>
+        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
         		</li>
       		
 		</ul>
@@ -255,7 +282,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/09/17/夏未眠/这夏未眠-前言/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/12/14/机器学习/梯度算法之批量梯度下降，随机梯度下降和小批量梯度下降/">展开全文 >></a>
         </p>
       
 
@@ -287,7 +314,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
     </nav>
   
 
@@ -443,7 +470,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -451,7 +514,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -459,11 +534,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -479,11 +582,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -491,11 +602,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,10 +619,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

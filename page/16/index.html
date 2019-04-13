@@ -193,63 +193,57 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Spark多路径输出和二次排序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/集成学习（Ensemble Learning)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">Spark多路径输出和二次排序</a>
+      <a class="article-title" href="/2019/01/03/机器学习/集成学习（Ensemble Learning)/">集成学习（Ensemble Learning)</a>
     </h1>
   
 
         
-        <a href="/2018/01/25/Spark/Spark多路径输出和二次排序/" class="archive-article-date">
-  	<time datetime="2018-01-24T16:22:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-25</time>
+        <a href="/2019/01/03/机器学习/集成学习（Ensemble Learning)/" class="archive-article-date">
+  	<time datetime="2019-01-03T05:14:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。</p>
-</blockquote>
-<h1 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h1><p>假设我们的数据是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1   2</span><br><span class="line">1   3</span><br><span class="line">1   1</span><br><span class="line">1   6</span><br><span class="line">1   4</span><br><span class="line">2   5</span><br><span class="line">2   8</span><br><span class="line">2   3</span><br></pre></td></tr></table></figure></p>
-<p>我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列</p>
-<p>定义一个SecondSortKey类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first == 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>然后这样去使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val pairs = lines.map &#123; x =&gt;</span><br><span class="line">      (new SecondSortKey(x.split(&quot;\\s+&quot;)(0).toInt,</span><br><span class="line">        x.split(&quot;\\s+&quot;)(1).toInt), x)</span><br><span class="line">    &#125;</span><br><span class="line">val sortedPairs = pairs.sortByKey(false);</span><br><span class="line">sortedPairs.map(_._2).foreach(println)</span><br></pre></td></tr></table></figure></p>
-<p>当然这里如果想按第一列升序，当第一列相同时，第二列升序的顺序排列，只需要对SecondSoryKey做如下修改即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first !== 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当时使用的使用去掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pairs.sortByKey(false)</span><br></pre></td></tr></table></figure></p>
-<p>中的false</p>
-<h1 id="Top-N"><a href="#Top-N" class="headerlink" title="Top N"></a>Top N</h1><p>同样还是上边的数据，假设我们要得到第一列中的前五位<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val rdd = lines</span><br><span class="line">        .map(x =&gt; x.split(&quot;\\s+&quot;))</span><br><span class="line">        .map(x =&gt; (x(0),x(1)))</span><br><span class="line">        .sortByKey()</span><br><span class="line">rdd.take(N).foreach(println)</span><br></pre></td></tr></table></figure></p>
-<h1 id="多路径输出"><a href="#多路径输出" class="headerlink" title="多路径输出"></a>多路径输出</h1><p>自己在使用的过程中，通过搜索发现了两种方法<br>1：调用saveAsHadoopFile函数并自定义一个OutputFormat类</p>
-<p>自定义RDDMultipleTextOutputFormat类</p>
-<p>RDDMultipleTextOutputFormat类中的generateFileNameForKeyValue函数有三个参数，key和value就是我们RDD的Key和Value，而name参数是每个Reduce的编号。本例中没有使用该参数，而是直接将同一个Key的数据输出到同一个文件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat  </span><br><span class="line">  </span><br><span class="line">class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] &#123;  </span><br><span class="line">  override def generateFileNameForKeyValue(key: Any, value: Any, name: String): String =  </span><br><span class="line">    key.asInstanceOf[String]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sc.parallelize(List((&quot;w&quot;, &quot;www&quot;), (&quot;b&quot;, &quot;blog&quot;), (&quot;c&quot;, &quot;com&quot;), (&quot;w&quot;, &quot;bt&quot;)))  </span><br><span class="line">      .map(value =&gt; (value._1, value._2 + &quot;Test&quot;))  </span><br><span class="line">      .partitionBy(new HashPartitioner(3))  </span><br><span class="line">      .saveAsHadoopFile(&quot;/iteblog&quot;, classOf[String],classOf[String],classOf[RDDMultipleTextOutputFormat])</span><br></pre></td></tr></table></figure></p>
-<p>这里的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new HashPartitioner(3)</span><br></pre></td></tr></table></figure></p>
-<p>中的3是有key的种类决定的，当然在实际应用场景中，我们可能并不知道有多少k，这个时候就可以通过一个rdd 的 distinct操作来得到唯一key的数目。</p>
-<p>2：使用dataframe<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">people_rdd = sc.parallelize([(1, &quot;alice&quot;), (1, &quot;bob&quot;), (2,&quot;charlie&quot;)])</span><br><span class="line">people_df = people_rdd.toDF([&quot;number&quot;, &quot;name&quot;])</span><br><span class="line">people_df.write.partitionBy(&quot;number&quot;).format(&quot;text&quot;).save(path  )</span><br></pre></td></tr></table></figure></p>
-<p>当然这两种方法都有一个缺陷，就是当数据量特别大的时候，数据在repartition的过程中特别耗费资源，也会容易出现任务failed的情况，小编采用的解决办法是，适当的对原rdd进行split，然后遍历每个rdd，进行multioutput操作</p>
-<p>形似如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd = sc.textFile(input)</span><br><span class="line">var split_rdd = rdd.randomSplit(Array(1.0,1.0,1.0,1.0))</span><br><span class="line">for (one &lt;- Array(1,2,3,4))</span><br><span class="line">&#123;</span><br><span class="line">    split_rdd(one)XXXX</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<p>参考：</p>
-<ul>
-<li><a href="https://andone1cc.github.io/2017/03/04/Spark/%E4%BA%8C%E6%AC%A1%E6%8E%92%E5%BA%8Ftopn/" target="_blank" rel="external">Spark学习笔记——二次排序，TopN，TopNByGroup</a></li>
-<li><a href="https://www.iteblog.com/archives/1281.html" target="_blank" rel="external">Spark多文件输出(MultipleOutputFormat)</a></li>
-<li><a href="https://code.i-harness.com/en/q/16e22a0" target="_blank" rel="external">scala - Write to multiple outputs by key Spark - one Spark job</a></li>
-<li><a href="https://stackoverflow.com/questions/23995040/write-to-multiple-outputs-by-key-spark-one-spark-job/26051042#26051042" target="_blank" rel="external">Write to multiple outputs by key Spark - one Spark job
-</a></li>
-</ul>
-<hr>
-<center>
-<img src="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<br>
-打开微信扫一扫，关注微信公众号【数据与算法联盟】 
+        <center>
+<img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 </center>
+<center>打开微信扫一扫，关注微信公众号【数据与算法联盟】 </center>
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<blockquote>
+<p>在机器学习的有监督学习算法中，我们的目标是学习出一个稳定的且在各个方面表现都较好的模型，但实际情况往往不这么理想，有时我们只能得到多个有偏好的模型（弱监督模型，在某些方面表现的比较好）。集成学习就是组合这里的多个弱监督模型以期得到一个更好更全面的强监督模型，集成学习潜在的思想是即便某一个弱分类器得到了错误的预测，其他的弱分类器也可以将错误纠正回来。</p>
+</blockquote>
+<p>集成学习在各个规模的数据集上都有很好的策略。</p>
+<ul>
+<li>数据集大：划分成多个小数据集，学习多个模型进行组合</li>
+<li>数据集小：利用Bootstrap方法进行抽样，得到多个数据集，分别训练多个模型再进行组合</li>
+</ul>
+<p>这篇博客介绍一下集成学习的几类：Bagging，Boosting以及Stacking。</p>
+<h1 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h1><p>Bagging是bootstrap aggregating的简写。先说一下bootstrap，bootstrap也称为自助法，它是一种有放回的抽样方法，目的为了得到统计量的分布以及置信区间。具体步骤如下</p>
+<ul>
+<li>采用重抽样方法（有放回抽样）从原始样本中抽取一定数量的样本</li>
+<li>根据抽出的样本计算想要得到的统计量T</li>
+<li>重复上述N次（一般大于1000），得到N个统计量T</li>
+<li>根据这N个统计量，即可计算出统计量的置信区间</li>
+</ul>
+<p>在Bagging方法中，利用bootstrap方法从整体数据集中采取有放回抽样得到N个数据集，在每个数据集上学习出一个模型，最后的预测结果利用N个模型的输出得到，具体地：分类问题采用N个模型预测投票的方式，回归问题采用N个模型预测平均的方式。</p>
+<p>例如随机森林（Random Forest）就属于Bagging。随机森林简单地来说就是用随机的方式建立一个森林，森林由很多的决策树组成，随机森林的每一棵决策树之间是没有关联的。</p>
+<p>在我们学习每一棵决策树的时候就需要用到Bootstrap方法。在随机森林中，有两个随机采样的过程：对输入数据的行（数据的数量）与列（数据的特征）都进行采样。对于行采样，采用有放回的方式，若有N个数据，则采样出N个数据（可能有重复），这样在训练的时候每一棵树都不是全部的样本，相对而言不容易出现overfitting；接着进行列采样从M个feature中选择出m个（m&lt;&lt;M）。最近进行决策树的学习。</p>
+<p>预测的时候，随机森林中的每一棵树的都对输入进行预测，最后进行投票，哪个类别多，输入样本就属于哪个类别。这就相当于前面说的，每一个分类器（每一棵树）都比较弱，但组合到一起（投票）就比较强了。</p>
+<h1 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h1><p>提升方法（Boosting）是一种可以用来减小监督学习中偏差的机器学习算法。主要也是学习一系列弱分类器，并将其组合为一个强分类器。Boosting中有代表性的是AdaBoost（Adaptive boosting）算法：刚开始训练时对每一个训练例赋相等的权重，然后用该算法对训练集训练t轮，每次训练后，对训练失败的训练例赋以较大的权重，也就是让学习算法在每次学习以后更注意学错的样本，从而得到多个预测函数。具体可以参考《统计学习方法》。</p>
+<h1 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h1><p>Stacking方法是指训练一个模型用于组合其他各个模型。首先我们先训练多个不同的模型，然后把之前训练的各个模型的输出为输入来训练一个模型，以得到一个最终的输出。理论上，Stacking可以表示上面提到的两种Ensemble方法，只要我们采用合适的模型组合策略即可。但在实际中，我们通常使用logistic回归作为组合策略。</p>
+<p>如下图，先在整个训练数据集上通过bootstrap抽样得到各个训练集合，得到一系列分类模型，称之为Tier 1分类器（可以采用交叉验证的方式学习），然后将输出用于训练Tier 2 分类器。</p>
+<p>完整内容请阅读： <a href="https://blog.csdn.net/Gamer_gyt/article/details/85689424" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85689424</a> </p>
 
       
 
@@ -263,7 +257,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">集成学习</a>
         		</li>
       		
 		</ul>
@@ -284,7 +282,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/03/机器学习/集成学习（Ensemble Learning)/">展开全文 >></a>
         </p>
       
 
@@ -316,7 +314,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
     </nav>
   
 
@@ -472,7 +470,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -480,7 +514,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,11 +534,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +582,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,11 +602,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -537,10 +619,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

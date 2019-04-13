@@ -193,67 +193,36 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/回归分析之Sklearn实现电力预测" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/推荐系统的一些思考" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/">回归分析之Sklearn实现电力预测</a>
+      <a class="article-title" href="/2018/03/26/机器学习/推荐系统的一些思考/">推荐系统的一些思考</a>
     </h1>
   
 
         
-        <a href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/" class="archive-article-date">
-  	<time datetime="2017-11-07T05:39:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-07</time>
+        <a href="/2018/03/26/机器学习/推荐系统的一些思考/" class="archive-article-date">
+  	<time datetime="2018-03-25T21:55:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>参考原文：<a href="http://www.cnblogs.com/pinard/p/6016029.html" target="_blank" rel="external">http://www.cnblogs.com/pinard/p/6016029.html</a><br>这里进行了手动实现，增强记忆。</p>
-<h1 id="1：数据集介绍"><a href="#1：数据集介绍" class="headerlink" title="1：数据集介绍"></a>1：数据集介绍</h1><p>使用的数据是UCI大学公开的机器学习数据</p>
-<p>数据的介绍在这： <a href="http://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant" target="_blank" rel="external">http://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant</a></p>
-<p>数据的下载地址在这：<a href="http://archive.ics.uci.edu/ml/machine-learning-databases/00294/" target="_blank" rel="external">http://archive.ics.uci.edu/ml/machine-learning-databases/00294/</a></p>
-<p>里面是一个循环发电场的数据，共有9568个样本数据，每个数据有5列，分别是:AT（温度）, V（压力）, AP（湿度）, RH（压强）, PE（输出电力)。我们不用纠结于每项具体的意思。</p>
-<p>我们的问题是得到一个线性的关系，对应PE是样本输出，而AT/V/AP/RH这4个是样本特征， 机器学习的目的就是得到一个线性回归模型，即:</p>
-<script type="math/tex; mode=display">
-PE = \theta _{0} + \theta _{0} * AT + \theta _{0} * V +\theta _{0} * AP +\theta _{0}*RH</script><p>而需要学习的，就是θ0,θ1,θ2,θ3,θ4这5个参数。</p>
-<hr>
-<h1 id="2：准备数据"><a href="#2：准备数据" class="headerlink" title="2：准备数据"></a>2：准备数据</h1><p>下载源数据之后，解压会得到一个xlsx的文件，打开另存为csv文件，数据已经整理好，没有非法数据，但是数据并没有进行归一化，不过这里我们可以使用sklearn来帮我处理</p>
-<p>sklearn的归一化处理参考：<a href="http://blog.csdn.net/gamer_gyt/article/details/77761884" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/77761884</a></p>
-<hr>
-<h1 id="3：使用pandas来进行数据的读取"><a href="#3：使用pandas来进行数据的读取" class="headerlink" title="3：使用pandas来进行数据的读取"></a>3：使用pandas来进行数据的读取</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line"># pandas 读取数据</span><br><span class="line">data = pd.read_csv(&quot;Folds5x2_pp.csv&quot;)</span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
-<p>然后会看到如下结果，说明数据读取成功：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	AT	V	AP	RH	PE</span><br><span class="line">0	8.34	40.77	1010.84	90.01	480.48</span><br><span class="line">1	23.64	58.49	1011.40	74.20	445.75</span><br><span class="line">2	29.74	56.90	1007.15	41.91	438.76</span><br><span class="line">3	19.07	49.69	1007.22	76.79	453.09</span><br><span class="line">4	11.80	40.66	1017.13	97.20	464.43</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="4：准备运行算法的数据"><a href="#4：准备运行算法的数据" class="headerlink" title="4：准备运行算法的数据"></a>4：准备运行算法的数据</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = data[[&quot;AT&quot;,&quot;V&quot;,&quot;AP&quot;,&quot;RH&quot;]]</span><br><span class="line">print X.shape</span><br><span class="line">y = data[[&quot;PE&quot;]]</span><br><span class="line">print y.shape</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(9568, 4)</span><br><span class="line">(9568, 1)</span><br></pre></td></tr></table></figure>
-<p>说明有9658条数据，其中”AT”,”V”,”AP”,”RH” 四列作为样本特征，”PE”列作为样本输出。</p>
-<hr>
-<h1 id="5：划分训练集和测试集"><a href="#5：划分训练集和测试集" class="headerlink" title="5：划分训练集和测试集"></a>5：划分训练集和测试集</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.cross_validation import train_test_split</span><br><span class="line"></span><br><span class="line"># 划分训练集和测试集</span><br><span class="line">X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=1)</span><br><span class="line">print X_train.shape</span><br><span class="line">print y_train.shape</span><br><span class="line">print X_test.shape</span><br><span class="line">print y_test.shape</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(7176, 4)</span><br><span class="line">(7176, 1)</span><br><span class="line">(2392, 4)</span><br><span class="line">(2392, 1)</span><br></pre></td></tr></table></figure>
-<p>75%的数据被划分为训练集，25的数据划分为测试集。</p>
-<hr>
-<h1 id="6：运行sklearn-线性模型"><a href="#6：运行sklearn-线性模型" class="headerlink" title="6：运行sklearn 线性模型"></a>6：运行sklearn 线性模型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">linreg = LinearRegression()</span><br><span class="line">linreg.fit(X_train,y_train)</span><br><span class="line"></span><br><span class="line"># 训练模型完毕，查看结果</span><br><span class="line">print linreg.intercept_</span><br><span class="line">print linreg.coef_</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ 447.06297099]</span><br><span class="line">[[-1.97376045 -0.23229086  0.0693515  -0.15806957]]</span><br></pre></td></tr></table></figure>
-<p>即我们得到的模型结果为：</p>
-<script type="math/tex; mode=display">
-PE = 447.06297099 - 1.97376045*AT - 0.23229086*V + 0.0693515*AP -0.15806957*RH</script><hr>
-<h1 id="7：模型评价"><a href="#7：模型评价" class="headerlink" title="7：模型评价"></a>7：模型评价</h1><p>我们需要评价模型的好坏，通常对于线性回归来讲，我么一般使用均方差（MSE，Mean Squared Error）或者均方根差（RMSE，Root Mean Squared Error）来评价模型的好坏</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">y_pred = linreg.predict(X_test)</span><br><span class="line">from sklearn import metrics</span><br><span class="line"></span><br><span class="line"># 使用sklearn来计算mse和Rmse</span><br><span class="line">print &quot;MSE:&quot;,metrics.mean_squared_error(y_test, y_pred)</span><br><span class="line">print &quot;RMSE:&quot;,np.sqrt(metrics.mean_squared_error(y_test, y_pred))</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MSE: 20.0804012021</span><br><span class="line">RMSE: 4.48111606657</span><br></pre></td></tr></table></figure>
-<p>得到了MSE或者RMSE，如果我们用其他方法得到了不同的系数，需要选择模型时，就用MSE小的时候对应的参数。</p>
-<hr>
-<h1 id="8：交叉验证"><a href="#8：交叉验证" class="headerlink" title="8：交叉验证"></a>8：交叉验证</h1><p>我们可以通过交叉验证来持续优化模型，代码如下，我们采用10折交叉验证，即cross_val_predict中的cv参数为10：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 交叉验证</span><br><span class="line">from sklearn.model_selection import cross_val_predict</span><br><span class="line">predicted = cross_val_predict(linreg,X,y,cv=10)</span><br><span class="line">print &quot;MSE:&quot;,metrics.mean_squared_error(y, predicted)</span><br><span class="line">print &quot;RMSE:&quot;,np.sqrt(metrics.mean_squared_error(y, predicted))</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MSE: 20.7955974619</span><br><span class="line">RMSE: 4.56021901469</span><br></pre></td></tr></table></figure>
-<p>可以看出，采用交叉验证模型的MSE比第6节的大，主要原因是我们这里是对所有折的样本做测试集对应的预测值的MSE，而第6节仅仅对25%的测试集做了MSE。两者的先决条件并不同。</p>
-<hr>
-<h1 id="9：画图查看结果"><a href="#9：画图查看结果" class="headerlink" title="9：画图查看结果"></a>9：画图查看结果</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 画图查看结果</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line">ax.scatter(y, predicted)</span><br><span class="line">ax.plot([y.min(), y.max()], [y.min(), y.max()], &apos;k--&apos;, lw=4)</span><br><span class="line">ax.set_xlabel(&apos;Measured&apos;)</span><br><span class="line">ax.set_ylabel(&apos;Predicted&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.blog.csdn.net/20171107133222238?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+        <blockquote>
+<p>推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。</p>
+</blockquote>
+<h1 id="学术界的推荐系统"><a href="#学术界的推荐系统" class="headerlink" title="学术界的推荐系统"></a>学术界的推荐系统</h1><p>其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的大门，当然在真实环境中这是远远不够的。</p>
+<p>传统的推荐系统无非就是评分和排序两种方案，评分即计算出用户对item的可能评分，根据评分的高低进行排序，排序则不关心具体的评分是多少，只是为了得到一个顺序（其实这一点和推荐系统即为相似）。传统的推荐算法典型的有协同过滤和基于内容的过滤。如果你不明白什么是协同过滤算法可以参考：<a href="https://blog.csdn.net/gamer_gyt/article/details/51346159" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/51346159</a> ,如果你不知道协同过滤与基于内容的过滤的区别可参考：<a href="https://www.zhihu.com/question/19971859。" target="_blank" rel="external">https://www.zhihu.com/question/19971859。</a></p>
+<p>大学数学术界关于推荐算法的论文都是对协同过滤的改进，而最终得到一个相对于原先的算法有很大的提升的结果，但是这些都过于理想化了，真实的环境远比实验要复杂的多，网上最有名的推荐系统数据集莫过于那个电影评分数据了，里边只有用户对电影的评分，和电影的一些信息数据。建立在这些数据上的推荐算法其实有点理想化了，他并不能模拟出真实的电商环境，数据的缺乏也是导致协同过滤算法大行其道的原因。</p>
+<h1 id="工业界的推荐系统"><a href="#工业界的推荐系统" class="headerlink" title="工业界的推荐系统"></a>工业界的推荐系统</h1><p>工业界的推荐系统，需要的是明确的价值走向，比如说电商网站的推荐系统是为了增加交易总额，那么在进行推荐的时候是不是应该适当过滤一些极其廉价的商品，是否应该根据用户对不同价格段的需求进行不同价格段商品的推送；如果电商的推荐系统是为了增加用户停留时间，提交CTR，那么推荐系统就不应该考虑过多别的因素，只找到用户最感兴趣的商品或者评论等，当然如何找到用户最感兴趣的也是一个问题，但是有一点不可否认的是这些如果用传统的协同过滤来做是很难满足需求的。这时候就需要开发出新的推荐架构，来适应不同的需求。</p>
+<p>目前工业界用的最多的算法莫过于GBDT，LR，DNN等，但所有的推荐算法都会面临一个海量数据的情况，这个时候的做法便是对数据集进行数据召回，得到用户比较感兴趣的一些数据，然后再根据我们的推荐模型进行素材偏好度排序，过滤掉用户已经购买过的类别数据，继而推送给用户。</p>
+<p>那么如何进行数据召回呢？这就需要一些基础的模型进行数据准备，比如说用户肖像，用户的价格段偏好，用户购买力水平等。根绝已有的用户数据和特征进行数据召回，适度拉取一些新的数据，保证召回结果的多样性，得到召回池数据之后，便是对模型的训练，其实模型本身难度不大，难度大的是如何选取有效的特征来作为模型的输入数据。你组合得到的有效特征越多，对于模型的训练结果就越准确。</p>
+<h1 id="推荐系统的多样性"><a href="#推荐系统的多样性" class="headerlink" title="推荐系统的多样性"></a>推荐系统的多样性</h1><p>如何保证推荐结果的多样性呢，首先我们要先认识到推荐的可能性，比如说电商网页首页的推荐，商品详细页面的推荐，不同年龄下的推荐，推荐的结果和被评估的指标都是不一样的。这个时候不能单一对所有情况下使用同一种算法或者特征，而是要找到能够区分出不同位置，不同年龄的推荐结果的特征，进行模型训练。</p>
 
       
 
@@ -267,11 +236,11 @@ PE = 447.06297099 - 1.97376045*AT - 0.23229086*V + 0.0693515*AP -0.15806957*RH</
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回归分析</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">推荐系统</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">sklearn</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -292,7 +261,7 @@ PE = 447.06297099 - 1.97376045*AT - 0.23229086*V + 0.0693515*AP -0.15806957*RH</
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/03/26/机器学习/推荐系统的一些思考/">展开全文 >></a>
         </p>
       
 
@@ -324,7 +293,7 @@ PE = 447.06297099 - 1.97376045*AT - 0.23229086*V + 0.0693515*AP -0.15806957*RH</
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
     </nav>
   
 
@@ -480,7 +449,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,7 +493,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,11 +513,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,11 +561,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,11 +581,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -545,10 +598,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

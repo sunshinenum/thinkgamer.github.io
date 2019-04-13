@@ -193,98 +193,58 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/回归分析之逻辑回归-Logistics Regression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/机器学习算法分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/28/机器学习/回归分析之逻辑回归-Logistics Regression/">回归分析之逻辑回归-Logistic Regression</a>
+      <a class="article-title" href="/2019/03/26/机器学习/机器学习算法分类/">机器学习算法分类</a>
     </h1>
   
 
         
-        <a href="/2018/04/28/机器学习/回归分析之逻辑回归-Logistics Regression/" class="archive-article-date">
-  	<time datetime="2018-04-28T15:44:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-28</time>
+        <a href="/2019/03/26/机器学习/机器学习算法分类/" class="archive-article-date">
+  	<time datetime="2019-03-26T09:43:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>逻辑回归与线性回归本质上是一样的，都是通过误差函数求解得到最优的系数，在形式上只不过是在线性回归上套了一个逻辑函数。线性回归的相关知识可以参考上边的给出链接文章，与线性回归相比，逻辑回归（Logistic Regression）更适用于因变量为二分变量的模型，Logistic 回归系数可用于估计模型中每个自变量的几率比。</p>
-</blockquote>
-<hr>
-<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80115252" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80115252</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
-<hr>
-<p><a href="http://blog.csdn.net/gamer_gyt/article/details/78008144" target="_blank" rel="external">回归分析之理论篇</a><br><a href="http://blog.csdn.net/gamer_gyt/article/details/78135354" target="_blank" rel="external">回归分析之线性回归（N元线性回归）</a><br><a href="http://blog.csdn.net/gamer_gyt/article/details/78467021" target="_blank" rel="external">回归分析之Sklearn实现电力预测</a></p>
-<h1 id="Sigmoid函数"><a href="#Sigmoid函数" class="headerlink" title="Sigmoid函数"></a>Sigmoid函数</h1><h2 id="数学表达式和图形"><a href="#数学表达式和图形" class="headerlink" title="数学表达式和图形"></a>数学表达式和图形</h2><p>这里选用Sigmoid函数（海维赛德阶跃函数）作为LR的模型函数，是因为在二分类情况下输出为0和1，其函数的数学表达式为：</p>
-<script type="math/tex; mode=display">
-f(x)=\frac{1}{1+e^{-x}}</script><p>其图形为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import math</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line">def sigmoid(x):</span><br><span class="line">  return 1 / (1 + math.exp(-x))</span><br><span class="line"></span><br><span class="line"># python2 中range生成的是一个数组，py3中生成的是一个迭代器，可以使用list进行转换</span><br><span class="line">X = list(range(-9,10))</span><br><span class="line">Y = list(map(sigmoid,X))</span><br><span class="line"></span><br><span class="line">#画图</span><br><span class="line">plt.plot(X,Y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-<center>![sigmoid](http://img.blog.csdn.net/20171219192329328?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)</center>
-
-<p>从上图可以看到sigmoid函数是一个s形的曲线，它的取值在[0, 1]之间，在远离0的地方函数的值会很快接近0/1。</p>
-<h2 id="LR为什么要使用Sigmoid"><a href="#LR为什么要使用Sigmoid" class="headerlink" title="LR为什么要使用Sigmoid"></a>LR为什么要使用Sigmoid</h2><p>首先Sigmoid函数满足LR模型的需要，在自变量小于0时，因变量小于0.5，自变量大于0时，因变量大于0.5。<br>以下一段引用 <a href="https://tech.meituan.com/intro_to_logistic_regression.html" target="_blank" rel="external">Logistic Regression 模型简介</a> 的介绍对逻辑回归是一种概率模型做了阐述。</p>
-<blockquote>
-<p>逻辑回归是一种判别模型，表现为直接对条件概率P(y|x)建模，而不关心背后的数据分布P(x,y)。而高斯贝叶斯模型（Gaussian Naive Bayes）是一种生成模型，先对数据的联合分布建模，再通过贝叶斯公式来计算样本属于各个类别的后验概率，即：</p>
-<script type="math/tex; mode=display">
-p(y|x) = \frac{P(x|y)P(y)}{\sum{P(x|y)P(y)}}</script><p>通常假设P(x|y)是高斯分布，P(y)是多项式分布，相应的参数都可以通过最大似然估计得到。如果我们考虑二分类问题，通过简单的变化可以得到：</p>
-<script type="math/tex; mode=display">
-\log\frac{P(y=1|x)}{P(y=0|x)} = \log\frac{P(x|y=1)}{P(x|y=0)} + \log\frac{P(y=1)}{P(y=0)}  \ = -\frac{(x-\mu_1)^2}{2\sigma_1^2} + \frac{(x-\mu_0)^2}{2\sigma_0^2}\ + \theta_0</script><p>如果 σ1=σ0，二次项会抵消，我们得到一个简单的线性关系：</p>
-<script type="math/tex; mode=display">
-\log\frac{P(y=1|x)}{P(y=0|x)} = \theta^T x</script><p>由上式进一步可以得到：</p>
-<script type="math/tex; mode=display">
-P(y=1|x) = \frac{e^{\theta^T x}}{1+e^{\theta^T x}} = \frac{1}{1+e^{-\theta^T x}}</script><p>可以看到，这个概率和逻辑回归中的形式是一样的。这种情况下GNB 和 LR 会学习到同一个模型。实际上，在更一般的假设（P(x|y)的分布属于指数分布族）下，我们都可以得到类似的结论。</p>
-</blockquote>
-<p>至于逻辑回归为什么采用Sigmoid函数作为激活函数，因为LR是在伯努利分布和广义线性模型的假设下推导而来的，伯努利分布是属于指数分布簇的。</p>
-<p>具体的推导可以参考 <a href="https://blog.csdn.net/u011467621/article/details/48197943" target="_blank" rel="external">机器学习算法之：指数族分布与广义线性模型</a> 的介绍</p>
-<h1 id="Logistic-Regression-分类器"><a href="#Logistic-Regression-分类器" class="headerlink" title="Logistic Regression 分类器"></a>Logistic Regression 分类器</h1><p>即决策函数。<br>一个机器学习的模型，实际上是把决策函数限定在某一组条件下，这组限定条件就决定了模型的假设空间。当然，我们还希望这组限定条件简单而合理。而逻辑回归模型所做的假设是：</p>
-<script type="math/tex; mode=display">
-P(y=1|x;\theta) = g(\theta^T x) = \frac{1}{1 + e ^ {-\theta^T * x}}</script><p>这里的 g(h)是上边提到的 sigmoid 函数$\theta$ 表示的是一组参数，$\theta^T $表示参数的转置矩阵，$\theta^T x$其实表示的就是$\theta_{0}x_{0} + \theta_{1}x_{1} + \theta_{2} x_{2}….$，相应的决策函数为：</p>
-<script type="math/tex; mode=display">
-y^* = 1, \, \textrm{if} \, P(y=1|x) > 0.5</script><p>选择0.5作为阈值是一个一般的做法，实际应用时特定的情况可以选择不同阈值，如果对正例的判别准确性要求高，可以选择阈值大一些，对正例的召回要求高，则可以选择阈值小一些。</p>
-<h1 id="参数求解"><a href="#参数求解" class="headerlink" title="参数求解"></a>参数求解</h1><p>确定好决策函数之后就是求解参数了。</p>
-<p>模型的数学形式确定后，剩下就是如何去求解模型中的参数。统计学中常用的一种方法是最大似然估计，即找到一组参数，使得在这组参数下，我们的数据的似然度（概率）越大。在逻辑回归模型中，似然度可表示为：</p>
-<script type="math/tex; mode=display">
-L(\theta) = P(D|\theta) = \prod P(y|x;\theta) = \prod g(\theta^T x) ^ y (1-g(\theta^T x))^{1-y}</script><p>取对数可以得到对数似然度：</p>
-<script type="math/tex; mode=display">
-l(\theta) = \sum {y\log{g(\theta^T x)} + (1-y)\log{(1-g(\theta^T x))}}</script><p>另一方面，在机器学习领域，我们更经常遇到的是损失函数的概念，其衡量的是模型预测错误的程度。常用的损失函数有0-1损失，log损失，hinge损失等。其中log损失在单个数据点上的定义为</p>
-<script type="math/tex; mode=display">
--y\log{p(y|x)}-(1-y)\log{1-p(y|x)}</script><p>如果取整个数据集上的平均log损失，我们可以得到</p>
-<script type="math/tex; mode=display">
-J(\theta) = -\frac{1}{N} l(\theta)</script><p>即在逻辑回归模型中，我们最大化似然函数和最小化log损失函数实际上是等价的。对于该优化问题，存在多种求解方法，这里以梯度下降的为例说明。梯度下降(Gradient Descent)又叫作最速梯度下降，是一种迭代求解的方法，通过在每一步选取使目标函数变化最快的一个方向调整参数的值来逼近最优值。基本步骤如下：</p>
-<ul>
-<li>选择下降方向（梯度方向，$\nabla {J(\theta)}$）</li>
-<li>选择步长，更新参数 $\theta^i = \theta^{i-1} - \alpha^i \nabla {J(\theta^{i-1})}$</li>
-<li>重复以上两步直到满足终止条件</li>
-</ul>
-<p><img src="https://tech.meituan.com/img/lr_intro/gradient_descent.png" alt="此处输入图片的描述"></p>
-<p>其中损失函数的梯度计算方法为：</p>
-<script type="math/tex; mode=display">
-\frac{\partial{J}}{\partial{\theta}} = -\frac{1}{n}\sum_i (y_i - y_i^*)x_i + \lambda \theta</script><p>沿梯度负方向选择一个较小的步长可以保证损失函数是减小的，另一方面，逻辑回归的损失函数是凸函数（加入正则项后是严格凸函数），可以保证我们找到的局部最优值同时是全局最优。此外，常用的凸优化的方法都可以用于求解该问题。例如共轭梯度下降，牛顿法，LBFGS等。</p>
-<h1 id="分类边界"><a href="#分类边界" class="headerlink" title="分类边界"></a>分类边界</h1><p>知道如何求解参数后，我们来看一下模型得到的最后结果是什么样的。很容易可以从sigmoid函数看出，当$\theta^T x &gt; 0$ 时，y=1，否则 y=0。$\theta^T x = 0$ 是模型隐含的分类平面（在高维空间中，我们说是超平面）。所以说逻辑回归本质上是一个线性模型，但是，这不意味着只有线性可分的数据能通过LR求解，实际上，我们可以通过特征变换的方式把低维空间转换到高维空间，而在低维空间不可分的数据，到高维空间中线性可分的几率会高一些。下面两个图的对比说明了线性分类曲线和非线性分类曲线（通过特征映射）。<br><img src="https://tech.meituan.com/img/lr_intro/decision_boundary_1.png" alt="此处输入图片的描述"><br><img src="https://tech.meituan.com/img/lr_intro/decision_boundary_2.png" alt="此处输入图片的描述"><br>左图是一个线性可分的数据集，右图在原始空间中线性不可分，但是在特征转换 $[x_1, x_2] =&gt; [x_1, x_2, x_1^2, x_2^2, x_1x_2]$ 后的空间是线性可分的，对应的原始空间中分类边界为一条类椭圆曲线。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>逻辑回归的数学模型和求解都相对比较简洁，实现相对简单。通过对特征做离散化和其他映射，逻辑回归也可以处理非线性问题，是一个非常强大的分类器。因此在实际应用中，当我们能够拿到许多低层次的特征时，可以考虑使用逻辑回归来解决我们的问题。</p>
-<hr>
-<h1 id="资料参考"><a href="#资料参考" class="headerlink" title="资料参考"></a>资料参考</h1><p><a href="http://blog.csdn.net/han_xiaoyang/article/details/49123419" target="_blank" rel="external">http://blog.csdn.net/han_xiaoyang/article/details/49123419</a></p>
-<p><a href="https://www.cnblogs.com/sxron/p/5489214.html" target="_blank" rel="external">https://www.cnblogs.com/sxron/p/5489214.html</a></p>
-<p><a href="https://tech.meituan.com/intro_to_logistic_regression.html" target="_blank" rel="external">https://tech.meituan.com/intro_to_logistic_regression.html</a></p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="30%" height="30%">
-    <br>
-打开微信扫一扫，加入数据与算法交流大群
+        <center>
+<img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 </center>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
-</center>
-
+<center>打开微信扫一扫，关注微信公众号【数据与算法联盟】 </center>
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<blockquote>
+<p>机器学习算法可以按照不同的标准进行分类。比如按函数f(X)的不同，机器学习算法可以分为线性模型和非线性模型；按照学习准则的不同，机器学习算法也可以分为统计方法和非统计方法。</p>
+<p>但一般而言，会按照训练样本提供的信息以及反馈方式不同，将机器学习算法分为以下几类，下面将一一细说。</p>
+</blockquote>
+<ul>
+<li>监督学习</li>
+<li>无监督学习</li>
+<li>强化学习</li>
+</ul>
+<h1 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h1><p>如果机器学习的目标是通过建模样本的特征x和标签y之间的关系：</p>
+<script type="math/tex; mode=display">
+y=f(x,\theta )</script><p>或</p>
+<script type="math/tex; mode=display">
+p(y|x,\theta)</script><p>并且训练集中的每个样本都有标签，那么这类学习称之为监督学习（Supervised Learning）。根据标签类型的不同，监督学习又可以分为回归和分类两种。</p>
+<h2 id="回归（Regression）"><a href="#回归（Regression）" class="headerlink" title="回归（Regression）"></a>回归（Regression）</h2><p>回归问题中的标签y是连续值（实数或者连续整数）</p>
+<script type="math/tex; mode=display">
+y=f(x,\theta )</script><p>的输出也是连续值。</p>
+<h2 id="分类（Classification）"><a href="#分类（Classification）" class="headerlink" title="分类（Classification）"></a>分类（Classification）</h2><p>分类问题中的标签y是离散的类别，在分类问题中，学习到的模型也成为分类器（Classifier）。分类问题根据其类别的数量又可以分为二分类（Binary Clssification）和多分类（Mutil-class Classification）。</p>
+<h2 id="机构化学习（Structured-Learning）"><a href="#机构化学习（Structured-Learning）" class="headerlink" title="机构化学习（Structured Learning）"></a>机构化学习（Structured Learning）</h2><p>结构化学习的输出对象是结构化的对象，比如序列、树、图等，由于结构化学习的输出空间比较大，因此我们一般定义一个联合特征空间，将x,y映射为该空间中的联合特征向量（x,y）,预测模型可以写为：</p>
+<script type="math/tex; mode=display">
+\hat{y}=\underset{y \in Gen(x)}{arg max f(\phi (x,y),\theta )}</script><p>其中gen(x)表示x所有可能的输出目标集合。计算arg max的过程也称为解码（decoding）过程，一般通过动态规划的方法来计算。</p>
+<h1 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h1><p>无监督学习（Unsupervised Learning）是指从不包含目标标签的训练样本中自动学习到一些有价值的信息。典型的无监督学习问题有聚类、密度估计、特征学习、降维等。</p>
+<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p>强化学习（Reinforcement Learning）是一类通过交互来学习的机器学习算法。在强化学习中，智能体根据环境的状态作出一个动作，并得到即时或延时的奖励。智能体在和环境的交互中不断学习并调整策略，以取得最大化的期望总回报。</p>
+<p>下表给出了三种机器学习类型</p>
+<p><img src="https://img-blog.csdnimg.cn/20190326174240856.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>监督学习需要每个样本都有标签，而无监督学习则不需要标签。一般而言，监督学习通常大量的有标签数据集，这些数据集是一般都需要由人工进行标注，成本很高。因此，也出现了很多弱监督学习（Weak Supervised Learning）和半监督学习（Semi-Supervised Learning）的方法，希望从大规模的无标注数据中充分挖掘有用的信息，降低对标注样本数量的要求。强化学习和监督学习的不同在于强化学习不需要显式地以“输入/输出对”的方式给出训练样本，是一种在线的学习机制。</p>
 
       
 
@@ -298,11 +258,11 @@ J(\theta) = -\frac{1}{N} l(\theta)</script><p>即在逻辑回归模型中，我�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回归分析</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逻辑回归</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -323,7 +283,7 @@ J(\theta) = -\frac{1}{N} l(\theta)</script><p>即在逻辑回归模型中，我�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/28/机器学习/回归分析之逻辑回归-Logistics Regression/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/26/机器学习/机器学习算法分类/">展开全文 >></a>
         </p>
       
 
@@ -355,7 +315,7 @@ J(\theta) = -\frac{1}{N} l(\theta)</script><p>即在逻辑回归模型中，我�
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 
@@ -511,7 +471,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,7 +515,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -527,11 +535,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,11 +583,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,11 +603,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -576,10 +620,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

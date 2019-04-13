@@ -193,55 +193,52 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-随手记/Hexo-Yilia加入相册功能" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/多分类逻辑回归（Multinomial Logistic Regression）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/">Hexo-Yilia加入相册功能</a>
+      <a class="article-title" href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/">多分类逻辑回归（Multinomial Logistic Regression）</a>
     </h1>
   
 
         
-        <a href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/" class="archive-article-date">
-  	<time datetime="2017-12-14T09:55:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-14</time>
+        <a href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/" class="archive-article-date">
+  	<time datetime="2018-12-21T07:53:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-21</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>参考：<a href="http://maker997.com/2017/07/01/hexo-Yilia-%E4%B8%BB%E9%A2%98%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E7%9B%B8%E5%86%8C%E5%8A%9F%E8%83%BD" target="_blank" rel="external">点击查看</a></p>
-<p>但是其中有一些小问题，自己便重新整理了一下（本文适用于使用github存放照片）</p>
-<h1 id="主页新建相册链接"><a href="#主页新建相册链接" class="headerlink" title="主页新建相册链接"></a>主页新建相册链接</h1><p>主题_config.json文件的menu 中加入 相册和对应的链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">themes/yilia/_config.json</span><br><span class="line"></span><br><span class="line">menu:</span><br><span class="line">  主页: /</span><br><span class="line">  ... ...</span><br><span class="line">  相册: /photos</span><br></pre></td></tr></table></figure></p>
-<h1 id="新建目录并拷贝相应文件"><a href="#新建目录并拷贝相应文件" class="headerlink" title="新建目录并拷贝相应文件"></a>新建目录并拷贝相应文件</h1><p>使用的是litten 大神的博客 photos文件夹，对应的路径为：<br><a href="https://github.com/litten/BlogBackup/tree/master/source/photos" target="_blank" rel="external">https://github.com/litten/BlogBackup/tree/master/source/photos</a></p>
-<p>自己的项目根目录下的source文件夹下新建photos文件夹，将下载的几个文件放在该文件夹中，或者不用新建，直接将下载的photos文件夹放在source目录下。</p>
-<h1 id="文件修改"><a href="#文件修改" class="headerlink" title="文件修改"></a>文件修改</h1><ol>
-<li>修改 ins.js 文件的 render()函数<br>这个函数是用来渲染数据的<br>修改图片的路径地址.minSrc 小图的路径. src 大图的路径.修改为自己的图片路径(github的路径)<br>例如我的为：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i] + &apos;.min.jpg&apos;;</span><br><span class="line">var src = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/photos/&apos; + data.link[i];</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="生成json"><a href="#生成json" class="headerlink" title="生成json"></a>生成json</h1><p>1：下载相应python工具文件</p>
+        <center>
+<img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+</center>
+<center>打开微信扫一扫，关注微信公众号【数据与算法联盟】 </center>
+
+<p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>分类从结果的数量上可以简单的划分为：</p>
 <ul>
-<li>tools.py</li>
-<li>ImageProcess.py</li>
+<li>二分类（Binary Classification）</li>
+<li>多分类（Multinomial  Classification）。</li>
 </ul>
-<p>下载地址：<a href="https://github.com/Thinkgamer/GitBlog" target="_blank" rel="external">https://github.com/Thinkgamer/GitBlog</a></p>
-<p>2：新建photos和min_photos文件夹<br>在项目根目录下创建，用来存放照片和压缩后的照片<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir photos</span><br><span class="line">mkdir min_photos</span><br></pre></td></tr></table></figure></p>
-<p>3：py文件和文件夹都放在项目根目录下</p>
-<p>4：生成json<br>执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python tools.py</span><br></pre></td></tr></table></figure></p>
-<p>如果提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;tools.py&quot;, line 13, in &lt;module&gt;</span><br><span class="line">    from PIL import Image</span><br><span class="line">ImportError: No module named PIL</span><br></pre></td></tr></table></figure></p>
-<p>说明你没有安装pillow，执行以下命令安装即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pillow</span><br></pre></td></tr></table></figure></p>
-<p>如果报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ValueError: time data &apos;DSC&apos; does not match format &apos;%Y-%m-%d&apos;</span><br></pre></td></tr></table></figure></p>
-<p>说明你照片的命名方式不合格，这里必须命名为以下这样的格式（当然时间是随意的）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2016-10-12_xxx.jpg/png</span><br></pre></td></tr></table></figure></p>
-<p>ok，至此会在min_photos文件夹下生成同名的文件，但是大小会小很多</p>
-<h1 id="本地预览和部署"><a href="#本地预览和部署" class="headerlink" title="本地预览和部署"></a>本地预览和部署</h1><h2 id="本地预览"><a href="#本地预览" class="headerlink" title="本地预览"></a>本地预览</h2><p>项目根目录下执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure></p>
-<p>浏览器4000端口访问，按照上边的方式进行配置，正常情况下你是看不到图片的，通过调试可以发现图片的url中后缀变成了 xxx.jpg.jpg，所以我们要去掉一个jpg</p>
-<p>改正方法<br>ins.js/render 函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i] + &apos;.min.jpg&apos;;</span><br><span class="line"></span><br><span class="line">换成</span><br><span class="line"></span><br><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i];</span><br><span class="line"></span><br><span class="line">注释掉该行：</span><br><span class="line">src += &apos;.jpg&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>到这里没完，路径都对了，但是在浏览器中还是不能看到图片，调试发现，下载大神的photos文件夹的ins.js中有一行代码，饮用了一张图片，默认情况下，在你的项目中，这张图片是不存在的，改正办法就是在对应目录下放一张图片，并修改相应的名字</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">src=&quot;/assets/img/empty.png</span><br></pre></td></tr></table></figure>
-<p>ok，至此刷新浏览器是可以看到图片的，如果还看不到，应该就是浏览器缓存问题了，如果还有问题，可以加我微信进行沟通：gyt13342445911</p>
+<p>其中二分类是最常见且使用最多的分类场景，解决二分类的算法有很多，比如：</p>
+<ul>
+<li>基本的KNN、贝叶斯、SVM</li>
+<li>Online Ranking中用来做二分类的包括FM、FFM、GBDT、LR、XGBoost等</li>
+</ul>
+<p>多分类中比如：</p>
+<ul>
+<li>改进版的KNN、改进版的贝叶斯、改进版的SVM等</li>
+<li>多类别的逻辑回归<br>啰嗦了这么多，其实就是为了说这个多分类的逻辑回归。</li>
+</ul>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在统计学里，多类别逻辑回归是一个将逻辑回归一般化成多类别问题得到的分类方法。用更加专业的话来说，它就是一个用来预测一个具有类别分布的因变量不同可能结果的概率的模型。 </p>
+<p>另外，多类别逻辑回归也有很多其它的名字，包括polytomous LR，multiclass LR，softmax regression，multinomial logit，maximum entropy classifier，conditional maximum entropy model。 </p>
+<p>在多类别逻辑回归中，因变量是根据一系列自变量（就是我们所说的特征、观测变量）来预测得到的。具体来说，就是通过将自变量和相应参数进行线性组合之后，使用某种概率模型来计算预测因变量中得到某个结果的概率，而自变量对应的参数是通过训练数据计算得到的，有时我们将这些参数成为回归系数。</p>
+<h2 id="模型分析"><a href="#模型分析" class="headerlink" title="模型分析"></a>模型分析</h2><p>原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a> </p>
 
       
 
@@ -255,7 +252,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多分类</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逻辑回归</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
         		</li>
       		
 		</ul>
@@ -267,7 +276,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/随手记//" class="article-tag-list-link color4">随手记</a>
+        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
         		</li>
       		
 		</ul>
@@ -276,7 +285,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +317,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
     </nav>
   
 
@@ -464,7 +473,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -472,7 +517,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -480,11 +537,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,11 +585,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,11 +605,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,10 +622,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

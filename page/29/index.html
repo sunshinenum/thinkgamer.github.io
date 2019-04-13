@@ -193,71 +193,44 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/回归分析之线性回归（N元线性回归）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/Scala解析XML" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/29/机器学习/回归分析之线性回归（N元线性回归）/">回归分析之线性回归（N元线性回归）</a>
+      <a class="article-title" href="/2018/02/04/Spark/Scala解析XML/">Scala解析XML</a>
     </h1>
   
 
         
-        <a href="/2017/09/29/机器学习/回归分析之线性回归（N元线性回归）/" class="archive-article-date">
-  	<time datetime="2017-09-29T08:45:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
+        <a href="/2018/02/04/Spark/Scala解析XML/" class="archive-article-date">
+  	<time datetime="2018-02-04T08:32:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在上一篇文章中我们介绍了 <a href="http://blog.csdn.net/gamer_gyt/article/details/78008144" target="_blank" rel="external"> 回归分析之理论篇</a>，在其中我们有聊到线性回归和非线性回归，包括广义线性回归，这一篇文章我们来聊下回归分析中的线性回归。</p>
-<h1 id="一元线性回归"><a href="#一元线性回归" class="headerlink" title="一元线性回归"></a>一元线性回归</h1><p>预测房价：<br>输入编号    | 平方米    | 价格<br>-|-|-<br>1 |    150 |    6450<br>2    | 200    | 7450<br>3|    250    |8450<br>4|    300    |9450<br>5|    350    |11450<br>6|    400    |15450<br>7|    600|    18450</p>
-<p>针对上边这种一元数据来讲，我们可以构建的一元线性回归函数为</p>
-<script type="math/tex; mode=display">
-H(x) = k*x + b</script><p>其中H(x)为平方米价格表，k是一元回归系数，b为常数。最小二乘法的公式：</p>
-<script type="math/tex; mode=display">
-k =\frac{ \sum_{1}^{n} (x_{i} - \bar{x} )(y_{i} - \bar{y}) } { \sum_{1}^{n}(x_{i}-\bar{x})^{2} }</script><p>自己使用python代码实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">def leastsq(x,y):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    x,y分别是要拟合的数据的自变量列表和因变量列表</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    meanX = sum(x) * 1.0 / len(x)      # 求x的平均值</span><br><span class="line">    meanY = sum(y) * 1.0 / len(y)     # 求y的平均值</span><br><span class="line"></span><br><span class="line">    xSum = 0.0</span><br><span class="line">    ySum = 0.0</span><br><span class="line"></span><br><span class="line">    for i in range(len(x)):</span><br><span class="line">        xSum += (x[i] - meanX) * (y[i] - meanY)</span><br><span class="line">        ySum += (x[i] - meanX) ** 2</span><br><span class="line"></span><br><span class="line">    k = ySum/xSum</span><br><span class="line">    b = ySum - k * meanX</span><br><span class="line"></span><br><span class="line">    return k,b</span><br></pre></td></tr></table></figure></p>
-<p>使用python的scipy包进行计算:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">leastsq(func, x0, args=(), Dfun=None, full_output=0, col_deriv=0, ftol=1.49012e-08, xtol=1.49012e-08, gtol=0.0, maxfev=0, epsfcn=None, factor=100, diag=None)</span><br><span class="line"></span><br><span class="line">from scipy.optimize import leastsq</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">def fun(p, x):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    定义想要拟合的函数</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    k,b = p    # 从参数p获得拟合的参数</span><br><span class="line">    return k*x + b</span><br><span class="line"></span><br><span class="line">def err(p, x, y):</span><br><span class="line">    return fun(p,x) - y</span><br><span class="line"></span><br><span class="line">#定义起始的参数 即从 y = 1*x+1 开始，其实这个值可以随便设，只不过会影响到找到最优解的时间</span><br><span class="line">p0 = [1,1]</span><br><span class="line"></span><br><span class="line">#将list类型转换为 numpy.ndarray 类型，最初我直接使用</span><br><span class="line">#list 类型,结果 leastsq函数报错，后来在别的blog上看到了，原来要将类型转</span><br><span class="line">#换为numpy的类型</span><br><span class="line"></span><br><span class="line">x1 = np.array([150,200,250,300,350,400,600])</span><br><span class="line">y1 = np.array([6450,7450,8450,9450,11450,15450,18450])</span><br><span class="line"></span><br><span class="line">xishu = leastsq(err, p0, args=(x1,y1))</span><br><span class="line"></span><br><span class="line">print xishu[0]</span><br></pre></td></tr></table></figure></p>
-<p>当然python的leastsq函数不仅仅局限于一元一次的应用，也可以应用到一元二次，二元二次，多元多次等，具体可以看下这篇博客：<a href="http://www.cnblogs.com/NanShan2016/p/5493429.html" target="_blank" rel="external">http://www.cnblogs.com/NanShan2016/p/5493429.html</a></p>
-<h1 id="多元线性回归"><a href="#多元线性回归" class="headerlink" title="多元线性回归"></a>多元线性回归</h1><p>总之：我们可以用python leastsq函数解决几乎所有的线性回归的问题了，比如说</p>
-<script type="math/tex; mode=display">y = a * x^2 + b * x + c</script><script type="math/tex; mode=display">y = a * x_1^2 + b * x_1 + c * x_2 + d</script><script type="math/tex; mode=display">y = a * x_1^3 + b * x_1^2 + c * x_1 + d</script><p>在使用时只需把参数列表和 fun 函数中的return 换一下，拿以下函数举例</p>
-<script type="math/tex; mode=display">y = a * x_1^2 + b * x_1 + c * x_2 + d</script><p>对应的python 代码是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">from scipy.optimize import leastsq</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def fun(p, x1, x2):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    定义想要拟合的函数</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    a,b,c,d = p    # 从参数p获得拟合的参数</span><br><span class="line">    return a * (x1**2) + b * x1 + c * x2 + d</span><br><span class="line"></span><br><span class="line">def err(p, x1, x2, y):</span><br><span class="line">    return fun(p,x1,x2) - y</span><br><span class="line"></span><br><span class="line">#定义起始的参数 即从 y = 1*x+1 开始，其实这个值可以随便设，只不过会影响到找到最优解的时间</span><br><span class="line">p0 = [1,1,1,1]</span><br><span class="line"></span><br><span class="line">#将list类型转换为 numpy.ndarray 类型，最初我直接使用</span><br><span class="line">#list 类型,结果 leastsq函数报错，后来在别的blog上看到了，原来要将类型转</span><br><span class="line">#换为numpy的类型</span><br><span class="line"></span><br><span class="line">x1 = np.array([150,200,250,300,350,400,600])    # 面积</span><br><span class="line">x2 = np.array([4,2,7,9,12,14,15])               # 楼层</span><br><span class="line">y1 = np.array([6450,7450,8450,9450,11450,15450,18450])   # 价格/平方米</span><br><span class="line"></span><br><span class="line">xishu = leastsq(err, p0, args=(x1,x2,y1))</span><br><span class="line"></span><br><span class="line">print xishu[0]</span><br></pre></td></tr></table></figure></p>
-<h1 id="sklearn中的线性回归应用"><a href="#sklearn中的线性回归应用" class="headerlink" title="sklearn中的线性回归应用"></a>sklearn中的线性回归应用</h1><h2 id="普通最小二乘回归"><a href="#普通最小二乘回归" class="headerlink" title="普通最小二乘回归"></a>普通最小二乘回归</h2><p>这里我们使用的是sklearn中的linear_model来模拟<script type="math/tex">y=a * x_1 + b * x_2 + c</script></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">In [1]: from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">In [2]: linreg = LinearRegression()</span><br><span class="line"></span><br><span class="line">In [3]: linreg.fit([[0, 0], [1, 1], [2, 2]], [0, 1, 2])</span><br><span class="line"></span><br><span class="line">In [4]: linreg.coef_</span><br><span class="line">Out[4]: array([ 0.5,  0.5])</span><br><span class="line"></span><br><span class="line">In [5]: linreg.intercept_</span><br><span class="line">Out[5]: 1.1102230246251565e-16</span><br><span class="line"></span><br><span class="line">In [6]: linreg.predict([4,4])</span><br><span class="line">Out[6]: array([ 4.])</span><br><span class="line"></span><br><span class="line">In [7]: zip([&quot;x1&quot;,&quot;x2&quot;], linreg.coef_)</span><br><span class="line">Out[7]: [(&apos;x1&apos;, 0.5), (&apos;x2&apos;, 0.49999999999999989)]</span><br></pre></td></tr></table></figure>
-<p>所以可得<script type="math/tex">y = 0.5 * x_1 + 0.5 * x_2 + 1.11e-16</script></p>
-<p>linreg.coef_  为系数 a,b</p>
-<p>linreg.intercept_ 为截距 c</p>
-<p>缺点：因为系数矩阵x与它的转置矩阵相乘得到的矩阵不能求逆，导致最小二乘法得到的回归系数不稳定，方差很大。</p>
-<h2 id="多项式回归：基函数扩展线性模型"><a href="#多项式回归：基函数扩展线性模型" class="headerlink" title="多项式回归：基函数扩展线性模型"></a>多项式回归：基函数扩展线性模型</h2><p>机器学习中一种常见的模式是使用线性模型训练数据的非线性函数。这种方法保持了一般快速的线性方法的性能，同时允许它们适应更广泛的数据范围。</p>
-<p>例如，可以通过构造系数的多项式特征来扩展一个简单的线性回归。在标准线性回归的情况下，你可能有一个类似于二维数据的模型：</p>
-<script type="math/tex; mode=display">
-y(w,x) = w_{0} + w_{1} x_{1} + w_{2} x_{2}</script><p>如果我们想把抛物面拟合成数据而不是平面，我们可以结合二阶多项式的特征，使模型看起来像这样:</p>
-<script type="math/tex; mode=display">
-y(w,x) = w_{0} + w_{1} x_{1} + w_{2} x_{2} + w_{3} x_{1}x_{2} + w_{4} x_{1}^2 + w_{5} x_{2}^2</script><p>我们发现，这仍然是一个线性模型，想象着创建一个新变量：</p>
-<script type="math/tex; mode=display">
-z = [x_{1},x_{2},x_{1} x_{2},x_{1}^2,x_{2}^2]</script><p>可以把线性回归模型写成下边这种形式：</p>
-<script type="math/tex; mode=display">
-y(w,x) = w_{0} + w_{1} z_{1} + w_{2} z_{2} + w_{3} z_{3} + w_{4} z_{4} + w_{5} z_{5}</script><p>我们看到，所得的多项式回归与我们上面所考虑的线性模型相同（即模型在W中是线性的），可以用同样的方法来求解。通过考虑在用这些基函数建立的高维空间中的线性拟合，该模型具有灵活性，可以适应更广泛的数据范围。</p>
-<p>使用如下代码，将二维数据进行二元转换,转换规则为：</p>
-<script type="math/tex; mode=display">
-[x_1, x_2] => [1, x_1, x_2, x_1^2, x_1 x_2, x_2^2]</script><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">In [15]: from sklearn.preprocessing import PolynomialFeatures</span><br><span class="line"></span><br><span class="line">In [16]: import numpy as np</span><br><span class="line"></span><br><span class="line">In [17]: X = np.arange(6).reshape(3,2)</span><br><span class="line"></span><br><span class="line">In [18]: X</span><br><span class="line">Out[18]: </span><br><span class="line">array([[0, 1],</span><br><span class="line">       [2, 3],</span><br><span class="line">       [4, 5]])</span><br><span class="line"></span><br><span class="line">In [19]: poly = PolynomialFeatures(degree=2)</span><br><span class="line"></span><br><span class="line">In [20]: poly.fit_transform(X)</span><br><span class="line">Out[20]: </span><br><span class="line">array([[  1.,   0.,   1.,   0.,   0.,   1.],</span><br><span class="line">       [  1.,   2.,   3.,   4.,   6.,   9.],</span><br><span class="line">       [  1.,   4.,   5.,  16.,  20.,  25.]])</span><br></pre></td></tr></table></figure>
-<p>验证：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">In [38]: from sklearn.preprocessing import PolynomialFeatures</span><br><span class="line"></span><br><span class="line">In [39]: from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">In [40]: from sklearn.pipeline import Pipeline</span><br><span class="line"></span><br><span class="line">In [41]: import numpy as np</span><br><span class="line"></span><br><span class="line">In [42]: </span><br><span class="line"></span><br><span class="line">In [42]: model = Pipeline( [ (&quot;poly&quot;,PolynomialFeatures(degree=3)),(&quot;linear&quot;,LinearRegression(fit_intercept=False)) ] )</span><br><span class="line"></span><br><span class="line">In [43]: model</span><br><span class="line">Out[43]: Pipeline(steps=[(&apos;poly&apos;, PolynomialFeatures(degree=3, include_bias=True, interaction_only=False)), (&apos;linear&apos;, LinearRegression(copy_X=True, fit_intercept=False, n_jobs=1, normalize=False))])</span><br><span class="line"></span><br><span class="line">In [44]: x = np.arange(5)</span><br><span class="line"></span><br><span class="line">In [45]: y = 3 - 2 * x + x ** 2 - x ** 3</span><br><span class="line"></span><br><span class="line">In [46]: y</span><br><span class="line">Out[46]: array([  3,   1,  -5, -21, -53])</span><br><span class="line"></span><br><span class="line">In [47]: model = model.fit(x[:,np.newaxis],y)</span><br><span class="line"></span><br><span class="line">In [48]: model.named_steps[&apos;linear&apos;].coef_</span><br><span class="line">Out[48]: array([ 3., -2.,  1., -1.])</span><br></pre></td></tr></table></figure></p>
-<p>我们可以看出最后求出的参数和一元三次方程是一致的。</p>
-<p>这里如果把degree改为2，y的方程也换一下，结果也是一致的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">In [51]: from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">In [52]: from sklearn.preprocessing import PolynomialFeatures</span><br><span class="line"></span><br><span class="line">In [53]: from sklearn.pipeline import Pipeline</span><br><span class="line"></span><br><span class="line">In [54]: import numpy as np</span><br><span class="line"></span><br><span class="line">In [55]: model = Pipeline( [ (&quot;poly&quot;,PolynomialFeatures(degree=2)),(&quot;linear&quot;,LinearRegression(fit_intercept=False)) ] )</span><br><span class="line"></span><br><span class="line">In [56]: x = np.arange(5)</span><br><span class="line"></span><br><span class="line">In [57]: y = 3 + 2 * x + x ** 2</span><br><span class="line"></span><br><span class="line">In [58]: model = model.fit(x[:, np.newaxis], y)</span><br><span class="line"></span><br><span class="line">In [59]: model.named_steps[&apos;linear&apos;].coef_</span><br><span class="line">Out[59]: array([ 3., 2.,  1.])</span><br></pre></td></tr></table></figure></p>
-<h2 id="线性回归的评测"><a href="#线性回归的评测" class="headerlink" title="线性回归的评测"></a>线性回归的评测</h2><p>在<a href="http://note.youdao.com/" target="_blank" rel="external">上一篇文章</a>中我们聊到了回归模型的评测方法，解下来我们详细聊聊如何来评价一个回归模型的好坏。</p>
-<p>这里我们定义预测值和真实值分别为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">true = [10, 5, 3, 2]</span><br><span class="line">pred = [9, 5, 5, 3]</span><br></pre></td></tr></table></figure></p>
-<p>1: 平均绝对误差（Mean Absolute Error, MAE）</p>
-<script type="math/tex; mode=display">
-\frac{1}{N}(\sum_{1}^{n} |y_i - \bar{y}|)</script><p>2: 均方误差（Mean Squared Error, MSE）</p>
-<script type="math/tex; mode=display">
-\frac{1}{N}\sum_{1}^{n}(y_i - \bar{y})^2</script><p>3: 均方根误差（Root Mean Squared Error, RMSE）</p>
-<script type="math/tex; mode=display">
-\frac{1}{N} \sqrt{ \sum_{1}^{n}(y_i - \bar{y})^2 }</script><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">In [80]: from sklearn import metrics</span><br><span class="line"></span><br><span class="line">In [81]: import numpy as np</span><br><span class="line"></span><br><span class="line">In [82]: true = [10, 5, 3, 2]</span><br><span class="line"></span><br><span class="line">In [83]: pred = [9, 5, 5, 3]</span><br><span class="line"></span><br><span class="line">In [84]: print(&quot;MAE: &quot;, metrics.mean_absolute_error(true,pred))</span><br><span class="line">(&apos;MAE: &apos;, 1.0)</span><br><span class="line"></span><br><span class="line">In [85]: print(&quot;MAE By Hand: &quot;, (1+0+2+1)/4.)</span><br><span class="line">(&apos;MAE By Hand: &apos;, 1.0)</span><br><span class="line"></span><br><span class="line">In [86]: print(&quot;MSE: &quot;, metrics.mean_squared_error(true,pred))</span><br><span class="line">(&apos;MSE: &apos;, 1.5)</span><br><span class="line"></span><br><span class="line">In [87]: print(&quot;MSE By Hand: &quot;, (1 ** 2 + 0 ** 2 + 2 ** 2 + 1 ** 2 ) / 4.)</span><br><span class="line">(&apos;MSE By Hand: &apos;, 1.5)</span><br><span class="line"></span><br><span class="line">In [88]: print(&quot;RMSE: &quot;, np.sqrt(metrics.mean_squared_error(true,pred)))</span><br><span class="line">(&apos;RMSE: &apos;, 1.2247448713915889)</span><br><span class="line"></span><br><span class="line">In [89]: print(&quot;RMSE By Hand: &quot;, np.sqrt((1 ** 2 + 0 ** 2 + 2 ** 2 + 1 ** 2 ) / 4.))</span><br><span class="line">(&apos;RMSE By Hand: &apos;, 1.2247448713915889)</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>线性回归在现实中还是可以解决很多问题的，但是并不是万能的，后续我会继续整理逻辑回归，岭回归等相关回归的知识，如果你感觉有用，欢迎分享！</p>
+        <blockquote>
+<p>在使用Spark时，有时候主函数入口参数过多的时候，会特别复杂，这个时候我们可以将相应的参数写在xml文件中，然后只要将xml文件的路径传进去即可，这里的xml路径可以是本地的，也可以是hdfs上的。</p>
+</blockquote>
+<p>scala提供了类似于Xpath的语法来解析xml文件，其中很重要的两个操作符是”\”<br>和 “\\”</p>
+<ul>
+<li>\ ：根据搜索条件得到下一个节点</li>
+<li>\\：根据条件获取所有的节点</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configure&gt;</span><br><span class="line">    &lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">    &lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;/configure&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">val input = args(0)</span><br><span class="line">val xml = XML.load(input)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 找到所有的一级节点 input</span><br><span class="line">val input_list = xml\&quot;input&quot;</span><br><span class="line">input_list.foreach(println)</span><br><span class="line"></span><br><span class="line">// 遍历每个一级节点，得到具体的值</span><br><span class="line">for(one &lt;- input_list)&#123;</span><br><span class="line">    println(one\&quot;name&quot;)</span><br><span class="line">    println((one\&quot;name&quot;).text)</span><br><span class="line">    println(one\&quot;hdfs&quot;)</span><br><span class="line">    println((one\&quot;hdfs&quot;).text)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 得到所有的name</span><br><span class="line">val name_list = xml\\&quot;name&quot;</span><br><span class="line">name_list.map(one =&gt; one.text).foreach(println)</span><br><span class="line"></span><br><span class="line">// 获取所有hdfs</span><br><span class="line">val hdfs_list = xml\\&quot;hdfs&quot;</span><br><span class="line">hdfs_list.map(one =&gt; one.text).foreach(println)</span><br><span class="line"></span><br><span class="line">// 获取具有class的值</span><br><span class="line">println(xml\&quot;input&quot;\&quot;name&quot;\\&quot;@class&quot;)</span><br><span class="line"></span><br><span class="line">// 打印出具有class属性的name值和hdfs值</span><br><span class="line">println((xml\\&quot;name&quot;).filter(_.attribute(&quot;class&quot;).exists(_.text.equals(&quot;test&quot;))).text)</span><br><span class="line">println((xml\\&quot;hdfs&quot;).filter(_.attribute(&quot;class&quot;).exists(_.text.equals(&quot;test&quot;))).text)</span><br></pre></td></tr></table></figure>
+<p>打印出的信息为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name class=&quot;test&quot;&gt;app_feature_user_test&lt;/name&gt;</span><br><span class="line">        &lt;hdfs class=&quot;test&quot;&gt;/user/path/to/user_test&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">-------------</span><br><span class="line">&lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">app_feature_goods</span><br><span class="line">&lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/goods</span><br><span class="line">&lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">app_feature_user</span><br><span class="line">&lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/user</span><br><span class="line">&lt;name class=&quot;test&quot;&gt;app_feature_user_test&lt;/name&gt;</span><br><span class="line">app_feature_user_test</span><br><span class="line">&lt;hdfs class=&quot;test&quot;&gt;/user/path/to/user_test&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line">app_feature_goods</span><br><span class="line">app_feature_user</span><br><span class="line">app_feature_user_test</span><br><span class="line">-------------</span><br><span class="line">/user/path/to/goods</span><br><span class="line">/user/path/to/user</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line">test</span><br><span class="line">-------------</span><br><span class="line">app_feature_user_test</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>当然还存在一种情况就是XML文件存在于hdfs之上，这时候就不能直接load xml文件里，不过可以通过下面一种方法获得<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var rdd = sc.textFile(xml_path)</span><br><span class="line">val xml = XML.loadString(rdd.collect().mkString(&quot;\n&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>接下来便可以通过上边的方法进行解析了。</p>
+<center>
+    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    <br>
+打开微信扫一扫，关注公众号【数据与算法联盟】
+</center>
 
       
 
@@ -271,7 +244,7 @@ y(w,x) = w_{0} + w_{1} z_{1} + w_{2} z_{2} + w_{3} z_{3} + w_{4} z_{4} + w_{5} z
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回归分析</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		
 		</ul>
@@ -292,7 +265,7 @@ y(w,x) = w_{0} + w_{1} z_{1} + w_{2} z_{2} + w_{3} z_{3} + w_{4} z_{4} + w_{5} z
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/29/机器学习/回归分析之线性回归（N元线性回归）/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/02/04/Spark/Scala解析XML/">展开全文 >></a>
         </p>
       
 
@@ -324,7 +297,7 @@ y(w,x) = w_{0} + w_{1} z_{1} + w_{2} z_{2} + w_{3} z_{3} + w_{4} z_{4} + w_{5} z
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
     </nav>
   
 
@@ -480,7 +453,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,7 +497,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,11 +517,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,11 +565,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,11 +585,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -545,10 +602,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

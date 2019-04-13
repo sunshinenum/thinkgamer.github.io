@@ -193,70 +193,78 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/TensorFlow的MNIST学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/">TensorFlow的MNIST学习</a>
+      <a class="article-title" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">从线性回归看偏差-方差分解（Bias-Variance Decomposition）</a>
     </h1>
   
 
         
-        <a href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/" class="archive-article-date">
-  	<time datetime="2018-04-22T07:21:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
+        <a href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/" class="archive-article-date">
+  	<time datetime="2019-03-25T15:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>MNIST是在机器学习领域中的一个经典问题。该问题解决的是把28x28像素的灰度手写数字图片识别为相应的数字，其中数字的范围从0到9.</p>
-</blockquote>
-<hr>
-<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80039242" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80039242</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
-<hr>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>数据集</th>
-<th>目的</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data_sets.train</td>
-<td>55000 组 图片和标签, 用于训练。</td>
-</tr>
-<tr>
-<td>data_sets.validation</td>
-<td>5000 组 图片和标签, 用于迭代验证训练的准确性。</td>
-</tr>
-<tr>
-<td>data_sets.test</td>
-<td>10000 组 图片和标签, 用于最终测试训练的准确性。</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h1 id="数据集简介"><a href="#数据集简介" class="headerlink" title="数据集简介"></a>数据集简介</h1><p>MNIST数据集加载有两种办法，第一是直接从网上下载，第二是下载到本地进行load（跟第一种类似，只不过是事先下载好，从本地进行加载）。从网上下载到本地方式如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 加载mnist数据集</span><br><span class="line">from tensorflow.examples.tutorials.mnist import input_data</span><br><span class="line">print(&quot;load finish&quot;)</span><br><span class="line"></span><br><span class="line">mnist = input_data.read_data_sets(&quot;MNIST_data/&quot;,one_hot=True)</span><br><span class="line">print(type(mnist))</span><br></pre></td></tr></table></figure>
-<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">load finish</span><br><span class="line">Extracting MNIST_data/train-images-idx3-ubyte.gz</span><br><span class="line">Extracting MNIST_data/train-labels-idx1-ubyte.gz</span><br><span class="line">Extracting MNIST_data/t10k-images-idx3-ubyte.gz</span><br><span class="line">Extracting MNIST_data/t10k-labels-idx1-ubyte.gz</span><br><span class="line">&lt;class &apos;tensorflow.contrib.learn.python.learn.datasets.base.Datasets&apos;&gt;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;MNIST 训练集数据条数：&quot; ,mnist.train.num_examples)</span><br><span class="line">print(&quot;MNIST 测试集数据条数：&quot; ,mnist.test.num_examples)</span><br><span class="line"></span><br><span class="line">train_img = mnist.train.images</span><br><span class="line">train_label = mnist.train.labels</span><br><span class="line">print(&quot;训练集类型：&quot;,type(train_img))</span><br><span class="line">print(&quot;训练集维度：&quot;,train_img.shape)</span><br><span class="line"></span><br><span class="line">test_img = mnist.test.images</span><br><span class="line">test_label = mnist.test.labels</span><br><span class="line">print(&quot;测试集类型：&quot;,type(test_img))</span><br><span class="line">print(&quot;测试集维度：&quot;,test_img.shape)</span><br></pre></td></tr></table></figure>
-<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MNIST 训练集数据条数： 55000</span><br><span class="line">MNIST 测试集数据条数： 10000</span><br><span class="line">训练集类型： &lt;class &apos;numpy.ndarray&apos;&gt;</span><br><span class="line">训练集维度： (55000, 784)</span><br><span class="line">测试集类型： &lt;class &apos;numpy.ndarray&apos;&gt;</span><br><span class="line">测试集维度： (10000, 784)</span><br></pre></td></tr></table></figure></p>
-<p>打开当前运行代码的目录，我们会发现一个MNIST_data的文件夹，里边包含的文件如下：<br>文件    | 内容<br>—|—<br>train-images-idx3-ubyte.gz |    训练集图片 - 55000 张 训练图片, 5000 张 验证图片<br>train-labels-idx1-ubyte.gz |    训练集图片对应的数字标签<br>t10k-images-idx3-ubyte.gz |    测试集图片 - 10000 张 图片<br>t10k-labels-idx1-ubyte.gz |    测试集图片对应的数字标签</p>
-<p>使用next_batch函数加载指定条数的数据集<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 关于next_batch函数</span><br><span class="line">batchSize = 100</span><br><span class="line">batch_x,batch_y = mnist.train.next_batch(batch_size=batchSize)</span><br><span class="line">print(batch_x.shape)</span><br><span class="line">print(batch_y.shape)</span><br></pre></td></tr></table></figure></p>
-<p>输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(100, 784)</span><br><span class="line">(100, 10)</span><br></pre></td></tr></table></figure></p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="50%" height="50%">
-打开微信扫一扫，加入数据与算法交流大群
+        <center>
+<img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 </center>
+<center>打开微信扫一扫，关注微信公众号【数据与算法联盟】 </center>
+
+<p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>对于数字序列1，3，5，7，？，正常情况下大家脑海里蹦出的是9，但是217314也是其一个解<br>9对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=2x-1</script><p>217314对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=\frac{18111}{2} x^{4}-90555x^{3}+\frac{633885}{2}x^{2}-452773x+217331</script><p>Python 实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def f(x):</span><br><span class="line">...     return 18111/2 * pow(x,4) -90555 * pow(x,3) + 633885/2 * pow(x,2) -452773 * x +217331</span><br><span class="line">... </span><br><span class="line">&gt;&gt;&gt; f(1)</span><br><span class="line">1.0</span><br><span class="line">&gt;&gt;&gt; f(2)</span><br><span class="line">3.0</span><br><span class="line">&gt;&gt;&gt; f(3)</span><br><span class="line">5.0</span><br><span class="line">&gt;&gt;&gt; f(4)</span><br><span class="line">7.0</span><br><span class="line">&gt;&gt;&gt; f(5)</span><br><span class="line">217341.0</span><br></pre></td></tr></table></figure></p>
+<p>当机器学习模型进行预测的时候，通常都需要把握一个非常微妙的平衡，一方面我们希望模型能够匹配更多的训练数据，相应的增加其复杂度，否则会丢失相关特征的趋势（即模型过拟合）；但是另一方面，我们又不想让模型过分的匹配训练数据，相应的舍弃部分复杂的，因为这样存在过度解析所有异常值和伪规律的风险，导致模型的泛化能力差（即模型欠拟合）。因此在模型的拟合能力和复杂度之前取得一个比较好的权衡，对于一个模型来讲十分重要。而偏差-方差分解（Bias-Variance Decomposition）就是用来指导和分析这种情况的工具。</p>
+<h1 id="偏差和方差定义"><a href="#偏差和方差定义" class="headerlink" title="偏差和方差定义"></a>偏差和方差定义</h1><ul>
+<li>偏差（Bias）：即预测数据偏离真实数据的情况。</li>
+<li>方差（Variance）：描述的是随机变量的离散程度，即随机变量在其期望值附近的波动程度。</li>
+</ul>
+<h1 id="偏差-方差推导过程"><a href="#偏差-方差推导过程" class="headerlink" title="偏差-方差推导过程"></a>偏差-方差推导过程</h1><p>以回归问题为例，假设样本的真实分布为p_r(x,y)，并采用平方损失函数，模型f(x)的期望错误为(公式2.1)：</p>
+<script type="math/tex; mode=display">
+R(f) = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f(x))^2 \right ]</script><p>那么最优模型为(公式2.2)：</p>
+<script type="math/tex; mode=display">
+f^*(x) = E_{y\sim p_r{(y|x)}} \left [ y \right ]</script><p>其中p_r(y|x)为真实的样本分布，f^*(x)为使用平方损失作为优化目标的最优模型，其损失为(公式2.3)：</p>
+<script type="math/tex; mode=display">
+\varepsilon  = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f^*(x))^2 \right ]</script><p>损失</p>
+<script type="math/tex; mode=display">
+\varepsilon</script><p>通常是由于样本分布及其噪声引起的，无法通过优化模型来减少。<br>期望错误可以分解为(公式2.4)：</p>
+<script type="math/tex; mode=display">
+R(f)</script><script type="math/tex; mode=display">
+= E_{(x,y)\sim p_r{(x,y)}} \left [ (y- f^*(x) + f^*(x) -f(x))^2 \right ]</script><script type="math/tex; mode=display">
+= E_{x\sim p_r{(x)}}\left [ (f(x) - f^*(x))^2 \right ] + \varepsilon</script><p>公式2.4中的第一项是机器学习可以优化的真实目标，是当前模型和最优模型之间的差距。</p>
+<p>在实际训练一个模型f(x)时，训练集D是从真实分布p_r(x,y)上独立同分布的采样出来的有限样本集合。不同的训练集会得到不同的模型。令f_D(x)表示在训练集D上学习到的模型，一个机器学习算法（包括模型和优化算法）的能力可以通过模型在不同训练集上的平均性能来体现。</p>
+<p>对于单个样本x，不同训练集D得到的模型f_D(x)和最优模型f^*(x)的上的期望差距为（公式2.5）：</p>
+<script type="math/tex; mode=display">
+E_D[( f_D(x)-f^*(x) )^2]</script><script type="math/tex; mode=display">
+=E_D\left [  ( f_D(x)  - E_D[f_D(x)] +E_D[f_D(x)]   -f^*(x) )^2   \right ]</script><script type="math/tex; mode=display">
+=( E_D[f_D(x)]   -f^*(x) )^2 )  + E_D[(f_D(x)  - E_D[f_D(x)] )^2]</script><p>公式2.5最后一行中的第一项为偏差(bias)，是指一个模型在不同训练集上的平均性能和与最优模型的差异，偏差可以用来衡量一个模型的拟合能力；第二项是方差（variance），是指一个模型在不同训练集上的差异，可以用来衡量一个模型是否容易过拟合。</p>
+<p>集合公式2.4和公式2.5，期望错误可以分解为(公式2.6)：</p>
+<script type="math/tex; mode=display">
+R(f)= (bias)^2 + variance +  \varepsilon</script><p>其中</p>
+<script type="math/tex; mode=display">
+(bias)^2 =  E_X[E_D[f_D(x)]   -f^*(x) )^2 ]</script><script type="math/tex; mode=display">
+variance = E_X [ E_D[(f_D(x)  - E_D[f_D(x)] )^2] ]</script><p>最小化期望错误等价于最小化偏差和方差之和。</p>
+<h1 id="偏差和方差分析"><a href="#偏差和方差分析" class="headerlink" title="偏差和方差分析"></a>偏差和方差分析</h1><p><img src="https://img-blog.csdnimg.cn/20190325231703314.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>上图为机器学习中偏差和方差的四种不同情况。每个图的中心点为最优模型f*(x)，蓝点为不同训练集D 上得到的模型f_D(x)。</p>
+<ul>
+<li>(a)给出了一种理想情况，方差和偏差都比较小</li>
+<li>(b)为高偏差低方差的情况，表示模型的泛化能力很好，但拟合能力不足</li>
+<li>(c)为低偏差高方差的情况，表示模型的拟合能力很好，但泛化能力比较差。当训练数据比较少时会导致过拟合</li>
+<li>(d)为高偏差高方差的情况，是一种最差的情况</li>
+</ul>
+<p>方差一般会随着训练样本的增加而减少。当样本比较多时，方差比较少，我们可以选择能力强的模型来减少偏差。然而在很多机器学习任务上，训练集上往往都比较有限，最优的偏差和最优的方差就无法兼顾。</p>
+<p>随着模型复杂度的增加，模型的拟合能力变强，偏差减少而方差增大，从而导致过拟合。以结构错误最小化为例，我们可以调整正则化系数λ来控制模型的复杂度。当λ变大时，模型复杂度会降低，可以有效地减少方差，避免过拟合，但偏差会上升。当λ过大时，总的期望错误反而会上升。因此，正则化系数λ需要在偏差和方差之间取得比较好的平衡。下图给出了机器学习模型的期望错误、偏差和方差随复杂度的变化情况。最优的模型并不一定是偏差曲线和方差曲线的交点。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190325231720819.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>偏差和方差分解给机器学习模型提供了一种分析途径，但在实际操作中难以直接衡量。一般来说，当一个模型在训练集上的错误率比较高时，说明模型的拟合能力不够，偏差比较高。这种情况可以增加数据特征、提高模型复杂度，减少正则化系数等操作来改进模型。当模型在训练集上的错误率比较低，但验证集上的错误率比较高时，说明模型过拟合，方差比较高。这种情况可以通过降低模型复杂度，加大正则化系数，引入先验等方法来缓解。此外，还有一种有效的降低方差的方法为集成模型，即通过多个高方差模型的平均来降低方差。 </p>
 
       
 
@@ -270,11 +278,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性回归</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">方差</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">偏差</a>
         		</li>
       		
 		</ul>
@@ -295,7 +311,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/22/TensorFlow/TensorFlow的MNIST学习/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">展开全文 >></a>
         </p>
       
 
@@ -327,7 +343,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -483,7 +499,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -491,7 +543,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -499,11 +563,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,11 +611,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,11 +631,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -548,10 +648,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

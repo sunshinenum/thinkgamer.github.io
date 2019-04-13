@@ -193,43 +193,29 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Hadoop/hadoop命令——hdfs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据结构/数据结构算法之合并两个有序序列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">hadoop命令——hdfs</a>
+      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">数据结构算法之合并两个有序序列</a>
     </h1>
   
 
         
-        <a href="/2015/07/11/Hadoop/hadoop命令——hdfs/" class="archive-article-date">
-  	<time datetime="2015-07-11T09:11:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-11</time>
+        <a href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/" class="archive-article-date">
+  	<time datetime="2017-11-12T16:55:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>hdfs是hadoop大体系下的分布式文件管理系统，是英文Hadoop Distributed File System的简写，其常用命令如下：</p>
-<h1 id="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"><a href="#一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）" class="headerlink" title="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"></a>一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）</h1><p><img src="http://img.blog.csdn.net/20150715110547708?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p><img src="http://img.blog.csdn.net/20150715110719331?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<h1 id="二：其他相关命令"><a href="#二：其他相关命令" class="headerlink" title="二：其他相关命令"></a>二：其他相关命令</h1><p>1、hadoop 归档文件shell： hadoop archive -archiveName file.har -p /gyt/input /gyt/output (file.har为归档后的文件  /gyt/inut/为多个文件所在目录   /gyt/output/是归档后的输出目录)</p>
-<p>2、运行JAR程序包shell：hadoop jar /home/hadoop/hadoop-1.1.2/hadoop-examples-1.1.2.jar wordcount  /user/hadoop/input output（XXX.jar是程序目录，wordcount是程序入口，XXX/input是文件输入源，output是文件输出源）</p>
-<p>4、查看HDFS状态：hadoop dfsadmin -report比如有哪些datanode，每个datanode的情况</p>
-<p>5、离开安全模式：hadoop dfsadmin -safemode leave </p>
-<p>6、进入安全模式： hadoop dfsadmin -safemode enter</p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
-</center>
-
-
-
+        <p>有序序列的合并，python实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line"></span><br><span class="line">a = [2,4,6,8,10]</span><br><span class="line">b = [3,5,7,9,11,13,15]</span><br><span class="line">c = []</span><br><span class="line"></span><br><span class="line">def merge(a,b):</span><br><span class="line">    i,j = 0,0</span><br><span class="line">    while i&lt;=len(a)-1 and j&lt;=len(b)-1:</span><br><span class="line">        if a[i]&lt;b[j]:</span><br><span class="line">            c.append(a[i])</span><br><span class="line">            i+=1</span><br><span class="line">        else:</span><br><span class="line">            c.append(b[j])</span><br><span class="line">            j+=1</span><br><span class="line">    if i&lt;=len(a)-1:</span><br><span class="line">        for m in a[i:]:</span><br><span class="line">            c.append(m)</span><br><span class="line">    </span><br><span class="line">    if j&lt;=len(b)-1:</span><br><span class="line">        for n in b[j:]:</span><br><span class="line">            c.append(n)</span><br><span class="line">    print(c)</span><br><span class="line"></span><br><span class="line">merge(a,b)</span><br></pre></td></tr></table></figure>
+<p>运行结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15]</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -243,7 +229,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
         		</li>
       		
 		</ul>
@@ -264,7 +250,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">展开全文 >></a>
         </p>
       
 
@@ -296,7 +282,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/40/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="page-number" href="/page/40/">40</a><span class="page-number current">41</span><a class="page-number" href="/page/42/">42</a><a class="page-number" href="/page/43/">43</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/42/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/40/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="page-number" href="/page/40/">40</a><span class="page-number current">41</span><a class="page-number" href="/page/42/">42</a><a class="page-number" href="/page/43/">43</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/42/">Next &raquo;</a>
     </nav>
   
 
@@ -452,7 +438,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -460,7 +482,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -468,11 +502,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,11 +550,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,11 +570,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -517,10 +587,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

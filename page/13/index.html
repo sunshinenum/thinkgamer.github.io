@@ -193,44 +193,50 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Scala解析XML" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/04/Spark/Scala解析XML/">Scala解析XML</a>
+      <a class="article-title" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a>
     </h1>
   
 
         
-        <a href="/2018/02/04/Spark/Scala解析XML/" class="archive-article-date">
-  	<time datetime="2018-02-04T08:32:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-04</time>
+        <a href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/" class="archive-article-date">
+  	<time datetime="2019-01-12T14:06:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>在使用Spark时，有时候主函数入口参数过多的时候，会特别复杂，这个时候我们可以将相应的参数写在xml文件中，然后只要将xml文件的路径传进去即可，这里的xml路径可以是本地的，也可以是hdfs上的。</p>
-</blockquote>
-<p>scala提供了类似于Xpath的语法来解析xml文件，其中很重要的两个操作符是”\”<br>和 “\\”</p>
-<ul>
-<li>\ ：根据搜索条件得到下一个节点</li>
-<li>\\：根据条件获取所有的节点</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;configure&gt;</span><br><span class="line">    &lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">    &lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;/configure&gt;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">val input = args(0)</span><br><span class="line">val xml = XML.load(input)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 找到所有的一级节点 input</span><br><span class="line">val input_list = xml\&quot;input&quot;</span><br><span class="line">input_list.foreach(println)</span><br><span class="line"></span><br><span class="line">// 遍历每个一级节点，得到具体的值</span><br><span class="line">for(one &lt;- input_list)&#123;</span><br><span class="line">    println(one\&quot;name&quot;)</span><br><span class="line">    println((one\&quot;name&quot;).text)</span><br><span class="line">    println(one\&quot;hdfs&quot;)</span><br><span class="line">    println((one\&quot;hdfs&quot;).text)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 得到所有的name</span><br><span class="line">val name_list = xml\\&quot;name&quot;</span><br><span class="line">name_list.map(one =&gt; one.text).foreach(println)</span><br><span class="line"></span><br><span class="line">// 获取所有hdfs</span><br><span class="line">val hdfs_list = xml\\&quot;hdfs&quot;</span><br><span class="line">hdfs_list.map(one =&gt; one.text).foreach(println)</span><br><span class="line"></span><br><span class="line">// 获取具有class的值</span><br><span class="line">println(xml\&quot;input&quot;\&quot;name&quot;\\&quot;@class&quot;)</span><br><span class="line"></span><br><span class="line">// 打印出具有class属性的name值和hdfs值</span><br><span class="line">println((xml\\&quot;name&quot;).filter(_.attribute(&quot;class&quot;).exists(_.text.equals(&quot;test&quot;))).text)</span><br><span class="line">println((xml\\&quot;hdfs&quot;).filter(_.attribute(&quot;class&quot;).exists(_.text.equals(&quot;test&quot;))).text)</span><br></pre></td></tr></table></figure>
-<p>打印出的信息为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">        &lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">&lt;input&gt;</span><br><span class="line">        &lt;name class=&quot;test&quot;&gt;app_feature_user_test&lt;/name&gt;</span><br><span class="line">        &lt;hdfs class=&quot;test&quot;&gt;/user/path/to/user_test&lt;/hdfs&gt;</span><br><span class="line">    &lt;/input&gt;</span><br><span class="line">-------------</span><br><span class="line">&lt;name&gt;app_feature_goods&lt;/name&gt;</span><br><span class="line">app_feature_goods</span><br><span class="line">&lt;hdfs&gt;/user/path/to/goods&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/goods</span><br><span class="line">&lt;name&gt;app_feature_user&lt;/name&gt;</span><br><span class="line">app_feature_user</span><br><span class="line">&lt;hdfs&gt;/user/path/to/user&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/user</span><br><span class="line">&lt;name class=&quot;test&quot;&gt;app_feature_user_test&lt;/name&gt;</span><br><span class="line">app_feature_user_test</span><br><span class="line">&lt;hdfs class=&quot;test&quot;&gt;/user/path/to/user_test&lt;/hdfs&gt;</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line">app_feature_goods</span><br><span class="line">app_feature_user</span><br><span class="line">app_feature_user_test</span><br><span class="line">-------------</span><br><span class="line">/user/path/to/goods</span><br><span class="line">/user/path/to/user</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line">test</span><br><span class="line">-------------</span><br><span class="line">app_feature_user_test</span><br><span class="line">/user/path/to/user_test</span><br><span class="line">-------------</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
-<p>当然还存在一种情况就是XML文件存在于hdfs之上，这时候就不能直接load xml文件里，不过可以通过下面一种方法获得<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var rdd = sc.textFile(xml_path)</span><br><span class="line">val xml = XML.loadString(rdd.collect().mkString(&quot;\n&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>接下来便可以通过上边的方法进行解析了。</p>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
+        <center>
+<img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 </center>
+<center>打开微信扫一扫，关注微信公众号【数据与算法联盟】 </center>
+
+<p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在之前的文章中介绍了多分类逻辑回归算法的数据原理，参考文章链接</p>
+<p>CSDN文章链接：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a><br>公众号：多分类逻辑回归（Multinomial Logistic Regression）<br>该篇文章介绍一下Spark中多分类算法，主要包括的技术点如下</p>
+<ul>
+<li><p>多分类实现方式</p>
+<ul>
+<li>一对一 （One V One）</li>
+<li>一对其余（One V Remaining）</li>
+<li>多对多 （More V More）</li>
+</ul>
+</li>
+<li><p>Spark中的多分类实现</p>
+<h1 id="多分类实现方式"><a href="#多分类实现方式" class="headerlink" title="多分类实现方式"></a>多分类实现方式</h1><h2 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h2><p>假设某个分类中有N个类别，将这N个类别两两配对（继而转化为二分类问题），这样可以得到 N（N-1）/ 2个二分类器，这样训练模型时需要训练 N（N-1）/ 2个模型，预测时将样本输送到这些模型中，最终统计出现次数较多的类别结果作为最终类别。</p>
+</li>
+</ul>
+<p>假设现在有三个类别：类别A，类别B，类别C，类别D。一对一实现多分类如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190112220044121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==,size_16,color_FFFFFF,t_70"></p>
+<hr>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/86378882</a> </p>
 
       
 
@@ -245,6 +251,14 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -265,7 +279,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/04/Spark/Scala解析XML/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">展开全文 >></a>
         </p>
       
 
@@ -297,7 +311,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
     </nav>
   
 
@@ -453,7 +467,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -461,7 +511,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -469,11 +531,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -489,11 +579,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -501,11 +599,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -518,10 +616,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

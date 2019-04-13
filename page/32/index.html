@@ -193,86 +193,63 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/数据归一化和其在sklearn中的处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/Spark多路径输出和二次排序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/机器学习/数据归一化和其在sklearn中的处理/">数据归一化和其在sklearn中的处理</a>
+      <a class="article-title" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">Spark多路径输出和二次排序</a>
     </h1>
   
 
         
-        <a href="/2017/09/01/机器学习/数据归一化和其在sklearn中的处理/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:33:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
+        <a href="/2018/01/25/Spark/Spark多路径输出和二次排序/" class="archive-article-date">
+  	<time datetime="2018-01-24T16:22:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一：数据归一化"><a href="#一：数据归一化" class="headerlink" title="一：数据归一化"></a>一：数据归一化</h1><p>数据归一化（标准化）处理是数据挖掘的一项基础工作，不同评价指标往往具有不同的量纲和量纲单位，这样的情况会影响到数据分析的结果，为了消除指标之间的量纲影响，需要进行数据标准化处理，以解决数据指标之间的可比性。原始数据经过数据标准化处理后，各指标处于同一数量级，适合进行综合对比评价。</p>
-<p>归一化方法有两种形式，一种是把数变为（0，1）之间的小数，一种是把有量纲表达式变为无量纲表达式。在机器学习中我们更关注的把数据变到0～1之间，接下来我们讨论的也是第一种形式。</p>
-<h2 id="1）min-max标准化"><a href="#1）min-max标准化" class="headerlink" title="1）min-max标准化"></a>1）min-max标准化</h2><p>min-max标准化也叫做离差标准化，是对原始数据的线性变换，使结果落到[0,1]区间，其对应的数学公式如下：</p>
-<script type="math/tex; mode=display">
-X_{scale} = \frac{x-min}{max-min}</script><p>对应的python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># x为数据 比如说 [1,2,1,3,2,4,1]</span><br><span class="line">def Normalization(x):</span><br><span class="line">    return [(float(i)-min(x))/float(max(x)-min(x)) for i in x]</span><br></pre></td></tr></table></figure></p>
-<p>如果要将数据转换到[-1,1]之间，可以修改其数学公式为：</p>
-<script type="math/tex; mode=display">
-X_{scale} = \frac{x-x_{mean}}{max-min}</script><p>x_mean 表示平均值。</p>
-<p>对应的python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line"># x为数据 比如说 [1,2,1,3,2,4,1]</span><br><span class="line">def Normalization(x):</span><br><span class="line">    return [(float(i)-np.mean(x))/float(max(x)-min(x)) for i in x]</span><br></pre></td></tr></table></figure></p>
-<p>其中max为样本数据的最大值，min为样本数据的最小值。这种方法有个缺陷就是当有新数据加入时，可能导致max和min的变化，需要重新定义。</p>
-<p>该标准化方法有一个缺点就是，如果数据中有一些偏离正常数据的异常点，就会导致标准化结果的不准确性。比如说一个公司员工（A，B，C，D）的薪水为6k,8k,7k,10w,这种情况下进行归一化对每个员工来讲都是不合理的。</p>
-<p>当然还有一些其他的办法也能实现数据的标准化。</p>
-<h2 id="2）z-score标准化"><a href="#2）z-score标准化" class="headerlink" title="2）z-score标准化"></a>2）z-score标准化</h2><p>z-score标准化也叫标准差标准化，代表的是分值偏离均值的程度，经过处理的数据符合标准正态分布，即均值为0，标准差为1。其转化函数为</p>
-<script type="math/tex; mode=display">
-X_{scale} = \frac{x-\mu }{\sigma }</script><p>其中μ为所有样本数据的均值，σ为所有样本数据的标准差。</p>
-<p>其对应的python实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">#x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">def z_score(x):</span><br><span class="line">    return (x - np.mean(x) )/np.std(x, ddof = 1)</span><br></pre></td></tr></table></figure></p>
-<p>z-score标准化方法同样对于离群异常值的影响。接下来看一种改进的z-score标准化方法。</p>
-<h2 id="3）改进的z-score标准化"><a href="#3）改进的z-score标准化" class="headerlink" title="3）改进的z-score标准化"></a>3）改进的z-score标准化</h2><p>将标准分公式中的均值改为中位数，将标准差改为绝对偏差。</p>
-<script type="math/tex; mode=display">
-X_{scale} = \frac{x-x_{center} }{\sigma_{1} }</script><p>中位数是指将所有数据进行排序，取中间的那个值，如数据量是偶数，则取中间两个数据的平均值。</p>
-<p>σ1为所有样本数据的绝对偏差,其计算公式为：</p>
-<script type="math/tex; mode=display">
-\frac{1}{N} \sum_{1}^{n}|x_{i} - x_{center}|</script><hr>
-<h1 id="二：sklearn中的归一化"><a href="#二：sklearn中的归一化" class="headerlink" title="二：sklearn中的归一化"></a>二：sklearn中的归一化</h1><p>sklearn.preprocessing 提供了一些实用的函数 用来处理数据的维度，以供算法使用。</p>
-<h2 id="1）均值-标准差缩放"><a href="#1）均值-标准差缩放" class="headerlink" title="1）均值-标准差缩放"></a>1）均值-标准差缩放</h2><p>即我们上边对应的z-score标准化。<br>在sklearn的学习中，数据集的标准化是很多机器学习模型算法的常见要求。如果个别特征看起来不是很符合正态分布，那么他们可能为表现不好。</p>
-<p>实际上，我们经常忽略分布的形状，只是通过减去整组数据的平均值，使之更靠近数据中心分布，然后通过将非连续数特征除以其标准偏差进行分类。</p>
-<p>例如，用于学习算法（例如支持向量机的RBF内核或线性模型的l1和l2正则化器）的目标函数中使用的许多元素假设所有特征都以零为中心并且具有相同顺序的方差。如果特征的方差大于其他数量级，则可能主导目标函数，使估计器无法按预期正确地学习其他特征。</p>
-<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn import preprocessing</span><br><span class="line">&gt;&gt;&gt; import numpy as np</span><br><span class="line">&gt;&gt;&gt; X_train = np.array([[ 1., -1.,  2.],</span><br><span class="line">...                     [ 2.,  0.,  0.],</span><br><span class="line">...                     [ 0.,  1., -1.]])</span><br><span class="line">&gt;&gt;&gt; X_scaled = preprocessing.scale(X_train)</span><br><span class="line">&gt;&gt;&gt; X_scaled</span><br><span class="line">array([[ 0.        , -1.22474487,  1.33630621],</span><br><span class="line">       [ 1.22474487,  0.        , -0.26726124],</span><br><span class="line">       [-1.22474487,  1.22474487, -1.06904497]])</span><br></pre></td></tr></table></figure></p>
-<p>标准化后的数据符合标准正太分布<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X_scaled.mean(axis=0)</span><br><span class="line">array([ 0.,  0.,  0.])</span><br><span class="line">&gt;&gt;&gt; X_scaled.std(axis=0)</span><br><span class="line">array([ 1.,  1.,  1.])</span><br></pre></td></tr></table></figure></p>
-<p>预处理模块还提供了一个实用程序级StandardScaler，它实现了Transformer API来计算训练集上的平均值和标准偏差，以便能够稍后在测试集上重新应用相同的变换。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; scaler = preprocessing.StandardScaler().fit(X_train)</span><br><span class="line">&gt;&gt;&gt; scaler</span><br><span class="line">StandardScaler(copy=True, with_mean=True, with_std=True)</span><br><span class="line">&gt;&gt;&gt; scaler.mean_</span><br><span class="line">array([ 1.        ,  0.        ,  0.33333333])</span><br><span class="line">&gt;&gt;&gt; scaler.scale_</span><br><span class="line">array([ 0.81649658,  0.81649658,  1.24721913])</span><br><span class="line">&gt;&gt;&gt; scaler.transform(X_train)</span><br><span class="line">array([[ 0.        , -1.22474487,  1.33630621],</span><br><span class="line">       [ 1.22474487,  0.        , -0.26726124],</span><br><span class="line">       [-1.22474487,  1.22474487, -1.06904497]])</span><br></pre></td></tr></table></figure></p>
-<p>使用转换器可以对新数据进行转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X_test = [[-1., 1., 0.]]</span><br><span class="line">&gt;&gt;&gt; scaler.transform(X_test)</span><br><span class="line">array([[-2.44948974,  1.22474487, -0.26726124]])</span><br></pre></td></tr></table></figure></p>
-<h2 id="2）min-max标准化"><a href="#2）min-max标准化" class="headerlink" title="2）min-max标准化"></a>2）min-max标准化</h2><p>X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt;&gt;&gt; X_train = np.array([[ 1., -1.,  2.],</span><br><span class="line">...                      [ 2.,  0.,  0.],</span><br><span class="line">...                      [ 0.,  1., -1.]])</span><br><span class="line">&gt;&gt;&gt; min_max_scaler = preprocessing.MinMaxScaler()</span><br><span class="line">&gt;&gt;&gt; X_train_minmax = min_max_scaler.fit_transform(X_train)</span><br><span class="line">&gt;&gt;&gt; X_train_minmax</span><br><span class="line">array([[ 0.5       ,  0.        ,  1.        ],</span><br><span class="line">       [ 1.        ,  0.5       ,  0.33333333],</span><br><span class="line">       [ 0.        ,  1.        ,  0.        ]])</span><br></pre></td></tr></table></figure>
-<p>上边我们创建的min_max_scaler 同样适用于新的测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X_test = np.array([[ -3., -1.,  4.]])</span><br><span class="line">&gt;&gt;&gt; X_test_minmax = min_max_scaler.transform(X_test)</span><br><span class="line">&gt;&gt;&gt; X_test_minmax</span><br><span class="line">array([[-1.5       ,  0.        ,  1.66666667]])</span><br></pre></td></tr></table></figure></p>
-<p>可以通过scale_和min方法查看标准差和最小值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; min_max_scaler.scale_ </span><br><span class="line">array([ 0.5       ,  0.5       ,  0.33333333])</span><br><span class="line">&gt;&gt;&gt; min_max_scaler.min_</span><br><span class="line">array([ 0.        ,  0.5       ,  0.33333333])</span><br></pre></td></tr></table></figure></p>
-<h2 id="3）最大值标准化"><a href="#3）最大值标准化" class="headerlink" title="3）最大值标准化"></a>3）最大值标准化</h2><p>对于每个数值／每个维度的最大值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X_train</span><br><span class="line">array([[ 1., -1.,  2.],</span><br><span class="line">       [ 2.,  0.,  0.],</span><br><span class="line">       [ 0.,  1., -1.]])</span><br><span class="line">&gt;&gt;&gt; max_abs_scaler = preprocessing.MaxAbsScaler()</span><br><span class="line">&gt;&gt;&gt; X_train_maxabs = max_abs_scaler.fit_transform(X_train)</span><br><span class="line">&gt;&gt;&gt; X_train_maxabs</span><br><span class="line">array([[ 0.5, -1. ,  1. ],</span><br><span class="line">       [ 1. ,  0. ,  0. ],</span><br><span class="line">       [ 0. ,  1. , -0.5]])</span><br><span class="line">&gt;&gt;&gt; X_test = np.array([[ -3., -1.,  4.]])</span><br><span class="line">&gt;&gt;&gt; X_test_maxabs = max_abs_scaler.transform(X_test)</span><br><span class="line">&gt;&gt;&gt; X_test_maxabs                 </span><br><span class="line">array([[-1.5, -1. ,  2. ]])</span><br><span class="line">&gt;&gt;&gt; max_abs_scaler.scale_         </span><br><span class="line">array([ 2.,  1.,  2.])</span><br></pre></td></tr></table></figure>
-<h2 id="4）规范化"><a href="#4）规范化" class="headerlink" title="4）规范化"></a>4）规范化</h2><p>规范化是文本分类和聚类中向量空间模型的基础</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X = [[ 1., -1.,  2.],</span><br><span class="line">...      [ 2.,  0.,  0.],</span><br><span class="line">...      [ 0.,  1., -1.]]</span><br><span class="line">&gt;&gt;&gt; X_normalized = preprocessing.normalize(X, norm=&apos;l2&apos;)</span><br><span class="line">&gt;&gt;&gt; X_normalized</span><br><span class="line">array([[ 0.40824829, -0.40824829,  0.81649658],</span><br><span class="line">       [ 1.        ,  0.        ,  0.        ],</span><br><span class="line">       [ 0.        ,  0.70710678, -0.70710678]])</span><br></pre></td></tr></table></figure>
-<p>解释：norm 该参数是可选的，默认值是l2（向量各元素的平方和然后求平方根），用来规范化每个非零向量，如果axis参数设置为0，则表示的是规范化每个非零的特征维度。</p>
-<p>机器学习中的范数规则：<a href="http://blog.csdn.net/zouxy09/article/details/24971995/" target="_blank" rel="external">点击阅读</a><br><br>其他对应参数：<a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.normalize.html#sklearn.preprocessing.normalize" target="_blank" rel="external">点击查看</a></p>
-<p>preprocessing模块提供了训练种子的功能，我们可通过以下方式得到一个新的种子，并对新数据进行规范化处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; normalizer = preprocessing.Normalizer().fit(X)</span><br><span class="line">&gt;&gt;&gt; normalizer</span><br><span class="line">Normalizer(copy=True, norm=&apos;l2&apos;)</span><br><span class="line">&gt;&gt;&gt; normalizer.transform(X)</span><br><span class="line">array([[ 0.40824829, -0.40824829,  0.81649658],</span><br><span class="line">       [ 1.        ,  0.        ,  0.        ],</span><br><span class="line">       [ 0.        ,  0.70710678, -0.70710678]])</span><br><span class="line">&gt;&gt;&gt; normalizer.transform([[-1,1,0]])</span><br><span class="line">array([[-0.70710678,  0.70710678,  0.        ]])</span><br></pre></td></tr></table></figure></p>
-<h2 id="5）二值化"><a href="#5）二值化" class="headerlink" title="5）二值化"></a>5）二值化</h2><p>将数据转换到0-1 之间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X</span><br><span class="line">[[1.0, -1.0, 2.0], [2.0, 0.0, 0.0], [0.0, 1.0, -1.0]]</span><br><span class="line">&gt;&gt;&gt; binarizer = preprocessing.Binarizer().fit(X)</span><br><span class="line">&gt;&gt;&gt; binarizer</span><br><span class="line">Binarizer(copy=True, threshold=0.0)</span><br><span class="line">&gt;&gt;&gt; binarizer.transform(X)</span><br><span class="line">array([[ 1.,  0.,  1.],</span><br><span class="line">       [ 1.,  0.,  0.],</span><br><span class="line">       [ 0.,  1.,  0.]])</span><br></pre></td></tr></table></figure></p>
-<p>可以调整二值化的门阀<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; binarizer = preprocessing.Binarizer(threshold=1.1)</span><br><span class="line">&gt;&gt;&gt; binarizer.transform(X)</span><br><span class="line">array([[ 0.,  0.,  1.],</span><br><span class="line">       [ 1.,  0.,  0.],</span><br><span class="line">       [ 0.,  0.,  0.]])</span><br></pre></td></tr></table></figure></p>
-<h2 id="6）编码的分类特征"><a href="#6）编码的分类特征" class="headerlink" title="6）编码的分类特征"></a>6）编码的分类特征</h2><p>通常情况下，特征不是作为连续值给定的。例如一个人可以有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&quot;male&quot;, &quot;female&quot;], [&quot;from Europe&quot;, &quot;from US&quot;, &quot;from Asia&quot;], [&quot;uses Firefox&quot;, &quot;uses Chrome&quot;, &quot;uses Safari&quot;, &quot;uses Internet Explorer&quot;]</span><br></pre></td></tr></table></figure></p>
-<p>这些特征可以被有效的编码为整数，例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[&quot;male&quot;, &quot;from US&quot;, &quot;uses Internet Explorer&quot;] =&gt; [0, 1, 3]</span><br><span class="line">[&quot;female&quot;, &quot;from Asia&quot;, &quot;uses Chrome&quot;] would be [1, 2, 1].</span><br></pre></td></tr></table></figure></p>
-<p>这样的整数不应该直接应用到scikit的算法中，可以通过one-of-k或者独热编码（OneHotEncorder），该种处理方式会把每个分类特征的m中可能值转换成m个二进制值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; enc = preprocessing.OneHotEncoder()</span><br><span class="line">&gt;&gt;&gt; enc.fit([[0, 0, 3], [1, 1, 0], [0, 2, 1], [1, 0, 2]])</span><br><span class="line">OneHotEncoder(categorical_features=&apos;all&apos;, dtype=&lt;class &apos;numpy.float64&apos;&gt;,</span><br><span class="line">       handle_unknown=&apos;error&apos;, n_values=&apos;auto&apos;, sparse=True)</span><br><span class="line">&gt;&gt;&gt; enc.transform([[0,1,3]]).toarray()</span><br><span class="line">array([[ 1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.]])</span><br></pre></td></tr></table></figure>
-<p>默认情况下，从数据集中自动推断出每个特征可以带多少个值。可以明确指定使用的参数n_values。在我们的数据集中有两种性别，三种可能的大陆和四种Web浏览器。然后，我们拟合估计量，并转换一个数据点。在结果中，前两个数字编码性别，下一组三个数字的大陆和最后四个Web浏览器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; enc = preprocessing.OneHotEncoder(n_values=[2,3,4])</span><br><span class="line">&gt;&gt;&gt; enc.fit([[1,2,3],[0,2,0]])</span><br><span class="line">OneHotEncoder(categorical_features=&apos;all&apos;, dtype=&lt;class &apos;numpy.float64&apos;&gt;,</span><br><span class="line">       handle_unknown=&apos;error&apos;, n_values=[2, 3, 4], sparse=True)</span><br><span class="line">&gt;&gt;&gt; enc.transform([[1,0,0]]).toarray()</span><br><span class="line">array([[ 0.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.]])</span><br></pre></td></tr></table></figure></p>
-<h2 id="7）填补缺失值"><a href="#7）填补缺失值" class="headerlink" title="7）填补缺失值"></a>7）填补缺失值</h2><p>由于各种原因，真实数据中存在大量的空白值，这样的数据集，显然是不符合scikit的要求的，那么preprocessing模块提供这样一个功能，利用已知的数据来填补这些空白。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import numpy as np</span><br><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import Imputer</span><br><span class="line">&gt;&gt;&gt; imp = Imputer(missing_values=&apos;NaN&apos;,strategy=&apos;mean&apos;,verbose=0)</span><br><span class="line">&gt;&gt;&gt; imp.fit([[1, 2], [np.nan, 3], [7, 6]])</span><br><span class="line">Imputer(axis=0, copy=True, missing_values=&apos;NaN&apos;, strategy=&apos;mean&apos;, verbose=0)</span><br><span class="line">&gt;&gt;&gt; X = [[np.nan, 2], [6, np.nan], [7, 6]]</span><br><span class="line">&gt;&gt;&gt; print(imp.transform(X))                           </span><br><span class="line">[[ 4.          2.        ]</span><br><span class="line"> [ 6.          3.66666667]</span><br><span class="line"> [ 7.          6.        ]]</span><br></pre></td></tr></table></figure></p>
-<p>Imputer同样支持稀疏矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import scipy.sparse as sp</span><br><span class="line">&gt;&gt;&gt; X = sp.csc_matrix([[1,2],[0,3],[7,6]])</span><br><span class="line">&gt;&gt;&gt; imp = Imputer(missing_values=0,strategy=&apos;mean&apos;,axis=0)</span><br><span class="line">&gt;&gt;&gt; imp.fit(X)</span><br><span class="line">Imputer(axis=0, copy=True, missing_values=0, strategy=&apos;mean&apos;, verbose=0)</span><br><span class="line">&gt;&gt;&gt; X_test = sp.csc</span><br><span class="line">sp.csc          sp.csc_matrix(  </span><br><span class="line">&gt;&gt;&gt; X_test = sp.csc_matrix([[0,2],[6,0],[7,6]])</span><br><span class="line">&gt;&gt;&gt; print(imp.transform(X_test))</span><br><span class="line">[[ 4.          2.        ]</span><br><span class="line"> [ 6.          3.66666667]</span><br><span class="line"> [ 7.          6.        ]]</span><br></pre></td></tr></table></figure></p>
-<h2 id="8）生成多项式特征"><a href="#8）生成多项式特征" class="headerlink" title="8）生成多项式特征"></a>8）生成多项式特征</h2><p>通常，通过考虑输入数据的非线性特征来增加模型的复杂度是很有用的。一个简单而常用的方法是多项式特征，它可以得到特征的高阶和相互作用项。</p>
-<p>其遵循的原则是 </p>
-<script type="math/tex; mode=display">
-(X_1, X_2) -> (1, X_1, X_2, X_1^2, X_1X_2, X_2^2)</script><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import numpy as np</span><br><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import PolynomialFeatures</span><br><span class="line">&gt;&gt;&gt; X = np.arange(6).reshape(3, 2)</span><br><span class="line">&gt;&gt;&gt; X                                                 </span><br><span class="line">array([[0, 1],</span><br><span class="line">       [2, 3],</span><br><span class="line">       [4, 5]])</span><br><span class="line">&gt;&gt;&gt; poly = PolynomialFeatures(2)</span><br><span class="line">&gt;&gt;&gt; poly.fit_transform(X)                             </span><br><span class="line">array([[  1.,   0.,   1.,   0.,   0.,   1.],</span><br><span class="line">       [  1.,   2.,   3.,   4.,   6.,   9.],</span><br><span class="line">       [  1.,   4.,   5.,  16.,  20.,  25.]])</span><br></pre></td></tr></table></figure>
-<p>有些情况下，有相互关系的标签才是必须的，这个时候可以通过设置 interaction_only=True 来进行多项式特征的生成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; X = np.arange(9).reshape(3, 3)</span><br><span class="line">&gt;&gt;&gt; X                                                 </span><br><span class="line">array([[0, 1, 2],</span><br><span class="line">       [3, 4, 5],</span><br><span class="line">       [6, 7, 8]])</span><br><span class="line">&gt;&gt;&gt; poly = PolynomialFeatures(degree=3, interaction_only=True)</span><br><span class="line">&gt;&gt;&gt; poly.fit_transform(X)                             </span><br><span class="line">array([[   1.,    0.,    1.,    2.,    0.,    0.,    2.,    0.],</span><br><span class="line">       [   1.,    3.,    4.,    5.,   12.,   15.,   20.,   60.],</span><br><span class="line">       [   1.,    6.,    7.,    8.,   42.,   48.,   56.,  336.]])</span><br></pre></td></tr></table></figure></p>
-<p>其遵循的规则是：</p>
-<script type="math/tex; mode=display">
-(X_1, X_2, X_3) -> (1, X_1, X_2, X_3, X_1X_2, X_1X_3, X_2X_3, X_1X_2X_3)</script><hr>
-<p>对应的scikit-learn资料为： <a href="http://scikit-learn.org/stable/modules/preprocessing.html" target="_blank" rel="external">http://scikit-learn.org/stable/modules/preprocessing.html</a></p>
+        <blockquote>
+<p>在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。</p>
+</blockquote>
+<h1 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h1><p>假设我们的数据是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1   2</span><br><span class="line">1   3</span><br><span class="line">1   1</span><br><span class="line">1   6</span><br><span class="line">1   4</span><br><span class="line">2   5</span><br><span class="line">2   8</span><br><span class="line">2   3</span><br></pre></td></tr></table></figure></p>
+<p>我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列</p>
+<p>定义一个SecondSortKey类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first == 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后这样去使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val pairs = lines.map &#123; x =&gt;</span><br><span class="line">      (new SecondSortKey(x.split(&quot;\\s+&quot;)(0).toInt,</span><br><span class="line">        x.split(&quot;\\s+&quot;)(1).toInt), x)</span><br><span class="line">    &#125;</span><br><span class="line">val sortedPairs = pairs.sortByKey(false);</span><br><span class="line">sortedPairs.map(_._2).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<p>当然这里如果想按第一列升序，当第一列相同时，第二列升序的顺序排列，只需要对SecondSoryKey做如下修改即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first !== 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当时使用的使用去掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pairs.sortByKey(false)</span><br></pre></td></tr></table></figure></p>
+<p>中的false</p>
+<h1 id="Top-N"><a href="#Top-N" class="headerlink" title="Top N"></a>Top N</h1><p>同样还是上边的数据，假设我们要得到第一列中的前五位<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val rdd = lines</span><br><span class="line">        .map(x =&gt; x.split(&quot;\\s+&quot;))</span><br><span class="line">        .map(x =&gt; (x(0),x(1)))</span><br><span class="line">        .sortByKey()</span><br><span class="line">rdd.take(N).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<h1 id="多路径输出"><a href="#多路径输出" class="headerlink" title="多路径输出"></a>多路径输出</h1><p>自己在使用的过程中，通过搜索发现了两种方法<br>1：调用saveAsHadoopFile函数并自定义一个OutputFormat类</p>
+<p>自定义RDDMultipleTextOutputFormat类</p>
+<p>RDDMultipleTextOutputFormat类中的generateFileNameForKeyValue函数有三个参数，key和value就是我们RDD的Key和Value，而name参数是每个Reduce的编号。本例中没有使用该参数，而是直接将同一个Key的数据输出到同一个文件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat  </span><br><span class="line">  </span><br><span class="line">class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] &#123;  </span><br><span class="line">  override def generateFileNameForKeyValue(key: Any, value: Any, name: String): String =  </span><br><span class="line">    key.asInstanceOf[String]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sc.parallelize(List((&quot;w&quot;, &quot;www&quot;), (&quot;b&quot;, &quot;blog&quot;), (&quot;c&quot;, &quot;com&quot;), (&quot;w&quot;, &quot;bt&quot;)))  </span><br><span class="line">      .map(value =&gt; (value._1, value._2 + &quot;Test&quot;))  </span><br><span class="line">      .partitionBy(new HashPartitioner(3))  </span><br><span class="line">      .saveAsHadoopFile(&quot;/iteblog&quot;, classOf[String],classOf[String],classOf[RDDMultipleTextOutputFormat])</span><br></pre></td></tr></table></figure></p>
+<p>这里的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new HashPartitioner(3)</span><br></pre></td></tr></table></figure></p>
+<p>中的3是有key的种类决定的，当然在实际应用场景中，我们可能并不知道有多少k，这个时候就可以通过一个rdd 的 distinct操作来得到唯一key的数目。</p>
+<p>2：使用dataframe<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">people_rdd = sc.parallelize([(1, &quot;alice&quot;), (1, &quot;bob&quot;), (2,&quot;charlie&quot;)])</span><br><span class="line">people_df = people_rdd.toDF([&quot;number&quot;, &quot;name&quot;])</span><br><span class="line">people_df.write.partitionBy(&quot;number&quot;).format(&quot;text&quot;).save(path  )</span><br></pre></td></tr></table></figure></p>
+<p>当然这两种方法都有一个缺陷，就是当数据量特别大的时候，数据在repartition的过程中特别耗费资源，也会容易出现任务failed的情况，小编采用的解决办法是，适当的对原rdd进行split，然后遍历每个rdd，进行multioutput操作</p>
+<p>形似如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd = sc.textFile(input)</span><br><span class="line">var split_rdd = rdd.randomSplit(Array(1.0,1.0,1.0,1.0))</span><br><span class="line">for (one &lt;- Array(1,2,3,4))</span><br><span class="line">&#123;</span><br><span class="line">    split_rdd(one)XXXX</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>参考：</p>
+<ul>
+<li><a href="https://andone1cc.github.io/2017/03/04/Spark/%E4%BA%8C%E6%AC%A1%E6%8E%92%E5%BA%8Ftopn/" target="_blank" rel="external">Spark学习笔记——二次排序，TopN，TopNByGroup</a></li>
+<li><a href="https://www.iteblog.com/archives/1281.html" target="_blank" rel="external">Spark多文件输出(MultipleOutputFormat)</a></li>
+<li><a href="https://code.i-harness.com/en/q/16e22a0" target="_blank" rel="external">scala - Write to multiple outputs by key Spark - one Spark job</a></li>
+<li><a href="https://stackoverflow.com/questions/23995040/write-to-multiple-outputs-by-key-spark-one-spark-job/26051042#26051042" target="_blank" rel="external">Write to multiple outputs by key Spark - one Spark job
+</a></li>
+</ul>
+<hr>
+<center>
+<img src="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<br>
+打开微信扫一扫，关注微信公众号【数据与算法联盟】 
+</center>
+
+<p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 
       
 
@@ -286,11 +263,7 @@ X_{scale} = \frac{x-x_{center} }{\sigma_{1} }</script><p>中位数是指将所�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">sklearn</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">数据归一化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		
 		</ul>
@@ -311,7 +284,7 @@ X_{scale} = \frac{x-x_{center} }{\sigma_{1} }</script><p>中位数是指将所�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/机器学习/数据归一化和其在sklearn中的处理/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">展开全文 >></a>
         </p>
       
 
@@ -343,7 +316,7 @@ X_{scale} = \frac{x-x_{center} }{\sigma_{1} }</script><p>中位数是指将所�
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
     </nav>
   
 
@@ -499,7 +472,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,7 +516,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -515,11 +536,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,11 +584,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,11 +604,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -564,10 +621,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">

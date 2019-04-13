@@ -193,51 +193,31 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux/linux-ifconfig命令配置ip地址" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据结构/数据结构算法之二叉树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">linux-ifconfig命令配置ip地址</a>
+      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之二叉树/">数据结构算法之二叉树</a>
     </h1>
   
 
         
-        <a href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/" class="archive-article-date">
-  	<time datetime="2015-07-08T04:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-08</time>
+        <a href="/2017/11/13/数据结构/数据结构算法之二叉树/" class="archive-article-date">
+  	<time datetime="2017-11-12T16:44:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。<br>lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。 </p>
-<p>ifconfig</p>
-<p>是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>加上参数eth0的话是查看eth0网卡的信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123456712?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>网卡信息的一些解释：<br>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址） </p>
-<p>第二三行：网卡的IP地址、子网、掩码 </p>
-<p>第四行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）<br>MTU:1500（最大传输单元）：1500字节   www.2cto.com  </p>
-<p>下面就是接收、发送数据包情况统计和发送接受数据字节数的统计信息。 </p>
-<p>配置网卡的IP地址 </p>
-<p>ifconfig eth0 192.168.168.64 netmask 255.255.255.0  </p>
-<p>在eth0上配置上192.168.168.64 的IP地址及子网掩码。 </p>
-<p>配置网卡的硬件地址<br>ifconfig eth0 hw ether xx：xx：xx：xx：xx：xx  </p>
-<p>禁用网卡eth0<br>ifconfig eth0 down  </p>
-<p>启用网卡eth0<br>ifconfig eth0 up  </p>
-<p>另外启动和禁用网卡还可以使用ifup | ifdown  eth0</p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
-</center>
-
-
+        <p>数据结构面试中经常会被问到篇二叉树相关的问题，那么这篇文章会研究下怎么用python来进行二叉树的构建和遍历。</p>
+<p>注意：py2中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print root.elem,</span><br></pre></td></tr></table></figure></p>
+<p>在py3中要换成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print (root.elem,end=&quot;  &quot;)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"># coding:utf-8</span><br><span class="line"></span><br><span class="line"># 定义节点类</span><br><span class="line">class Node:</span><br><span class="line">    def __init__(self,elem = -1,):</span><br><span class="line">        self.elem = elem</span><br><span class="line">        self.left = None</span><br><span class="line">        self.right = None</span><br><span class="line">        </span><br><span class="line"># 定义二叉树</span><br><span class="line">class Tree:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.root = Node()</span><br><span class="line">        self.myqu = []</span><br><span class="line">    </span><br><span class="line">    # 添加节点</span><br><span class="line">    def add(self,elem):</span><br><span class="line">        node = Node(elem)</span><br><span class="line">        if self.root.elem == -1:         # 判断如果是根节点</span><br><span class="line">            self.root  = node</span><br><span class="line">            self.myqu.append(self.root)</span><br><span class="line">        else:</span><br><span class="line">            treenode = self.myqu[0]</span><br><span class="line">            if treenode.left == None:</span><br><span class="line">                treenode.left = node</span><br><span class="line">                self.myqu.append(treenode.left)</span><br><span class="line">            else:</span><br><span class="line">                treenode.right = node</span><br><span class="line">                self.myqu.append(treenode.right)</span><br><span class="line">                self.myqu.pop(0)</span><br><span class="line">        </span><br><span class="line">    # 利用递归实现树的先序遍历</span><br><span class="line">    def xianxu(self,root):</span><br><span class="line">        if root == None:</span><br><span class="line">            return</span><br><span class="line">        print root.elem,</span><br><span class="line">        self.xianxu(root.left)</span><br><span class="line">        self.xianxu(root.right)</span><br><span class="line">        </span><br><span class="line">    # 利用递归实现树的中序遍历</span><br><span class="line">    def zhongxu(self,root):</span><br><span class="line">        if root == None:</span><br><span class="line">            return </span><br><span class="line">        self.zhongxu(root.left)</span><br><span class="line">        print root.elem,</span><br><span class="line">        self.zhongxu(root.right)</span><br><span class="line">        </span><br><span class="line">    # 利用递归实现树的后序遍历</span><br><span class="line">    def houxu(self,root):</span><br><span class="line">        if root == None:</span><br><span class="line">            return </span><br><span class="line">        self.houxu(root.left)</span><br><span class="line">        self.houxu(root.right)</span><br><span class="line">        print root.elem,</span><br><span class="line">    </span><br><span class="line">    # 利用队列实现层次遍历</span><br><span class="line">    def cengci(self,root):</span><br><span class="line">        if root == None:</span><br><span class="line">            return</span><br><span class="line">        myq = []</span><br><span class="line">        node = root</span><br><span class="line">        myq.append(node)</span><br><span class="line">        while myq:</span><br><span class="line">            node = myq.pop(0)</span><br><span class="line">            print node.elem,</span><br><span class="line">            if node.left != None:</span><br><span class="line">                myq.append(node.left)</span><br><span class="line">            if node.right != None:</span><br><span class="line">                myq.append(node.right)</span><br><span class="line">    </span><br><span class="line">    # 求树的叶子节点</span><br><span class="line">    def getYeJiedian(self,root):</span><br><span class="line">        if root == None:</span><br><span class="line">            return 0</span><br><span class="line">        if root.left == None and root.right == None:</span><br><span class="line">            return 1</span><br><span class="line"></span><br><span class="line">        return self.getYeJiedian(root.left) + self.getYeJiedian(root.right)</span><br><span class="line"></span><br><span class="line">    # 由先序和中序,还原二叉树</span><br><span class="line">    def preMidToHou(self,pre,mid):</span><br><span class="line">        if len(pre)==0:</span><br><span class="line">            return None</span><br><span class="line">        if len(pre)==1:</span><br><span class="line">            Node(mid[0])</span><br><span class="line">        root = Node(pre[0])</span><br><span class="line">        root_index = mid.index(pre[0])</span><br><span class="line">        root.left = self.preMidToHou(pre[1:root_index + 1],mid[:root_index])</span><br><span class="line">        root.right = self.preMidToHou(pre[root_index + 1:],mid[root_index + 1:])</span><br><span class="line">        return root</span><br><span class="line"></span><br><span class="line">    # 由后序和中序,还原二叉树</span><br><span class="line">    def preMidToHou(self,mid,hou):</span><br><span class="line">        if len(hou)==0:</span><br><span class="line">            return None</span><br><span class="line">        if len(hou)==1:</span><br><span class="line">            Node(mid[0])</span><br><span class="line">        root = Node(hou[-1])</span><br><span class="line">        root_index = mid.index(hou[-1])</span><br><span class="line">        root.left = self.preMidToHou(mid[:root_index],hou[:root_index])</span><br><span class="line">        root.right = self.preMidToHou(mid[root_index + 1:],mid[root_index + 1:])</span><br><span class="line">        return root</span><br><span class="line"></span><br><span class="line"># 创建一个树，添加节点</span><br><span class="line">tree = Tree()</span><br><span class="line">for i in range(10):</span><br><span class="line">    tree.add(i)</span><br><span class="line">    </span><br><span class="line">print(&quot;二叉树的先序遍历:&quot;)</span><br><span class="line">print(tree.xianxu(tree.root))</span><br><span class="line"></span><br><span class="line">print(&quot;二叉树的中序遍历:&quot;)</span><br><span class="line">print(tree.zhongxu(tree.root))</span><br><span class="line"></span><br><span class="line">print(&quot;二叉树的后序遍历:&quot;)</span><br><span class="line">print(tree.houxu(tree.root))</span><br><span class="line"></span><br><span class="line">print(&quot;二叉树的层次遍历&quot;)</span><br><span class="line">print(tree.cengci(tree.root))</span><br><span class="line"></span><br><span class="line">print(&quot;\n二叉树的叶子节点为:&quot;)</span><br><span class="line">print(tree.getYeJiedian(tree.root))</span><br><span class="line"></span><br><span class="line">print(&quot;\n已知二叉树先序遍历和中序遍历，求后序:&quot;)</span><br><span class="line">print(&quot;先序:&quot;)</span><br><span class="line">print(tree.xianxu(tree.root))</span><br><span class="line">print(&quot;中序:&quot;)</span><br><span class="line">print(tree.zhongxu(tree.root))</span><br><span class="line">print(&quot;后序:&quot;)</span><br><span class="line">root = tree.preMidToHou([0,1,3,7,8,4,9,2,5,6],[7,3,8,1,9,4,0,5,2,6])</span><br><span class="line">print(tree.houxu(root))</span><br><span class="line"></span><br><span class="line">print(&quot;\n已知二叉树后序遍历和中序遍历，求前序:&quot;)</span><br><span class="line">print(&quot;后序:&quot;)</span><br><span class="line">print(tree.houxu(tree.root))</span><br><span class="line">print(&quot;中序:&quot;)</span><br><span class="line">print(tree.zhongxu(tree.root))</span><br><span class="line">print(&quot;前序:&quot;)</span><br><span class="line">root = tree.preMidToHou([7,3,8,1,9,4,0,5,2,6],[7,8,3,9,4,1,5,6,2,0])</span><br><span class="line">print(tree.xianxu(root))</span><br></pre></td></tr></table></figure>
+<p>运行结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">二叉树的先序遍历:</span><br><span class="line">0 1 3 7 8 4 9 2 5 6 None</span><br><span class="line"></span><br><span class="line">二叉树的中序遍历:</span><br><span class="line">7 3 8 1 9 4 0 5 2 6 None</span><br><span class="line"></span><br><span class="line">二叉树的后序遍历:</span><br><span class="line">7 8 3 9 4 1 5 6 2 0 None</span><br><span class="line"></span><br><span class="line">二叉树的层次遍历</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 None</span><br><span class="line"></span><br><span class="line">二叉树的叶子节点为:</span><br><span class="line">5</span><br><span class="line"></span><br><span class="line">已知二叉树先序遍历和中序遍历，求后序:</span><br><span class="line">先序:</span><br><span class="line">0  1  3  7  8  4  9  2  5  6  None</span><br><span class="line">中序:</span><br><span class="line">7  3  8  1  9  4  0  5  2  6  None</span><br><span class="line">后序:</span><br><span class="line">1  3  7  8  4  9  0  5  2  6  None</span><br><span class="line"></span><br><span class="line">已知二叉树后序遍历和中序遍历，求前序:</span><br><span class="line">后序:</span><br><span class="line">7  8  3  9  4  1  5  6  2  0  None</span><br><span class="line">中序:</span><br><span class="line">7  3  8  1  9  4  0  5  2  6  None</span><br><span class="line">前序:</span><br><span class="line">0  1  3  7  8  4  9  6  2  5  None</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -251,7 +231,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
         		</li>
       		
 		</ul>
@@ -272,7 +252,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之二叉树/">展开全文 >></a>
         </p>
       
 
@@ -304,7 +284,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/42/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="page-number current">43</span><a class="page-number" href="/page/44/">44</a><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/44/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/42/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="page-number current">43</span><a class="page-number" href="/page/44/">44</a><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/44/">Next &raquo;</a>
     </nav>
   
 
@@ -460,7 +440,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">TF_IDF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">短标题</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -468,7 +484,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -476,11 +504,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">线性回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">方差</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">偏差</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,11 +552,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">推荐系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
+                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Logistic Regression</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +572,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">线性模型</a>
+                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SoftMax</a>
+                <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -525,10 +589,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">正态分布</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">逻辑回归</a>
               </li>
              
               <li class="article-tag-list-item">
