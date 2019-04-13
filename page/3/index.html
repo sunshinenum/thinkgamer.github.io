@@ -223,7 +223,7 @@
 <blockquote>
 <p>Softmax回归也称多项（multinomial）或者多类（multi-class）的Logistic回归，是Logistic回归在多类分类问题上的推广。和逻辑回归一样属于线性模型。</p>
 </blockquote>
-<h1 id="SoftMax回归简介"><a href="#SoftMax回归简介" class="headerlink" title="SoftMax回归简介"></a>SoftMax回归简介</h1><p>对于多类问题，类别标签 </p>
+<h1 id="SoftMax回归简介"><a href="#SoftMax回归简介" class="headerlink" title="SoftMax回归简介"></a>SoftMax回归简介</h1><p>对于多类问题，类别标签</p>
 <script type="math/tex; mode=display">
 y \in {1,2,3,...,C}</script><p>可以用C个取值，给定一个样本x，softmax回归预测的是属于类别c的概率为(公式-1)：</p>
 <script type="math/tex; mode=display">
@@ -267,11 +267,11 @@ R(W)=-\frac{1}{N}\sum_{n=1}^{N} (y^n)^Tlog\hat{y}^n</script><p>其中</p>
 <script type="math/tex; mode=display">
 L^n(W)=-(y^n)^Tlog\hat{y}^n</script><p>关于参数W的梯度，其中需要用到两个导数公式为：</p>
 <ul>
-<li><p>若y=softmax(z)，则</p>
+<li>若y=softmax(z)，则</li>
+</ul>
 <script type="math/tex; mode=display">
-\frac{\partial y}{\partial z}=diag(y)-yy^T</script></li>
-<li><p>若</p>
-</li>
+\frac{\partial y}{\partial z}=diag(y)-yy^T</script><ul>
+<li>若</li>
 </ul>
 <script type="math/tex; mode=display">
 z=W^Tx=[w_1^Tx,w_2^Tx,...,w_C^Tx]^T</script><p>则</p>
@@ -293,11 +293,9 @@ L^n(W) = -(y^n)^T log\hat{y}^n</script><p>关于w_c的偏导数为(公式-12)：
 =-M_c(x^n)(y^n-\hat{y}^n)</script><script type="math/tex; mode=display">
 =-x^n[y^n-\hat{y}^n]_c</script><p>公式-12也可以表示为非向量形式(公式-13)：</p>
 <script type="math/tex; mode=display">
-\frac{\partial L^n(W) }{\partial w_c}
-= -x^n(I(y^n=c)-\hat{y}_c^n)</script><p>其中I(.)为指示函数，根据公式-12可以得到(公式-14)</p>
+\frac{\partial L^n(W) }{\partial w_c}= -x^n(I(y^n=c)-\hat{y}_c^n)</script><p>其中I(.)为指示函数，根据公式-12可以得到(公式-14)</p>
 <script type="math/tex; mode=display">
-\frac{\partial L^n(W) }{\partial W}
-= -x^n(y^n-\hat{y}^n)^T</script><p>采用梯度下降法，softmax回归的训练过程为：初始化W_0 &lt;- 0，然后通过下式进行迭代更新。</p>
+\frac{\partial L^n(W) }{\partial W} = -x^n(y^n-\hat{y}^n)^T</script><p>采用梯度下降法，softmax回归的训练过程为：初始化W_0 &lt;- 0，然后通过下式进行迭代更新。</p>
 <script type="math/tex; mode=display">
 W_{t+1} = W_t + \alpha (\frac{1}{N} \sum_{n=1}^{N}x^n(y^n - \hat{y}_{W_t} ^ n)^T)</script><p>其中a是学习率，</p>
 <script type="math/tex; mode=display">
