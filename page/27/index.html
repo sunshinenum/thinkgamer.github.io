@@ -193,135 +193,189 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/Softmax-Regression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/梯度提升决策树-GBDT（Gradient Boosting Decision Tree）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/28/机器学习/Softmax-Regression/">Softmax-Regression</a>
+      <a class="article-title" href="/2018/04/12/机器学习/梯度提升决策树-GBDT（Gradient Boosting Decision Tree）/">梯度提升决策树-GBDT（Gradient Boosting Decision Tree）</a>
     </h1>
   
 
         
-        <a href="/2018/03/28/机器学习/Softmax-Regression/" class="archive-article-date">
-  	<time datetime="2018-03-28T15:44:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-28</time>
+        <a href="/2018/04/12/机器学习/梯度提升决策树-GBDT（Gradient Boosting Decision Tree）/" class="archive-article-date">
+  	<time datetime="2018-04-12T15:44:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在本节中，我们介绍Softmax回归模型，该模型是logistic回归模型在多分类问题上的推广，在多分类问题中，类标签 \textstyle y 可以取两个以上的值。 Softmax回归模型对于诸如MNIST手写数字分类等问题是很有用的，该问题的目的是辨识10个不同的单个数字。Softmax回归是有监督的，不过后面也会介绍它与深度学习/无监督学习方法的结合。（译者注： MNIST 是一个手写数字识别库，由NYU 的Yann LeCun 等人维护。<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="external">http://yann.lecun.com/exdb/mnist/</a> ）</p>
-<p>回想一下在 logistic 回归中，我们的训练集由 \textstyle m 个已标记的样本构成：$ \{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \} $ ，其中输入特征$ x^{(i)} \in \Re^{n+1} $（我们对符号的约定如下：特征向量<br>$ \textstyle x $ 的维度为 \textstyle n+1，其中 \textstyle x_0 = 1 对应截距项 。） 由于 logistic 回归是针对二分类问题的，因此类标记 $ y^{(i)} \in \{0,1\}$。假设函数(hypothesis function) 如下：</p>
+        <blockquote>
+<p>研究GBDT的背景是业务中使用到了该模型，用于做推荐场景，当然这里就引出了GBDT的一个应用场景-回归，他的另外一个应用场景便是分类，接下来我会从以下几个方面去学习和研究GBDT的相关知识，当然我也是学习者，只是把我理解到的整理出来。本文参考了网上各路大神的笔记，在此感谢！</p>
+</blockquote>
+<hr>
+<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/79875130" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/79875130</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<hr>
+<h1 id="Boosting-amp-Bagging"><a href="#Boosting-amp-Bagging" class="headerlink" title="Boosting&amp;Bagging"></a>Boosting&amp;Bagging</h1><p>集成学习方法不是单独的一个机器学习算法，而是通过构建多个机器学习算法来达到一个强学习器。集成学习可以用来进行分类，回归，特征选取和异常点检测等。随机森林算法就是一个典型的集成学习方法，简单的说就是由一个个弱分类器（决策树）来构建一个强分类器，从而达到比较好的分类效果。</p>
+<p>那么如何得到单个的学习器，一般有两种方法：</p>
+<ul>
+<li>同质（对于一个强学习器而言，所用的单个弱学习器都是一样的，比如说用的都是决策树，或者都是神经网络）</li>
+<li>异质（相对于同质而言，对于一个强学习器而言，所用的单个弱学习器不全是一样的，比如说用的决策树和神经网络的组合）</li>
+</ul>
+<p>相对异质而言，同质学习期用的最为广泛，我们平时所讨论的集成学习方法指的就是同质个体学习器，同质个体学习器按照个体学习器之间的依赖关系分为串行（有强依赖关系）和并行（不存在关系或者有很弱的依赖关系），而在串行关系中有代表性的就是boosting系列算法，并行关系中具有代表性的就是bagging和随机森林（random forest）</p>
+<p>Boosting流程图<br><img src="https://img-blog.csdn.net/20180410010257504?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>Bagging流程图<br><img src="https://img-blog.csdn.net/20180410010305827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>上边简单的介绍了集成学习方法和boosting&amp;bagging的区别，那么对于单个学习器采用何种策略才能得到一个强学习器呢？</p>
+<ul>
+<li>平均法（加权（个体学习器性能相差较大），简单（性能相近））</li>
+<li>投票法（绝对多数（超过半数标记。否则拒绝预测），相对多数，加权投票）</li>
+<li>学习法（通过另一个学习器来进行结合，Stacking算法）</li>
+</ul>
+<blockquote>
+<p>Stacking算法：<br>基本思想：先从初始数据集训练出初级学习器，然后生成一个新数据集用于训练次级学习器。在这个新数据集中，初级学习器的输出被当作样例输入特征，而出事样本的标记仍被当作样例标记。<br><br><br>注意点：若直接用初级学习器的训练集来产生次级训练集，则过拟合风险会比较大；一般会通过交叉验证等方式，用训练初级学习器未使用的样本来产生次级学习器的训练样本。</p>
+</blockquote>
+<hr>
+<h1 id="Gradient-Boosting"><a href="#Gradient-Boosting" class="headerlink" title="Gradient Boosting"></a>Gradient Boosting</h1><p>Gradient Boosting是一种Boosting的方法，它主要的思想是，每一次建立模型是在之前建立模型损失函数的梯度下降方向。损失函数是评价模型性能（一般为拟合程度+正则项），认为损失函数越小，性能越好。而让损失函数持续下降，就能使得模型不断改性提升性能，其最好的方法就是使损失函数沿着梯度方向下降（讲道理梯度方向上下降最快）。</p>
+<p>Gradient Boost是一个框架，里面可以套入很多不同的算法。</p>
+<h1 id="分类树-amp-回归树-amp-分类回归树"><a href="#分类树-amp-回归树-amp-分类回归树" class="headerlink" title="分类树&amp;回归树&amp;分类回归树"></a>分类树&amp;回归树&amp;分类回归树</h1><h2 id="分类树"><a href="#分类树" class="headerlink" title="分类树"></a>分类树</h2><p>三种比较常见的分类决策树分支划分方式包括：ID3, C4.5, CART。</p>
+<blockquote>
+<p>以C4.5分类树为例，C4.5分类树在每次分枝时，是穷举每一个feature的每一个阈值，找到使得按照feature&lt;=阈值，和feature&gt;阈值分成的两个分枝的熵最大的阈值(熵最大的概念可理解成尽可能每个分枝的男女比例都远离1:1)，按照该标准分枝得到两个新节点，用同样方法继续分枝直到所有人都被分入性别唯一的叶子节点，或达到预设的终止条件，若最终叶子节点中的性别不唯一，则以多数人的性别作为该叶子节点的性别。</p>
+</blockquote>
+<p>总结：分类树使用信息增益或增益比率来划分节点；每个节点样本的类别情况投票决定测试样本的类别。</p>
+<h2 id="回归树"><a href="#回归树" class="headerlink" title="回归树"></a>回归树</h2><blockquote>
+<p>回归树总体流程也是类似，区别在于，回归树的每个节点（不一定是叶子节点）都会得一个预测值，以年龄为例，该预测值等于属于这个节点的所有人年龄的平均值。分枝时穷举每一个feature的每个阈值找最好的分割点，但衡量最好的标准不再是最大熵，而是最小化均方差即(每个人的年龄-预测年龄)^2 的总和 / N。也就是被预测出错的人数越多，错的越离谱，均方差就越大，通过最小化均方差能够找到最可靠的分枝依据。分枝直到每个叶子节点上人的年龄都唯一或者达到预设的终止条件(如叶子个数上限)，若最终叶子节点上人的年龄不唯一，则以该节点上所有人的平均年龄做为该叶子节点的预测年龄。</p>
+</blockquote>
+<p>总结：回归树使用最大均方差划分节点；每个节点样本的均值作为测试样本的回归预测值。</p>
+<h2 id="分类回归树"><a href="#分类回归树" class="headerlink" title="分类回归树"></a>分类回归树</h2><blockquote>
+<p>Classification And Regression Trees，即既能做分类任务又能做回归任务，CART也是决策树的一种，是一种二分决策树，但是也可以用来做回归，CART同决策树类似，不同于 ID3 与 C4.5 ,分类树采用基尼指数来选择最优的切分特征，而且每次都是二分。至于怎么利用基尼系数进行最优的特征切分，大家可以参考这篇文章的详细介绍 <a href="https://www.cnblogs.com/ooon/p/5647309.html" target="_blank" rel="external">决策树之 CART</a></p>
+</blockquote>
+<h1 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h1><p>机器学习中的损失函数有很多，常见的有</p>
+<ul>
+<li>0-1损失函数（0-1 loss function）<script type="math/tex; mode=display">
+L(Y,f(X))=\left\{ \begin{aligned}&1,\quad Y\ne f(X)\\& 0,\quad Y=f(X) \end{aligned} \right.</script></li>
+</ul>
+<blockquote>
+<p>该损失函数的意义就是，当预测错误时，损失函数值为1，预测正确时，损失函数值为0。该损失函数不考虑预测值和真实值的误差程度，也就是只要预测错误，预测错误差一点和差很多是一样的。</p>
+</blockquote>
+<ul>
+<li><p>平方损失函数（quadratic loss function）</p>
 <script type="math/tex; mode=display">
-\begin{align}
-h_\theta(x) = \frac{1}{1+\exp(-\theta^Tx)},
-\end{align}</script><p>我们将训练模型参数$ \textstyle \theta $，使其能够最小化代价函数 ：</p>
+L(Y,f(X))=(Y-f(X))^2</script><blockquote>
+<p>取预测差距的平方</p>
+</blockquote>
+</li>
+<li><p>绝对值损失函数（absolute loss function）</p>
 <script type="math/tex; mode=display">
-\begin{align}
-J(\theta) = -\frac{1}{m} \left[ \sum_{i=1}^m y^{(i)} \log h_\theta(x^{(i)}) + (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) \right]
-\end{align}</script><p>在 softmax回归中，我们解决的是多分类问题（相对于 logistic 回归解决的二分类问题），类标$ \textstyle y $可以取$ \textstyle k $ 个不同的值（而不是 2 个）。因此，对于训练集$ \{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \} $，我们有$ y^{(i)} \in \{1, 2, \ldots, k\} $。（注意此处的类别下标从 1 开始，而不是 0）。例如，在 MNIST 数字识别任务中，我们有$ \textstyle k=10 $个不同的类别。</p>
-<p>对于给定的测试输入$ \textstyle x$，我们想用假设函数针对每一个类别j估算出概率值$ \textstyle p(y=j | x)$。也就是说，我们想估计$ \textstyle x $ 的每一种分类结果出现的概率。因此，我们的假设函数将要输出一个 $ \textstyle k $维的向量（向量元素的和为1）来表示这$ \textstyle k$ 个估计的概率值。 具体地说，我们的假设函数$ \textstyle h_{\theta}(x) $ 形式如下：</p>
+L(Y,f(X))=|Y-f(X)|</script><blockquote>
+<p>取预测值与真实值的差值绝对值，差距不会被平方放大</p>
+</blockquote>
+</li>
+<li><p>对数损失函数（logarithmic loss function）</p>
 <script type="math/tex; mode=display">
-\begin{align}
-h_\theta(x^{(i)}) =
-\begin{bmatrix}
-p(y^{(i)} = 1 | x^{(i)}; \theta) \\
-p(y^{(i)} = 2 | x^{(i)}; \theta) \\
-\vdots \\
-p(y^{(i)} = k | x^{(i)}; \theta)
-\end{bmatrix}
-=
-\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} }
-\begin{bmatrix}
-e^{ \theta_1^T x^{(i)} } \\
-e^{ \theta_2^T x^{(i)} } \\
-\vdots \\
-e^{ \theta_k^T x^{(i)} } \\
-\end{bmatrix}
-\end{align}</script><p>其中$ \theta_1, \theta_2, \ldots, \theta_k \in \Re^{n+1}$ 是模型的参数。请注意$ \frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} } $这一项对概率分布进行归一化，使得所有概率之和为 1 。</p>
-<p>为了方便起见，我们同样使用符号$ \textstyle \theta$ 来表示全部的模型参数。在实现Softmax回归时，将$ \textstyle \theta$ 用一个$ \textstyle k \times(n+1) $的矩阵来表示会很方便，该矩阵是将 $ \theta_1, \theta_2, \ldots, \theta_k $ 按行罗列起来得到的，如下所示：</p>
+L(Y,P(Y|X))=-logP(Y|X)</script><blockquote>
+<p>该损失函数用到了极大似然估计的思想。P(Y|X)通俗的解释就是：在当前模型的基础上，对于样本X，其预测值为Y，也就是预测正确的概率。由于概率之间的同时满足需要使用乘法，为了将其转化为加法，我们将其取对数。最后由于是损失函数，所以预测正确的概率越高，其损失值应该是越小，因此再加个负号取个反。</p>
+</blockquote>
+</li>
+<li><p>全局损失函数 </p>
+<blockquote>
+<p>上面的损失函数仅仅是对于一个样本来说的。而我们的优化目标函数应当是使全局损失函数最小。因此，全局损失函数往往是每个样本的损失函数之和，即： </p>
 <script type="math/tex; mode=display">
-\theta = \begin{bmatrix}
-\mbox{---} \theta_1^T \mbox{---} \\
-\mbox{---} \theta_2^T \mbox{---} \\
-\vdots \\
-\mbox{---} \theta_k^T \mbox{---} \\
-\end{bmatrix}</script><h1 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h1><p>现在我们来介绍 softmax 回归算法的代价函数。在下面的公式中，$\textstyle 1\{\cdot\}$ 是示性函数，其取值规则为：<br>$ \textstyle 1\{ 值为真的表达式 \textstyle \}=1 $</p>
-<p>，$ \textstyle 1\{ 值为假的表达式 \textstyle \}=0 $。举例来说，表达式$ \textstyle 1\{2+2=4\} $的值为1 ，$ \textstyle 1\{1+1=5\} $的值为 0。我们的代价函数为：</p>
+J(w,b)=\frac{1}{m} \sum_{i=1}^m L(Y,f(X))</script><p>对于平方损失函数，为了求导方便，我们可以在前面乘上一个1/2，和平方项求导后的2抵消，即： </p>
 <script type="math/tex; mode=display">
-\begin{align}
-J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k}  1\left\{y^{(i)} = j\right\} \log \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)} }}\right]
-\end{align}</script><p>值得注意的是，上述公式是logistic回归代价函数的推广。logistic回归代价函数可以改为：</p>
+J(w,b)=\frac{1}{2m} \sum_{i=1}^m L(Y,f(X))</script></blockquote>
+</li>
+<li>逻辑回归中的损失函数<blockquote>
+<p>在逻辑回归中，我们采用的是对数损失函数。由于逻辑回归是服从伯努利分布(0-1分布)的，并且逻辑回归返回的sigmoid值是处于(0,1)区间，不会取到0,1两个端点。因此我们能够将其损失函数写成以下形式： </p>
 <script type="math/tex; mode=display">
-\begin{align}
-J(\theta) &= -\frac{1}{m} \left[ \sum_{i=1}^m   (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) + y^{(i)} \log h_\theta(x^{(i)}) \right] \\
-&= - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=0}^{1} 1\left\{y^{(i)} = j\right\} \log p(y^{(i)} = j | x^{(i)} ; \theta) \right]
-\end{align}</script><p>可以看到，Softmax代价函数与logistic 代价函数在形式上非常类似，只是在Softmax损失函数中对类标记的 $\textstyle k $个可能值进行了累加。注意在Softmax回归中将 \textstyle x 分类为类别 $\textstyle j $的概率为：</p>
+L(\hat y,y)=-(y\log{\hat y}+(1-y)\log(1-\hat y))</script></blockquote>
+</li>
+</ul>
+<h1 id="GBDT思想"><a href="#GBDT思想" class="headerlink" title="GBDT思想"></a>GBDT思想</h1><blockquote>
+<p>以下部分学习于 <a href="https://www.zybuluo.com/yxd/note/611571" target="_blank" rel="external">GBDT算法原理深入解析</a> ，原文作者讲的很好，照搬过来，毕竟笔者不是推导数学公式的料，哈哈</p>
+</blockquote>
+<p>GBDT 可以看成是由K棵树组成的加法模型：</p>
 <script type="math/tex; mode=display">
-p(y^{(i)} = j | x^{(i)} ; \theta) = \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)}} }
-.</script><p>对于$ \textstyle J(\theta)$ 的最小化问题，目前还没有闭式解法。因此，我们使用迭代的优化算法（例如梯度下降法，或 L-BFGS）。经过求导，我们得到梯度公式如下：</p>
+\hat{y}_i=\sum_{k=1}^K f_k(x_i), f_k \in F \tag 0</script><p>其中F为所有树组成的函数空间，以回归任务为例，回归树可以看作为一个把特征向量映射为某个score的函数。该模型的参数为：$\Theta=\{f_1,f_2, \cdots, f_K \}$。于一般的机器学习算法不同的是，加法模型不是学习d维空间中的权重，而是直接学习函数（决策树）集合</p>
+<p>上述加法模型的目标函数定义为：$Obj=\sum_{i=1}^n l(y_i, \hat{y}_i) + \sum_{k=1}^K \Omega(f_k)$，其中$\Omega$表示决策树的复杂度，那么该如何定义树的复杂度呢？比如，可以考虑树的节点数量、树的深度或者叶子节点所对应的分数的L2范数等等。</p>
+<p>如何来学习加法模型呢？</p>
+<p>解这一优化问题，可以用前向分布算法（forward stagewise algorithm）。因为学习的是加法模型，如果能够从前往后，每一步只学习一个基函数及其系数（结构），逐步逼近优化目标函数，那么就可以简化复杂度。这一学习过程称之为Boosting。具体地，我们从一个常量预测开始，每次学习一个新的函数，过程如下： </p>
 <script type="math/tex; mode=display">
-\begin{align}
-\nabla_{\theta_j} J(\theta) = - \frac{1}{m} \sum_{i=1}^{m}{ \left[ x^{(i)} \left( 1\{ y^{(i)} = j\}  - p(y^{(i)} = j | x^{(i)}; \theta) \right) \right]  }
-\end{align}</script><p>让我们来回顾一下符号 “$ \textstyle \nabla_{\theta_j}$” 的含义。$\textstyle \nabla_{\theta_j} J(\theta)$ 本身是一个向量，它的第$ \textstyle l $个元素$ \textstyle \frac{\partial J(\theta)}{\partial \theta_{jl}} $是$ \textstyle J(\theta)对\textstyle \theta_j $的第 $\textstyle l $个分量的偏导数。</p>
-<p>有了上面的偏导数公式以后，我们就可以将它代入到梯度下降法等算法中，来最小化$ \textstyle J(\theta)$。 例如，在梯度下降法的标准实现中，每一次迭代需要进行如下更新: $\textstyle \theta_j := \theta_j - \alpha \nabla_{\theta_j} J(\theta)(\textstyle j=1,\ldots,k）$。</p>
-<p>当实现 softmax 回归算法时， 我们通常会使用上述代价函数的一个改进版本。具体来说，就是和权重衰减(weight decay)一起使用。我们接下来介绍使用它的动机和细节。</p>
-<h1 id="Softmax回归模型参数化的特点"><a href="#Softmax回归模型参数化的特点" class="headerlink" title="Softmax回归模型参数化的特点"></a>Softmax回归模型参数化的特点</h1><p>Softmax 回归有一个不寻常的特点：它有一个“冗余”的参数集。为了便于阐述这一特点，假设我们从参数向量 $\textstyle \theta_j $中减去了向量 $\textstyle \psi$，这时，每一个$ \textstyle \theta_j $都变成了 $\textstyle \theta_j - \psi(\textstyle j=1, \ldots, k)$。此时假设函数变成了以下的式子：</p>
+\begin{split}
+\hat{y}_i^0 &= 0 \\
+\hat{y}_i^1 &= f_1(x_i) = \hat{y}_i^0 + f_1(x_i) \\
+\hat{y}_i^2 &= f_1(x_i) + f_2(x_i) = \hat{y}_i^1 + f_2(x_i) \\
+& \cdots \\
+\hat{y}_i^t &= \sum_{k=1}^t f_k(x_i) = \hat{y}_i^{t-1} + f_t(x_i) \\
+\end{split}</script><p>那么，在每一步如何决定哪一个函数$f$被加入呢？指导原则还是最小化目标函数。<br>在第$t$步，模型对$x_i$的预测为：$\hat{y}_i^t= \hat{y}_i^{t-1} + f_t(x_i)$，其中$f_t(x_i)$为这一轮我们要学习的函数（决策树）。这个时候目标函数可以写为：</p>
 <script type="math/tex; mode=display">
-\begin{align}
-p(y^{(i)} = j | x^{(i)} ; \theta)
-&= \frac{e^{(\theta_j-\psi)^T x^{(i)}}}{\sum_{l=1}^k e^{ (\theta_l-\psi)^T x^{(i)}}}  \\
-&= \frac{e^{\theta_j^T x^{(i)}} e^{-\psi^Tx^{(i)}}}{\sum_{l=1}^k e^{\theta_l^T x^{(i)}} e^{-\psi^Tx^{(i)}}} \\
-&= \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)}}}.
-\end{align}</script><p>换句话说，从$ \textstyle \theta_j $中减去$ \textstyle \psi$ 完全不影响假设函数的预测结果！这表明前面的 softmax 回归模型中存在冗余的参数。更正式一点来说， Softmax 模型被过度参数化了。对于任意一个用于拟合数据的假设函数，可以求出多组参数值，这些参数得到的是完全相同的假设函数$ \textstyle h_\theta$。</p>
-<p>进一步而言，如果参数 $\textstyle (\theta_1, \theta_2,\ldots, \theta_k) $是代价函数$ \textstyle J(\theta)$ 的极小值点，那么 $\textstyle (\theta_1 - \psi, \theta_2 - \psi,\ldots,<br>\theta_k - \psi) $同样也是它的极小值点，其中 $\textstyle \psi$ 可以为任意向量。因此使 $\textstyle J(\theta)$ 最小化的解不是唯一的。（有趣的是，由于$ \textstyle J(\theta)$ 仍然是一个凸函数，因此梯度下降时不会遇到局部最优解的问题。但是 Hessian 矩阵是奇异的/不可逆的，这会直接导致采用牛顿法优化就遇到数值计算的问题）</p>
-<p>注意，当$ \textstyle \psi = \theta_1$ 时，我们总是可以将 $\textstyle \theta_1$替换为$\textstyle \theta_1 - \psi = \vec{0}$（即替换为全零向量），并且这种变换不会影响假设函数。因此我们可以去掉参数向量 $\textstyle \theta_1 $（或者其他 $\textstyle \theta_j $中的任意一个）而不影响假设函数的表达能力。实际上，与其优化全部的$ \textstyle k\times(n+1) $个参数 $\textstyle (\theta_1, \theta_2,\ldots, \theta_k)$ （其中 $\textstyle \theta_j \in \Re^{n+1}）$，我们可以令$ \textstyle \theta_1 =<br>\vec{0}$，只优化剩余$的 \textstyle (k-1)\times(n+1)$ 个参数，这样算法依然能够正常工作。</p>
-<p>在实际应用中，为了使算法实现更简单清楚，往往保留所有参数$ \textstyle (\theta_1, \theta_2,\ldots, \theta_n)$，而不任意地将某一参数设置为 0。但此时我们需要对代价函数做一个改动：加入权重衰减。权重衰减可以解决 softmax 回归的参数冗余所带来的数值问题。</p>
-<h1 id="权重衰减"><a href="#权重衰减" class="headerlink" title="权重衰减"></a>权重衰减</h1><p>我们通过添加一个权重衰减项$\textstyle \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^{n} \theta_{ij}^2$ 来修改代价函数，这个衰减项会惩罚过大的参数值，现在我们的代价函数变为：</p>
+\begin{split}
+Obj^{(t)} &= \sum_{i=1}^nl(y_i, \hat{y}_i^t) + \sum_{i=i}^t \Omega(f_i) \\
+&=  \sum_{i=1}^n l\left(y_i, \hat{y}_i^{t-1} + f_t(x_i) \right) + \Omega(f_t) + constant
+\end{split}\tag{1}</script><p>举例说明，假设损失函数为平方损失（square loss），则目标函数为：</p>
 <script type="math/tex; mode=display">
-\begin{align}
-J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} = j\right\} \log \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)} }}  \right]
-              + \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^n \theta_{ij}^2
-\end{align}</script><p>有了这个权重衰减项以后 ($\textstyle \lambda &gt; 0$)，代价函数就变成了严格的凸函数，这样就可以保证得到唯一的解了。 此时的 Hessian矩阵变为可逆矩阵，并且因为$\textstyle J(\theta)$是凸函数，梯度下降法和 L-BFGS 等算法可以保证收敛到全局最优解。</p>
-<p>为了使用优化算法，我们需要求得这个新函数$ \textstyle J(\theta)$ 的导数，如下：</p>
+\begin{split}
+Obj^{(t)} &= \sum_{i=1}^n \left(y_i - (\hat{y}_i^{t-1} + f_t(x_i)) \right)^2 + \Omega(f_t) + constant \\
+&= \sum_{i=1}^n \left[2(\hat{y}_i^{t-1} - y_i)f_t(x_i) + f_t(x_i)^2 \right] + \Omega(f_t) + constant
+\end{split}\tag{2}</script><p>其中，$(\hat{y}_i^{t-1} - y_i)$称之为残差（residual）。因此，使用平方损失函数时，GBDT算法的每一步在生成决策树时只需要拟合前面的模型的残差。</p>
+<blockquote>
+<p>泰勒公式：设$n$是一个正整数，如果定义在一个包含$a$的区间上的函数$f$在点$a$处$n+1$次可导，那么对于这个区间上的任意$x$都有：$\displaystyle f(x)=\sum _{n=0}^{N}\frac{f^{(n)}(a)}{n!}(x-a)^ n+R_ n(x)$，其中的多项式称为函数在$a$处的泰勒展开式，$R_ n(x)$是泰勒公式的余项且是$(x-a)^ n$的高阶无穷小。</p>
+</blockquote>
+<p>根据泰勒公式把函数$f(x+\Delta x)$在点$x$处二阶展开，可得到如下等式： </p>
 <script type="math/tex; mode=display">
-
-\begin{align}
-\nabla_{\theta_j} J(\theta) = - \frac{1}{m} \sum_{i=1}^{m}{ \left[ x^{(i)} ( 1\{ y^{(i)} = j\}  - p(y^{(i)} = j | x^{(i)}; \theta) ) \right]  } + \lambda \theta_j
-\end{align}
-
-通过最小化 \textstyle J(\theta)，我们就能实现一个可用的 softmax 回归模型。
-
-
-# Softmax回归与Logistic 回归的关系
-当类别数$ \textstyle k = 2 $时，softmax 回归退化为 logistic 回归。这表明 softmax 回归是 logistic 回归的一般形式。具体地说，当 $\textstyle k = 2 $时，softmax 回归的假设函数为：</script><p>\begin{align}<br>h_\theta(x) &amp;=<br>\frac{1}{ e^{\theta_1^Tx}  + e^{ \theta_2^T x^{(i)} } }<br>\begin{bmatrix}<br>e^{ \theta_1^T x } \\<br>e^{ \theta_2^T x }<br>\end{bmatrix}<br>\end{align}</p>
+f(x+\Delta x) \approx f(x) + f'(x)\Delta x + \frac12 f''(x)\Delta x^2 \tag 3</script><p>由等式(1)可知，目标函数是关于变量$\hat{y}_i^{t-1} + f_t(x_i)$的函数，若把变量$\hat{y}_i^{t-1}$看成是等式(3)中的$x$，把变量$f_t(x_i)$看成是等式(3)中的$\Delta x$，则等式(1)可转化为：</p>
 <script type="math/tex; mode=display">
-利用softmax回归参数冗余的特点，我们令$ \textstyle \psi = \theta_1$，并且从两个参数向量中都减去向量$ \textstyle \theta_1$，得到:</script><p>\begin{align}<br>h(x) &amp;=<br>\frac{1}{ e^{\vec{0}^Tx}  + e^{ (\theta_2-\theta_1)^T x^{(i)} } }<br>\begin{bmatrix}<br>e^{ \vec{0}^T x } \\<br>e^{ (\theta_2-\theta_1)^T x }<br>\end{bmatrix} \\<br>&amp;=<br>\begin{bmatrix}<br>\frac{1}{ 1 + e^{ (\theta_2-\theta_1)^T x^{(i)} } } \\<br>\frac{e^{ (\theta_2-\theta_1)^T x }}{ 1 + e^{ (\theta_2-\theta_1)^T x^{(i)} } }<br>\end{bmatrix} \\<br>&amp;=<br>\begin{bmatrix}<br>\frac{1}{ 1  + e^{ (\theta_2-\theta_1)^T x^{(i)} } } \\<br>1 - \frac{1}{ 1  + e^{ (\theta_2-\theta_1)^T x^{(i)} } } \\<br>\end{bmatrix}<br>\end{align}</p>
-<p>$$<br>因此，用$ \textstyle \theta$’来表示$\textstyle \theta_2-\theta_1$，我们就会发现 softmax 回归器预测其中一个类别的概率为 $\textstyle \frac{1}{ 1  + e^{ (\theta’)^T x^{(i)} } }$，另一个类别概率的为$ \textstyle 1 - \frac{1}{ 1 + e^{ (\theta’)^T x^{(i)} } }$，这与 logistic回归是一致的。</p>
-<h1 id="Softmax-回归-vs-k-个二元分类器"><a href="#Softmax-回归-vs-k-个二元分类器" class="headerlink" title="Softmax 回归 vs. k 个二元分类器"></a>Softmax 回归 vs. k 个二元分类器</h1><p>如果你在开发一个音乐分类的应用，需要对k种类型的音乐进行识别，那么是选择使用 softmax 分类器呢，还是使用 logistic 回归算法建立 k 个独立的二元分类器呢？</p>
-<p>这一选择取决于你的类别之间是否互斥，例如，如果你有四个类别的音乐，分别为：古典音乐、乡村音乐、摇滚乐和爵士乐，那么你可以假设每个训练样本只会被打上一个标签（即：一首歌只能属于这四种音乐类型的其中一种），此时你应该使用类别数 k = 4 的softmax回归。（如果在你的数据集中，有的歌曲不属于以上四类的其中任何一类，那么你可以添加一个“其他类”，并将类别数 k 设为5。）</p>
-<p>如果你的四个类别如下：人声音乐、舞曲、影视原声、流行歌曲，那么这些类别之间并不是互斥的。例如：一首歌曲可以来源于影视原声，同时也包含人声 。这种情况下，使用4个二分类的 logistic 回归分类器更为合适。这样，对于每个新的音乐作品 ，我们的算法可以分别判断它是否属于各个类别。</p>
-<p>现在我们来看一个计算视觉领域的例子，你的任务是将图像分到三个不同类别中。(i) 假设这三个类别分别是：室内场景、户外城区场景、户外荒野场景。你会使用sofmax回归还是 3个logistic 回归分类器呢？ (ii) 现在假设这三个类别分别是室内场景、黑白图片、包含人物的图片，你又会选择 softmax 回归还是多个 logistic 回归分类器呢？</p>
-<p>在第一个例子中，三个类别是互斥的，因此更适于选择softmax回归分类器 。而在第二个例子中，建立三个独立的 logistic回归分类器更加合适。</p>
-<h1 id="中英文对照"><a href="#中英文对照" class="headerlink" title="中英文对照"></a>中英文对照</h1><ul>
-<li>Softmax回归 Softmax Regression</li>
-<li>有监督学习 supervised learning</li>
-<li>无监督学习 unsupervised learning</li>
-<li>深度学习 deep learning</li>
-<li>logistic回归 logistic regression</li>
-<li>截距项 intercept term</li>
-<li>二元分类 binary classification</li>
-<li>类型标记 class labels</li>
-<li>估值函数/估计值 hypothesis</li>
-<li>代价函数 cost function</li>
-<li>多元分类 multi-class classification</li>
-<li>权重衰减 weight decay</li>
+Obj^{(t)} = \sum_{i=1}^n \left[ l(y_i, \hat{y}_i^{t-1}) + g_if_t(x_i) + \frac12h_if_t^2(x_i) \right]  + \Omega(f_t) + constant \tag 4</script><p>其中$g_i$，定义为损失函数的一阶导数，即$g_i=\partial_{\hat{y}^{t-1}}l(y_i,\hat{y}^{t-1})$；$h_i$定义为损失函数的二阶导数，即$h_i=\partial_{\hat{y}^{t-1}}^2l(y_i,\hat{y}^{t-1})$。<br>假设损失函数为平方损失函数，则$g_i=\partial_{\hat{y}^{t-1}}(\hat{y}^{t-1} - y_i)^2 = 2(\hat{y}^{t-1} - y_i)$，$h_i=\partial_{\hat{y}^{t-1}}^2(\hat{y}^{t-1} - y_i)^2 = 2$，把$g_i$和$h_i$代入等式(4)即得等式(2)。<br>由于函数中的常量在函数最小化的过程中不起作用，因此我们可以从等式(4)中移除掉常量项，得： </p>
+<script type="math/tex; mode=display">
+Obj^{(t)} \approx \sum_{i=1}^n \left[ g_if_t(x_i) + \frac12h_if_t^2(x_i) \right]  + \Omega(f_t) \tag 5</script><p>由于要学习的函数仅仅依赖于目标函数，从等式(5)可以看出只需为学习任务定义好损失函数，并为每个训练样本计算出损失函数的一阶导数和二阶导数，通过在训练样本集上最小化等式(5)即可求得每步要学习的函数$f(x)$，从而根据加法模型等式(0)可得最终要学习的模型。</p>
+<h1 id="GBDT在Scikit-learn中的调用"><a href="#GBDT在Scikit-learn中的调用" class="headerlink" title="GBDT在Scikit-learn中的调用"></a>GBDT在Scikit-learn中的调用</h1><p>关于GBDT在Scikit-learn中的实现原文在 <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html" target="_blank" rel="external">点击查看</a><br>GBDT在sklearn中导入的包不一样，分类是  from sklearn.ensemble import GradientBoostingClassifier，回归是 from sklearn.ensemble import GradientBoostingRegressor</p>
+<h2 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h2><p>GBDT的参数分为boosting类库参数和弱学习器参数，其中有GBDT的弱学习器为CART，所以弱学习器参数基本为决策树的参数，参考<a href="https://www.cnblogs.com/DjangoBlog/p/6201663.html" target="_blank" rel="external">点击阅读</a></p>
+<h3 id="类库参数"><a href="#类库参数" class="headerlink" title="　类库参数"></a>　类库参数</h3><ul>
+<li>loss：损失函数，对于分类模型，有对数似然损失函数”deviance”和指数损失函数”exponential”两者输入选择。默认是对数似然损失函数”deviance”。在原理篇中对这些分类损失函数有详细的介绍。一般来说，推荐使用默认的”deviance”。它对二元分离和多元分类各自都有比较好的优化。而指数损失函数等于把我们带到了Adaboost算法。</li>
+<li>learning_rate：即每个弱学习器的权重缩减系数νν，也称作步长。</li>
+<li>n_estimators：就是弱学习器的最大迭代次数，或者说最大的弱学习器的个数。一般来说n_estimators太小，容易欠拟合，n_estimators太大，又容易过拟合，一般选择一个适中的数值。默认是100。在实际调参的过程中，我们常常将n_estimators和下面介绍的参数learning_rate一起考虑。</li>
+<li>subsample：子采样，取值是[0,1]。注意这里的子采样和随机森林不一样，随机森林使用的是放回抽样，而这里是不放回抽样。如果取值为1，则全部样本都使用，等于没有使用子采样。如果取值小于1，则只有一部分样本会去做GBDT的决策树拟合。选择小于1的比例可以减少方差，即防止过拟合，但是会增加样本拟合的偏差，因此取值不能太低。推荐在[0.5, 0.8]之间，默认是1.0，即不使用子采样。</li>
+<li>init：即我们的初始化的时候的弱学习器，如果不输入，则用训练集样本来做样本集的初始化分类回归预测。否则用init参数提供的学习器做初始化分类回归预测。一般用在我们对数据有先验知识，或者之前做过一些拟合的时候，如果没有的话就不用管这个参数了。</li>
+<li>verbose：默认是0，代表启用详细输出，若为1，代表偶尔输出进度信息</li>
+<li>warm_start：默认为false</li>
+<li>random_state：如果int，random_state随机数生成器使用的种子；如果randomstate实例，random_state是随机数发生器；如果没有，随机数生成器使用的np.random的randomstate实例。</li>
+<li>presort：默认情况下会在密集的数据上使用，默认是在稀疏数据正常排序。设置对true的稀疏数据将会引起错误。</li>
+</ul>
+<h3 id="决策树参数"><a href="#决策树参数" class="headerlink" title="决策树参数"></a>决策树参数</h3><ul>
+<li>max_depth：决策树最大深度</li>
+<li>criterion：衡量分裂指标的度量方法，支持的是均方误差</li>
+<li>min_samples_split：内部节点再划分所需最小样本数。这个值限制了子树继续划分的条件，如果某节点的样本数少于min_samples_split，则不会继续再尝试选择最优特征来进行划分。 默认是2.如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。</li>
+<li>min_samples_leaf：叶子节点最少样本数。这个值限制了叶子节点最少的样本数，如果某叶子节点数目小于样本数，则会和兄弟节点一起被剪枝。 默认是1,可以输入最少的样本数的整数，或者最少样本数占样本总数的百分比。如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。</li>
+<li>min_weight_fraction_leaf：叶子节点最小的样本权重和。这个值限制了叶子节点所有样本权重和的最小值，如果小于这个值，则会和兄弟节点一起被剪枝。 默认是0，就是不考虑权重问题。一般来说，如果我们有较多样本有缺失值，或者分类树样本的分布类别偏差很大，就会引入样本权重，这时我们就要注意这个值了。</li>
+<li>max_features：划分时考虑的最大特征数。可以使用很多种类型的值，默认是”None”,意味着划分时考虑所有的特征数；如果是”log2”意味着划分时最多考虑log2Nlog2N个特征；如果是”sqrt”或者”auto”意味着划分时最多考虑N−−√N个特征。如果是整数，代表考虑的特征绝对数。如果是浮点数，代表考虑特征百分比，即考虑（百分比xN）取整后的特征数。其中N为样本总特征数。一般来说，如果样本特征数不多，比如小于50，我们用默认的”None”就可以了，如果特征数非常多，我们可以灵活使用刚才描述的其他取值来控制划分时考虑的最大特征数，以控制决策树的生成时间。</li>
+<li>max_leaf_nodes：最大叶子节点数。通过限制最大叶子节点数，可以防止过拟合，默认是”None”，即不限制最大的叶子节点数。如果加了限制，算法会建立在最大叶子节点数内最优的决策树。如果特征不多，可以不考虑这个值，但是如果特征分成多的话，可以加以限制，具体的值可以通过交叉验证得到。</li>
+<li>min_impurity_split：节点划分最小不纯度。这个值限制了决策树的增长，如果某节点的不纯度(基于基尼系数，均方差)小于这个阈值，则该节点不再生成子节点。即为叶子节点 。一般不推荐改动默认值1e-7。</li>
+<li>min_impurity_decrease：默认值为0。如果分裂</li>
+</ul>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn.datasets import make_hastie_10_2</span><br><span class="line">&gt;&gt;&gt; from sklearn.ensemble import GradientBoostingClassifier</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; X, y = make_hastie_10_2(random_state=0)</span><br><span class="line">&gt;&gt;&gt; X_train, X_test = X[:2000], X[2000:]</span><br><span class="line">&gt;&gt;&gt; y_train, y_test = y[:2000], y[2000:]</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,</span><br><span class="line">...     max_depth=1, random_state=0).fit(X_train, y_train)</span><br><span class="line">&gt;&gt;&gt; clf.score(X_test, y_test)                 </span><br><span class="line">0.913...</span><br></pre></td></tr></table></figure>
+<h2 id="回归"><a href="#回归" class="headerlink" title="回归"></a>回归</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import numpy as np</span><br><span class="line">&gt;&gt;&gt; from sklearn.metrics import mean_squared_error</span><br><span class="line">&gt;&gt;&gt; from sklearn.datasets import make_friedman1</span><br><span class="line">&gt;&gt;&gt; from sklearn.ensemble import GradientBoostingRegressor</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; X, y = make_friedman1(n_samples=1200, random_state=0, noise=1.0)</span><br><span class="line">&gt;&gt;&gt; X_train, X_test = X[:200], X[200:]</span><br><span class="line">&gt;&gt;&gt; y_train, y_test = y[:200], y[200:]</span><br><span class="line">&gt;&gt;&gt; est = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1,</span><br><span class="line">...     max_depth=1, random_state=0, loss=&apos;ls&apos;).fit(X_train, y_train)</span><br><span class="line">&gt;&gt;&gt; mean_squared_error(y_test, est.predict(X_test))    </span><br><span class="line">5.00...</span><br></pre></td></tr></table></figure>
+<h2 id="模型评价"><a href="#模型评价" class="headerlink" title="模型评价"></a>模型评价</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn import cross_validation, metrics</span><br><span class="line">metrics.accuracy_score(y.values, y_pred) # 准确度</span><br><span class="line">metrics.roc_auc_score(y, y_predprob)  # AUC大小</span><br></pre></td></tr></table></figure>
+<hr>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/pinard/p/6131423.html" target="_blank" rel="external">集成学习原理小结</a></li>
+<li><a href="https://blog.csdn.net/weixin_40604987/article/details/79296427" target="_blank" rel="external">Regression Tree 回归树</a></li>
+<li><a href="https://blog.csdn.net/qq547276542/article/details/77980042" target="_blank" rel="external">浅析机器学习中各种损失函数及其含义</a></li>
 </ul>
 <hr>
-<p>原文链接：<a href="http://ufldl.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92" target="_blank" rel="external">http://ufldl.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92</a><br>英文链接：<a href="http://ufldl.stanford.edu/wiki/index.php/Softmax_Regression" target="_blank" rel="external">http://ufldl.stanford.edu/wiki/index.php/Softmax_Regression</a></p>
+<center>
+    <img src="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="35%" height="35%">
+    <br>
+打开微信扫一扫，加入数据与算法交流大群
+</center>
+<center>
+    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    <br>
+打开微信扫一扫，关注微信公众号【数据与算法联盟】 
+</center>
+
 
       
 
@@ -336,6 +390,10 @@ J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} =
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">GBDT</a>
         		</li>
       		
 		</ul>
@@ -356,7 +414,7 @@ J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} =
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/28/机器学习/Softmax-Regression/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/04/12/机器学习/梯度提升决策树-GBDT（Gradient Boosting Decision Tree）/">展开全文 >></a>
         </p>
       
 
@@ -388,7 +446,7 @@ J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} =
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
     </nav>
   
 
@@ -544,42 +602,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -593,10 +615,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -616,7 +634,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,15 +682,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,6 +702,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -668,11 +726,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -680,19 +738,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -705,6 +759,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

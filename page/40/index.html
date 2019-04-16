@@ -193,28 +193,50 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-数据结构/数据结构算法之链表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ELK/Elasticsearch-DSL部分集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之链表/">数据结构算法之链表</a>
+      <a class="article-title" href="/2017/11/14/ELK/Elasticsearch-DSL部分集合/">Elasticsearch-DSL部分集合</a>
     </h1>
   
 
         
-        <a href="/2017/11/13/数据结构/数据结构算法之链表/" class="archive-article-date">
-  	<time datetime="2017-11-12T16:58:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
+        <a href="/2017/11/14/ELK/Elasticsearch-DSL部分集合/" class="archive-article-date">
+  	<time datetime="2017-11-14T09:26:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>链表面试总结，使用python实现，参考：<a href="https://www.cnblogs.com/lixiaohui-ambition/archive/2012/09/25/2703195.html" target="_blank" rel="external">https://www.cnblogs.com/lixiaohui-ambition/archive/2012/09/25/2703195.html</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line"></span><br><span class="line"># 定义链表</span><br><span class="line">class ListNode:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.data = None</span><br><span class="line">        self.pnext = None</span><br><span class="line"></span><br><span class="line"># 链表操作类</span><br><span class="line">class ListNode_handle:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.cur_node = None</span><br><span class="line">    </span><br><span class="line">    # 链表添加元素</span><br><span class="line">    def add(self,data):</span><br><span class="line">        ln = ListNode()</span><br><span class="line">        ln.data = data</span><br><span class="line">        </span><br><span class="line">        ln.pnext = self.cur_node</span><br><span class="line">        self.cur_node = ln</span><br><span class="line">        return ln</span><br><span class="line">    </span><br><span class="line">    # 打印链表</span><br><span class="line">    def prt(self,ln):</span><br><span class="line">        while ln:</span><br><span class="line">            print(ln.data,end=&quot;  &quot;)</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">    # 逆序输出</span><br><span class="line">    def _reverse(self,ln):</span><br><span class="line">        _list = []</span><br><span class="line">        while ln:</span><br><span class="line">            _list.append(ln.data)</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        ln_2 = ListNode()</span><br><span class="line">        ln_h = ListNode_handle()</span><br><span class="line">        for i in _list:</span><br><span class="line">            ln_2 = ln_h.add(i)</span><br><span class="line">        return ln_2</span><br><span class="line">    </span><br><span class="line">    # 求链表的长度</span><br><span class="line">    def _length(self,ln):</span><br><span class="line">        _len = 0</span><br><span class="line">        while ln:</span><br><span class="line">            _len += 1</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return _len</span><br><span class="line">    </span><br><span class="line">    # 查找指定位置的节点</span><br><span class="line">    def _find_loc(self,ln,loc):</span><br><span class="line">        _sum = 0</span><br><span class="line">        while ln and _sum != loc:</span><br><span class="line">            _sum += 1</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return ln.data</span><br><span class="line">    </span><br><span class="line">    # 判断某个节点是否在链表中</span><br><span class="line">    def _exist(self,ln,data):</span><br><span class="line">        flag = False</span><br><span class="line">        while ln and data != ln.data:</span><br><span class="line">            ln = ln.pnext</span><br><span class="line">        return flag</span><br><span class="line"></span><br><span class="line"># 创建链表   </span><br><span class="line">ln = ListNode()</span><br><span class="line">ln_h = ListNode_handle()</span><br><span class="line">a = [1,4,2,5,8,5,7,9]</span><br><span class="line">for i in a:</span><br><span class="line">    ln = ln_h.add(i)</span><br><span class="line"></span><br><span class="line">print(&quot;正序输出...&quot;)</span><br><span class="line">ln_h.prt(ln)</span><br><span class="line"></span><br><span class="line">print(&quot;\n\n逆序输出...&quot;)</span><br><span class="line">ln_2 = ln_h._reverse(ln)</span><br><span class="line">ln_h.prt(ln_2)</span><br><span class="line"></span><br><span class="line"># 求链表ln的长度</span><br><span class="line">length = ln_h._length(ln)</span><br><span class="line">print(&quot;\n\nln的长度为:&quot;,length)</span><br><span class="line"></span><br><span class="line"># 查找链表ln中的倒数第３个节点</span><br><span class="line">data = ln_h._find_loc(ln,ln_h._length(ln)-3)</span><br><span class="line">print(&quot;\n\n倒数第三个节点为:&quot;,data)</span><br><span class="line"></span><br><span class="line"># 返回某个节点在链表中的位置</span><br><span class="line">loc = ln_h._loc(ln,5)</span><br><span class="line"></span><br><span class="line">#　判断某个节点是否在链表中</span><br><span class="line">flag = ln_h._exist(ln,5)</span><br><span class="line">print(&quot;\n\n５是否存在与链表ln中:&quot;,end=&quot; &quot;)</span><br><span class="line">if flag:</span><br><span class="line">    print(&quot;Yes&quot;)</span><br><span class="line">else:</span><br><span class="line">    print(&quot;No&quot;)</span><br></pre></td></tr></table></figure>
+        <p>ELK是日志收集分析神器，在这篇文章中将会介绍一些ES的常用命令。</p>
+<p>点击阅读：<a href="http://blog.csdn.net/column/details/13079.html" target="_blank" rel="external">ELK Stack 从入门到放弃</a></p>
+<h1 id="DSL中遇到的错误及解决办法"><a href="#DSL中遇到的错误及解决办法" class="headerlink" title="DSL中遇到的错误及解决办法"></a>DSL中遇到的错误及解决办法</h1><h2 id="分片限制错误"><a href="#分片限制错误" class="headerlink" title="分片限制错误"></a>分片限制错误</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Trying to query 2632 shards, which is over the limit of 1000. This limit exists because querying many shards at the same time can make the job of the coordinating node very CPU and/or memory intensive. It is usually a better idea to have a smaller number of larger shards. Update [action.search.shard_count.limit] to a greater value if you really want to query that many shards at the same time.</span><br></pre></td></tr></table></figure>
+<p>解决办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">修改该限制数目</span><br><span class="line"></span><br><span class="line">curl -k -u admin:admin -XPUT &apos;http://localhost:9200/_cluster/settings&apos; -H &apos;Content-Type: application/json&apos; -d&apos; </span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot; : &#123;</span><br><span class="line">        &quot;action.search.shard_count.limit&quot; : &quot;5000&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br><span class="line"></span><br><span class="line">-k -u admin:admin 表述如果有权限保护的话可以加上</span><br></pre></td></tr></table></figure></p>
+<h2 id="Fileddate-错误"><a href="#Fileddate-错误" class="headerlink" title="Fileddate 错误"></a>Fileddate 错误</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fielddata is disabled on text fields by default. Set fielddata=true on [make] in order to load fielddata in memory by uninverting the inverted index. Note that this can however use significant memory.</span><br></pre></td></tr></table></figure>
+<p>解决办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cars: 索引名</span><br><span class="line">transactions：索引对应的类型</span><br><span class="line">color：字段</span><br><span class="line"></span><br><span class="line">curl -XPUT -k -u admin:admin &apos;localhost:9200/cars/_mapping/transactions?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;properties&quot;: &#123;</span><br><span class="line">    &quot;color&quot;: &#123; </span><br><span class="line">      &quot;type&quot;:     &quot;text&quot;,</span><br><span class="line">      &quot;fielddata&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure></p>
+<h1 id="指定关键词查询，排序和函数统计"><a href="#指定关键词查询，排序和函数统计" class="headerlink" title="指定关键词查询，排序和函数统计"></a>指定关键词查询，排序和函数统计</h1><h2 id="指定关键词"><a href="#指定关键词" class="headerlink" title="指定关键词"></a>指定关键词</h2><p>from 为首个偏移量，size为返回数据的条数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">http://10.10.11.139:9200/logstash-nginx-access-*/nginx-access/_search?pretty</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;from&quot;:0,size&quot;:1000,</span><br><span class="line">    &quot;query&quot; : &#123;</span><br><span class="line">        &quot;term&quot; : &#123; </span><br><span class="line">        	&quot;major&quot; : &quot;55&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="添加排序"><a href="#添加排序" class="headerlink" title="添加排序"></a>添加排序</h2><p>(需要进行mapping设置，asc 为升序  desc为降序)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;from&quot;:0,&quot;size&quot;:1000,</span><br><span class="line">    &quot;sort&quot;:[</span><br><span class="line">        &#123;&quot;offset&quot;:&quot;desc&quot;&#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;query&quot; : &#123;</span><br><span class="line">        &quot;term&quot; : &#123; </span><br><span class="line">            &quot;major&quot; : &quot;55&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="mode-方法"><a href="#mode-方法" class="headerlink" title="mode 方法"></a>mode 方法</h2><p>mode方法包括 min／max／avg／sum／median</p>
+<p>假如现在要对price字段进行排序，但是price字段有多个值，这个时候就可以使用mode 方法了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   &quot;query&quot; : &#123;</span><br><span class="line">      &quot;term&quot; : &#123; &quot;product&quot; : &quot;chocolate&quot; &#125;</span><br><span class="line">   &#125;,</span><br><span class="line">   &quot;sort&quot; : [</span><br><span class="line">      &#123;&quot;price&quot; : &#123;&quot;order&quot; : &quot;asc&quot;, &quot;mode&quot; : &quot;avg&quot;&#125;&#125;</span><br><span class="line">   ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="IP范围和网段查询"><a href="#IP范围和网段查询" class="headerlink" title="IP范围和网段查询"></a>IP范围和网段查询</h1><h2 id="IP-range-搜索"><a href="#IP-range-搜索" class="headerlink" title="IP range 搜索"></a>IP range 搜索</h2><p>错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fielddata is disabled on text fields by default. Set fielddata=true on [clientip] in order to load fielddata in memory by uninverting the inverted index. Note that this can however use significant memory.</span><br></pre></td></tr></table></figure></p>
+<p>解决办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">curl -k -u admin:admin -XPUT &apos;10.10.11.139:9200/logstash-nginx-access-*/_mapping/nginx-access?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;properties&quot;: &#123;</span><br><span class="line">    &quot;clientip&quot;: &#123; </span><br><span class="line">      &quot;type&quot;:     &quot;text&quot;,</span><br><span class="line">      &quot;fielddata&quot;: true,</span><br><span class="line">      &quot;norms&quot;: false</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure></p>
+<p>查看某个索引的mapping<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -k -u admin:admin -XGET http://10.10.11.139:9200/logstash-nginx-access-*/_mapping?pretty</span><br></pre></td></tr></table></figure></p>
+<p>(当IP为不可解析使就会出现错误)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">http://10.10.11.139:9200/logstash-sshlogin-others-success-*/zhongcai/_search?pretty</span><br><span class="line">&#123;</span><br><span class="line">    &quot;size&quot;:100,</span><br><span class="line">    &quot;aggs&quot; : &#123;</span><br><span class="line">        &quot;ip_ranges&quot; : &#123;</span><br><span class="line">            &quot;ip_range&quot; : &#123;</span><br><span class="line">                &quot;field&quot; : &quot;clientip&quot;,</span><br><span class="line">                &quot;ranges&quot; : [</span><br><span class="line">                    &#123; &quot;to&quot; : &quot;40.77.167.73&quot; &#125;,</span><br><span class="line">                    &#123; &quot;from&quot; : &quot;40.77.167.75&quot; &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="网段查询"><a href="#网段查询" class="headerlink" title="网段查询"></a>网段查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">http://10.10.11.139:9200/logstash-sshlogin-others-success-*/zhongcai/_search?pretty</span><br><span class="line">&#123;</span><br><span class="line">    &quot;aggs&quot; : &#123;</span><br><span class="line">        &quot;ip_ranges&quot; : &#123;</span><br><span class="line">            &quot;ip_range&quot; : &#123;</span><br><span class="line">                &quot;field&quot; : &quot;ip&quot;,</span><br><span class="line">                &quot;ranges&quot; : [</span><br><span class="line">                    &#123; &quot;mask&quot; : &quot;172.21.202.0/24&quot; &#125;,</span><br><span class="line">                    &#123; &quot;mask&quot; : &quot;172.21.202.0/24&quot; &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="关于索引的操作"><a href="#关于索引的操作" class="headerlink" title="关于索引的操作"></a>关于索引的操作</h1><h2 id="删除某个索引"><a href="#删除某个索引" class="headerlink" title="删除某个索引"></a>删除某个索引</h2><p>-k -u admin:admin 为用户名：密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE  -k -u admin:admin &apos;http://localhost:9200/my_index&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="查看某个索引的Mapping"><a href="#查看某个索引的Mapping" class="headerlink" title="查看某个索引的Mapping"></a>查看某个索引的Mapping</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET &quot;http://127.0.0.1:9200/my_index/_mapping?pretty&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="索引数据迁移"><a href="#索引数据迁移" class="headerlink" title="索引数据迁移"></a>索引数据迁移</h2><p>Es索引reindex(从ip_remote上迁移到本地)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &apos;localhost:9200/_reindex?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;source&quot;: &#123;</span><br><span class="line">    &quot;remote&quot;: &#123;</span><br><span class="line">      &quot;host&quot;: &quot;http://ip_remote:9200&quot;,</span><br><span class="line">      &quot;username&quot;: &quot;username&quot;,</span><br><span class="line">      &quot;password&quot;: &quot;passwd&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;index&quot;: &quot;old_index&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;dest&quot;: &#123;</span><br><span class="line">    &quot;index&quot;: &quot;new_index&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="为某个索引添加字段"><a href="#为某个索引添加字段" class="headerlink" title="为某个索引添加字段"></a>为某个索引添加字段</h2><p>添加number字段：</p>
+<h3 id="唯一ID"><a href="#唯一ID" class="headerlink" title="唯一ID"></a>唯一ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -POST &apos;http://127.0.0.1:9200/my_idnex/my_index_type/id/_update?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">   &quot;doc&quot; : &#123;</span><br><span class="line">      &quot;number&quot; : 1</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
+<h3 id="批量操作"><a href="#批量操作" class="headerlink" title="批量操作"></a>批量操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &apos;localhost:9200/logstash-sshlogin-others-success-2017-*/_update_by_query?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;: &#123;</span><br><span class="line">    &quot;inline&quot;: &quot;ctx._source.number=1&quot;,</span><br><span class="line">    &quot;lang&quot;: &quot;painless&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="根据指定条件进行聚合"><a href="#根据指定条件进行聚合" class="headerlink" title="根据指定条件进行聚合"></a>根据指定条件进行聚合</h1><p>每小时成功登录的次数进行聚合<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">curl -POST &apos;http://127.0.0.1:9200/logstash-sshlogin-others-success-2017-*/zhongcai-sshlogin/_search?pretty&apos; -H &apos;Content-Type: application/json&apos; -d&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;term&quot;: &#123;</span><br><span class="line">      &quot;ssh_type&quot;: &quot;ssh_successful_login&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;sums&quot;: &#123;</span><br><span class="line">      &quot;date_histogram&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;@timestamp&quot;,</span><br><span class="line">        &quot;interval&quot;: &quot;hour&quot;,</span><br><span class="line">        &quot;format&quot;: &quot;yyyy-MM-dd HH&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure></p>
+
       
 
       
@@ -227,7 +249,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ELK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ES</a>
         		</li>
       		
 		</ul>
@@ -248,7 +274,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之链表/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/14/ELK/Elasticsearch-DSL部分集合/">展开全文 >></a>
         </p>
       
 
@@ -280,7 +306,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/39/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="page-number current">40</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/41/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/39/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="page-number current">40</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/41/">Next &raquo;</a>
     </nav>
   
 
@@ -436,42 +462,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -485,10 +475,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,7 +494,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,15 +542,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -548,6 +562,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -560,11 +586,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -572,19 +598,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,6 +619,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -193,30 +193,35 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java/新浪明星日志热门推荐（java实现）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux/VirtualBox导入XXXX-vdi时报错" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/06/19/Java/新浪明星日志热门推荐（java实现）/">新浪明星日志热门推荐（java实现）</a>
+      <a class="article-title" href="/2015/06/27/Linux/VirtualBox导入XXXX-vdi时报错/">VirtualBox导入XXXX.vdi时报错</a>
     </h1>
   
 
         
-        <a href="/2015/06/19/Java/新浪明星日志热门推荐（java实现）/" class="archive-article-date">
-  	<time datetime="2015-06-19T00:15:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-06-19</time>
+        <a href="/2015/06/27/Linux/VirtualBox导入XXXX-vdi时报错/" class="archive-article-date">
+  	<time datetime="2015-06-27T02:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-06-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>现在进行推荐的第三步：</p>
-<h1 id="1-利用数据的格式如下"><a href="#1-利用数据的格式如下" class="headerlink" title="1:利用数据的格式如下"></a>1:利用数据的格式如下</h1><p><img src="http://img.blog.csdn.net/20150628233105944?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<h1 id="2：编程语言采用的是Java，源代码如下："><a href="#2：编程语言采用的是Java，源代码如下：" class="headerlink" title="2：编程语言采用的是Java，源代码如下："></a>2：编程语言采用的是Java，源代码如下：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">package top10;</span><br><span class="line"></span><br><span class="line">import java.util.*;</span><br><span class="line">import java.io.*;</span><br><span class="line"></span><br><span class="line">public class top &#123;</span><br><span class="line"></span><br><span class="line">    public static void top(String []one,String []two,String []three)&#123;</span><br><span class="line">        int []one1 = new int[15688];</span><br><span class="line">        for(int i =0;i&lt;15687;i++)</span><br><span class="line">            &#123;</span><br><span class="line">            one1[i]=0;</span><br><span class="line">            for(int j=i;j&lt;15688;j++)</span><br><span class="line">                if(one[j]==one[i])</span><br><span class="line">                &#123;</span><br><span class="line">                    one1[i]++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        for(int i =0;i&lt;15688;i++)</span><br><span class="line">            for(int j=i;j&lt;15688;j++)</span><br><span class="line">                if(one1[i]&gt;one1[j])</span><br><span class="line">                &#123;</span><br><span class="line">                    String temp1;</span><br><span class="line">                    temp1=one[i];</span><br><span class="line">                    one[i]=one[j];</span><br><span class="line">                    one[j]=temp1;</span><br><span class="line">                    </span><br><span class="line">                    String temp2;</span><br><span class="line">                    temp2=two[i];</span><br><span class="line">                    two[i]=two[j];</span><br><span class="line">                    two[j]=temp2;</span><br><span class="line">                    </span><br><span class="line">                    String temp3;</span><br><span class="line">                    temp3=three[i];</span><br><span class="line">                    three[i]=three[j];</span><br><span class="line">                    three[j]=temp3;</span><br><span class="line">                &#125;</span><br><span class="line">        System.out.println(&quot;Top前十的结果为：&quot;);</span><br><span class="line">        System.out.println(&quot;姓名\t&quot;+&quot;\t推荐博客地址&quot;+&quot;\t\t\t\t\t\t\t\t\t\t\t&quot;+&quot;推荐作者博客首地址&quot;);</span><br><span class="line">        for(int k=1;k&lt;=10;k++)</span><br><span class="line">        &#123;</span><br><span class="line">            String str;</span><br><span class="line">                str = String.format(&quot;%s\t\t%s\t\t%s&quot;, one[k],two[k],three[k]);</span><br><span class="line">            System.out.println(str);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public static void list() throws IOException&#123;</span><br><span class="line">        FileReader in = new FileReader(&quot;title.txt&quot;);</span><br><span class="line">        BufferedReader br = new BufferedReader(in);</span><br><span class="line">        String s1 = null;</span><br><span class="line">        String []one = new String[15688];</span><br><span class="line">        String []two = new String[15688];</span><br><span class="line">        String []three = new String[15688];</span><br><span class="line">        int i = 0,k=0,m=0,j = 1;</span><br><span class="line">        while((s1 = br.readLine()) != null) &#123;</span><br><span class="line">            if(j%3==2)</span><br><span class="line">            &#123;</span><br><span class="line">                two[k] = s1;</span><br><span class="line">                k++;</span><br><span class="line">            &#125;</span><br><span class="line">            else if(j%3==0)</span><br><span class="line">            &#123;</span><br><span class="line">                three[m] = s1;</span><br><span class="line">                m++;</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">                &#123;</span><br><span class="line">                one[i] = s1;        </span><br><span class="line">                i++;</span><br><span class="line">                &#125;</span><br><span class="line">            j++;</span><br><span class="line">            &#125;</span><br><span class="line">        br.close();</span><br><span class="line">        in.close();</span><br><span class="line">//        System.out.println(j);</span><br><span class="line">        top(one,two,three);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public static void main(String[] args) throws IOException &#123;</span><br><span class="line">        // TODO Auto-generated method stub</span><br><span class="line">        </span><br><span class="line">        System.out.println(&quot;+++++++++++++++++|||||||||||||||++++++++++++++++++&quot;);</span><br><span class="line">        System.out.println(&quot;**************欢迎使用新浪明星博客推荐系统          ***************&quot;);</span><br><span class="line">        System.out.println(&quot;**************    1、使用推荐功能                        ***************&quot;);</span><br><span class="line">        System.out.println(&quot;**************    2、退出此系统,谢谢使用       ***************&quot;);</span><br><span class="line">        System.out.println(&quot;+++++++++++++++++|||||||||||||||++++++++++++++++++&quot;);</span><br><span class="line">        Scanner in = new Scanner(System.in);</span><br><span class="line">        while(true)</span><br><span class="line">        &#123;</span><br><span class="line">            int i = in.nextInt();</span><br><span class="line">            &#123;</span><br><span class="line">                switch(i)</span><br><span class="line">                &#123;</span><br><span class="line">                case 1: list();break;</span><br><span class="line">                case 2:System.out.println(&quot;谢谢使用！！！&quot;);break;</span><br><span class="line">                default:System.out.println(&quot;请重新输入！！！&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="3：运行的结果如图"><a href="#3：运行的结果如图" class="headerlink" title="3：运行的结果如图"></a>3：运行的结果如图</h1><p><img src="http://img.blog.csdn.net/20150628233009834?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+        <p>virtualbox导入vdi文件时出现下面的问题：</p>
+<p><img src="http://img.blog.csdn.net/20150627102144937?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>解决方法：</p>
+<p>windows+R，输入cmd,进入virtualbox的安装目录（或者在硬盘中直接进入virtualbox的安装目录，在任务栏里输入cmd），输入VBoxManage  internalcommands setvdiuuid D:\path\ubuntu.vdi</p>
+<p> 注意，在virtualbox4.0.4以上该命令改为</p>
+<p>VBoxManage internalcommands sethduuid D:\path\ubuntu.vdi</p>
+<p>然后重新导入即可。</p>
+<p>这是一个重新设置UUID（通用唯一识别码）号的命令，VirtualBox没有集成到GUI环境中，只能在命令行中使用。</p>
+<p>什么是UUID？    请点击UUID<a href="https://baike.baidu.com/item/UUID?fr=aladdinfill/I0JBQkFCMA==/dissolve/70/gravity/Center" target="_blank" rel="external">请点击UUID</a></p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -238,7 +243,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
         		</li>
       		
 		</ul>
@@ -259,7 +264,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/06/19/Java/新浪明星日志热门推荐（java实现）/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/06/27/Linux/VirtualBox导入XXXX-vdi时报错/">展开全文 >></a>
         </p>
       
 
@@ -291,7 +296,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/63/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="page-number" href="/page/63/">63</a><span class="page-number current">64</span><a class="page-number" href="/page/65/">65</a><a class="page-number" href="/page/66/">66</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/65/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/63/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="page-number" href="/page/63/">63</a><span class="page-number current">64</span><a class="page-number" href="/page/65/">65</a><a class="page-number" href="/page/66/">66</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/65/">Next &raquo;</a>
     </nav>
   
 
@@ -447,42 +452,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -496,10 +465,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,7 +484,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,15 +532,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,6 +552,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -571,11 +576,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,19 +588,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -608,6 +609,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

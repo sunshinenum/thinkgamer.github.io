@@ -193,35 +193,29 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-数据结构/数据结构算法之排序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据结构/数据结构算法之合并两个有序序列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之排序/">数据结构算法之排序</a>
+      <a class="article-title" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">数据结构算法之合并两个有序序列</a>
     </h1>
   
 
         
-        <a href="/2017/11/13/数据结构/数据结构算法之排序/" class="archive-article-date">
-  	<time datetime="2017-11-12T16:51:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
+        <a href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/" class="archive-article-date">
+  	<time datetime="2017-11-12T16:55:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>数据结构面试中经常会被问到篇排序相关的问题，那么这篇文章会研究下怎么用python来实现排序。</p>
-<h1 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#coding：utf-8</span><br><span class="line"></span><br><span class="line"># 冒泡排序</span><br><span class="line">def maopao():</span><br><span class="line">    a = [2,1,4,3,9,5,6,8,7]</span><br><span class="line">    for i in range(len(a)-1):</span><br><span class="line">        for j in range(len(a)-1-i):</span><br><span class="line">            if a[j]&gt;a[j+1]:</span><br><span class="line">                temp = a[j]</span><br><span class="line">                a[j] = a[j+1]</span><br><span class="line">                a[j+1] = temp</span><br><span class="line">    print(a)</span><br><span class="line">maopao()</span><br></pre></td></tr></table></figure>
-<p>结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h1 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"># 归并排序</span><br><span class="line">def merge(a,b):</span><br><span class="line">    i,j = 0,0</span><br><span class="line">    c = []</span><br><span class="line">    while i&lt;=len(a)-1 and j&lt;=len(b)-1:</span><br><span class="line">        if a[i]&lt;b[j]:</span><br><span class="line">            c.append(a[i])</span><br><span class="line">            i+=1</span><br><span class="line">        else:</span><br><span class="line">            c.append(b[j])</span><br><span class="line">            j+=1</span><br><span class="line">    if i&lt;=len(a)-1:</span><br><span class="line">        for m in a[i:]:</span><br><span class="line">            c.append(m)</span><br><span class="line">    </span><br><span class="line">    if j&lt;=len(b)-1:</span><br><span class="line">        for n in b[j:]:</span><br><span class="line">            c.append(n)</span><br><span class="line">    return c</span><br><span class="line"></span><br><span class="line">def guibing(a):</span><br><span class="line">    if len(a)&lt;=1:</span><br><span class="line">        return a</span><br><span class="line">    center = int(len(a)/2)</span><br><span class="line">    left = guibing(a[:center])</span><br><span class="line">    right = guibing(a[center:])</span><br><span class="line">    return merge(left,right)</span><br><span class="line"></span><br><span class="line">print(guibing([2,1,4,3,9,5,6,8,7]))</span><br></pre></td></tr></table></figure>
-<p>结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h1 id="快速排序"><a href="#快速排序" class="headerlink" title="　快速排序"></a>　快速排序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#　快速排序    </span><br><span class="line">def kpsort(left,right,a):</span><br><span class="line">    based = a[left]</span><br><span class="line">    i = left</span><br><span class="line">    j = right</span><br><span class="line">    while i &lt; j:</span><br><span class="line">        # 从数组右边开始遍历</span><br><span class="line">        while a[j]&gt;=based and i&lt;j:</span><br><span class="line">            j -= 1</span><br><span class="line">        a[i] = a[j]</span><br><span class="line">        while a[i]&lt;=based and i&lt;j:</span><br><span class="line">            i += 1</span><br><span class="line">        </span><br><span class="line">        a[j]= a[i]</span><br><span class="line">        a[i] = based</span><br><span class="line"></span><br><span class="line">    return i</span><br><span class="line">    </span><br><span class="line">def kuaipai(left,right,a):</span><br><span class="line">    if left&lt;right:</span><br><span class="line">        p = kpsort(left,right,a)</span><br><span class="line">        kuaipai(left,p-1,a)</span><br><span class="line">        kuaipai(p+1,right,a)</span><br><span class="line"></span><br><span class="line">    return a</span><br><span class="line">            </span><br><span class="line">print(kuaipai(0,8,a =[2,1,4,3,9,5,6,8,7]))</span><br></pre></td></tr></table></figure>
-<p>结果为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br></pre></td></tr></table></figure></p>
+        <p>有序序列的合并，python实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#coding:utf-8</span><br><span class="line"></span><br><span class="line">a = [2,4,6,8,10]</span><br><span class="line">b = [3,5,7,9,11,13,15]</span><br><span class="line">c = []</span><br><span class="line"></span><br><span class="line">def merge(a,b):</span><br><span class="line">    i,j = 0,0</span><br><span class="line">    while i&lt;=len(a)-1 and j&lt;=len(b)-1:</span><br><span class="line">        if a[i]&lt;b[j]:</span><br><span class="line">            c.append(a[i])</span><br><span class="line">            i+=1</span><br><span class="line">        else:</span><br><span class="line">            c.append(b[j])</span><br><span class="line">            j+=1</span><br><span class="line">    if i&lt;=len(a)-1:</span><br><span class="line">        for m in a[i:]:</span><br><span class="line">            c.append(m)</span><br><span class="line">    </span><br><span class="line">    if j&lt;=len(b)-1:</span><br><span class="line">        for n in b[j:]:</span><br><span class="line">            c.append(n)</span><br><span class="line">    print(c)</span><br><span class="line"></span><br><span class="line">merge(a,b)</span><br></pre></td></tr></table></figure>
+<p>运行结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15]</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -256,7 +250,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之排序/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/13/数据结构/数据结构算法之合并两个有序序列/">展开全文 >></a>
         </p>
       
 
@@ -288,7 +282,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="page-number" href="/page/44/">44</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="page-number" href="/page/44/">44</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
     </nav>
   
 
@@ -444,42 +438,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -493,10 +451,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,7 +470,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,15 +518,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -556,6 +538,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -568,11 +562,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -580,19 +574,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,6 +595,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

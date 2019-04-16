@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/机器学习算法分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/线性模型篇之Logistic Regression数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/26/机器学习/机器学习算法分类/">机器学习算法分类</a>
+      <a class="article-title" href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/">线性模型篇之Logistic Regression数学公式推导</a>
     </h1>
   
 
         
-        <a href="/2019/03/26/机器学习/机器学习算法分类/" class="archive-article-date">
-  	<time datetime="2019-03-26T09:43:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-26</time>
+        <a href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/" class="archive-article-date">
+  	<time datetime="2019-04-02T14:31:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
@@ -220,31 +220,76 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<blockquote>
-<p>机器学习算法可以按照不同的标准进行分类。比如按函数f(X)的不同，机器学习算法可以分为线性模型和非线性模型；按照学习准则的不同，机器学习算法也可以分为统计方法和非统计方法。</p>
-<p>但一般而言，会按照训练样本提供的信息以及反馈方式不同，将机器学习算法分为以下几类，下面将一一细说。</p>
-</blockquote>
-<ul>
-<li>监督学习</li>
-<li>无监督学习</li>
-<li>强化学习</li>
+<h1 id="两分类与多分类"><a href="#两分类与多分类" class="headerlink" title="两分类与多分类"></a>两分类与多分类</h1><ul>
+<li>两类分类（Binary Classification）<ul>
+<li>类别标签y只有两种取值，通常设为{0，1}</li>
+<li>线性判别函数，即形如 y = w^T*x + b</li>
+<li>分割超平面（hyper plane）,由满足f(w,x)=0的点组成</li>
+<li>决策边界（Decision boundary）、决策平面（Decision surface）：即分分割超平面，决策边界将特征空间一分为二，划分成两个区域，每个区域对应一个类别。</li>
+<li>有向距离（signed distance）</li>
 </ul>
-<h1 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h1><p>如果机器学习的目标是通过建模样本的特征x和标签y之间的关系：</p>
+</li>
+<li>多样分类（Multi-class Classification）<ul>
+<li>分类的类别个数大于2，多分类一般需要多个线性判别函数，但设计这些判别函数有很多方式。eg：<ul>
+<li>一对其余：属于和不属于</li>
+<li>一对一</li>
+<li>argmax（改进的一对其余）：属于每个类别的概率，找概率最大值</li>
+</ul>
+</li>
+<li>参考：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="Logistic回归"><a href="#Logistic回归" class="headerlink" title="Logistic回归"></a>Logistic回归</h1><h2 id="LR回归"><a href="#LR回归" class="headerlink" title="LR回归"></a>LR回归</h2><p>Logistic回归（Logistic Regression，LR）是一种常见的处理二分类的线性回归模型。</p>
+<p>为了解决连续的线性回归函数不适合做分类的问题，引入函数g：R^d -&gt; (0,1)来预测类别标签的后验概率p(y=1 | x)</p>
+<p>其中g(.)通常称为激活函数（activation function），其作用是把线性函数的值域从实数区间“挤压”到了（0，1）之间，可以用概率表示。在统计文献中，g(.)的逆函数g(.)^-1也称为联系函数（Link Function）</p>
+<p>在逻辑回归中使用Logistic作为激活函数，标签y=1的后验概率为(公式-1)：</p>
 <script type="math/tex; mode=display">
-y=f(x,\theta )</script><p>或</p>
+p(y=1 | x) = \sigma (w^T x)</script><script type="math/tex; mode=display">
+p(y=1 | x)= \frac{1}{1+exp(-w^T x)}</script><p>标签 y=0的后验概率为(公式-2)：</p>
 <script type="math/tex; mode=display">
-p(y|x,\theta)</script><p>并且训练集中的每个样本都有标签，那么这类学习称之为监督学习（Supervised Learning）。根据标签类型的不同，监督学习又可以分为回归和分类两种。</p>
-<h2 id="回归（Regression）"><a href="#回归（Regression）" class="headerlink" title="回归（Regression）"></a>回归（Regression）</h2><p>回归问题中的标签y是连续值（实数或者连续整数）</p>
+p(y=0 | x) =1-p(y=0 | x)</script><script type="math/tex; mode=display">
+p(y=0 | x)= \frac{exp(-w^T x)}{1+exp(-w^T x)}</script><p>将公式-1进行等价变换，可得(公式-3)：</p>
 <script type="math/tex; mode=display">
-y=f(x,\theta )</script><p>的输出也是连续值。</p>
-<h2 id="分类（Classification）"><a href="#分类（Classification）" class="headerlink" title="分类（Classification）"></a>分类（Classification）</h2><p>分类问题中的标签y是离散的类别，在分类问题中，学习到的模型也成为分类器（Classifier）。分类问题根据其类别的数量又可以分为二分类（Binary Clssification）和多分类（Mutil-class Classification）。</p>
-<h2 id="机构化学习（Structured-Learning）"><a href="#机构化学习（Structured-Learning）" class="headerlink" title="机构化学习（Structured Learning）"></a>机构化学习（Structured Learning）</h2><p>结构化学习的输出对象是结构化的对象，比如序列、树、图等，由于结构化学习的输出空间比较大，因此我们一般定义一个联合特征空间，将x,y映射为该空间中的联合特征向量（x,y）,预测模型可以写为：</p>
+w^T x = log \frac{p(y=1 | x)}{1-p(y=1 | x)}</script><script type="math/tex; mode=display">
+w^T x = log \frac { p(y=1 | x)}{p(y=0|x)}</script><p>其中</p>
 <script type="math/tex; mode=display">
-\hat{y}=\underset{y \in Gen(x)}{arg max f(\phi (x,y),\theta )}</script><p>其中gen(x)表示x所有可能的输出目标集合。计算arg max的过程也称为解码（decoding）过程，一般通过动态规划的方法来计算。</p>
-<h1 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h1><p>无监督学习（Unsupervised Learning）是指从不包含目标标签的训练样本中自动学习到一些有价值的信息。典型的无监督学习问题有聚类、密度估计、特征学习、降维等。</p>
-<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p>强化学习（Reinforcement Learning）是一类通过交互来学习的机器学习算法。在强化学习中，智能体根据环境的状态作出一个动作，并得到即时或延时的奖励。智能体在和环境的交互中不断学习并调整策略，以取得最大化的期望总回报。</p>
-<p>下表给出了三种机器学习类型</p>
-<p><img src="https://img-blog.csdnimg.cn/20190326174240856.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>监督学习需要每个样本都有标签，而无监督学习则不需要标签。一般而言，监督学习通常大量的有标签数据集，这些数据集是一般都需要由人工进行标注，成本很高。因此，也出现了很多弱监督学习（Weak Supervised Learning）和半监督学习（Semi-Supervised Learning）的方法，希望从大规模的无标注数据中充分挖掘有用的信息，降低对标注样本数量的要求。强化学习和监督学习的不同在于强化学习不需要显式地以“输入/输出对”的方式给出训练样本，是一种在线的学习机制。</p>
+\frac { p(y=1 | x)}{p(y=0|x)}</script><p>为样本x正反例后验概率的比例，称为几率（odds），几率的对数称为对数几率（log odds或者logit），公式-3中第一个表达式，左边是线性函数，logistic回归可以看做是预测值为“标签的对数几率”的线性回归模型，因为Logistic回归也称为对数几率回归（Logit Regression）。</p>
+<p>附公式-1到公式-3的推导：</p>
+<script type="math/tex; mode=display">
+p(y=1 | x)= \frac{1}{1+exp(-w^T x)}</script><script type="math/tex; mode=display">
+=> exp(-w^Tx) = \frac{1-p(y=1 | x)}{p(y=1 | x)}</script><script type="math/tex; mode=display">
+=> - w^T x = log \frac{1- p(y=1 | x)}{p(y=1 | x)}</script><script type="math/tex; mode=display">
+=>  w^T x = log (\frac{1- p(y=1 | x)}{p(y=1 | x)})^{-1}</script><script type="math/tex; mode=display">
+=> w^T x = log \frac{p(y=1 | x)}{1-p(y=1 | x)}</script><script type="math/tex; mode=display">
+=> w^T x = log \frac{p(y=1 | x)}{p(y=0 | x)}</script><h2 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h2><p>LR回归采用交叉熵作为损失函数，并使用梯度下降法对参数进行优化。给定N个训练样本{x_i,y_i}，i&lt;=N，使用LR对每个样本进行预测，并用输出x_i的标签为1的后验概率，记为y’_i(x)  (公式-4)</p>
+<script type="math/tex; mode=display">
+y'_i(x) = \sigma(w^Tx_i),i\in N</script><p>由于y_i属于{0，1}，样本{x_i,y_i}的真实概率可以表示为(公式-5)：</p>
+<script type="math/tex; mode=display">
+p_r(y_i =1 | x_i) = y_i</script><script type="math/tex; mode=display">
+p_r(y_i =0 | x_i) = 1- y_i</script><p>使用交叉熵损失函数，其风险函数为(公式-6)：</p>
+<script type="math/tex; mode=display">
+R(w)= - \frac{1}{N}\sum_{n=1}^{N} (p_r(y_i =1 | x_i) log(y_i') + p_r(y_i =0 | x_i) log(1-y_i') )</script><script type="math/tex; mode=display">
+= - \frac{1}{N}\sum_{n=1}^{N} ( y_i log(y_i') + (1-y_i') log(1-y_i') )</script><p>风险函数R(w)关于参数w的导数为(公式-7)：</p>
+<script type="math/tex; mode=display">
+\frac{ \partial R(w)}{ \partial w} = - \frac{1}{N}\sum_{n=1}^{N}( y_i \frac{y_i'(1-y_i')}{y_i'}x_i -(1-y_i)\frac{y_i'(1-y_i')}{1-y_i'}x_i  )</script><script type="math/tex; mode=display">
+= - \frac{1}{N}\sum_{n=1}^{N}( y_i(1-y_i')x_i -(1-y_i)y_i'x_i)</script><script type="math/tex; mode=display">
+= - \frac{1}{N}\sum_{n=1}^{N}x_i(y_i-y_i')</script><p>采用梯度下降算法，Logistic的回归训练过程为：初始化w_0 为0，然后通过下式来更新迭代参数(公式-8)。</p>
+<script type="math/tex; mode=display">
+w_{t+1} \leftarrow w_t + \alpha \frac{1}{N}\sum_{n=1}^{N} x_i(y_i-y_{w_t}')</script><p>其中a是学习率，y_{wt}’是当参数为w_t 时，Logistic回归的输出。</p>
+<p>从公式-6可知，风险函数R(w)是关于参数w的连续可导的凸函数，因此除了梯度下降算法外，Logistic还可以使用高阶的优化算法，比如牛顿法来进行优化。</p>
+<p>说明:</p>
+<ul>
+<li>两个未知数相乘求导：<script type="math/tex; mode=display">
+(ab)' = a'b + ab'</script></li>
+<li>sigmoid函数求导后为：<script type="math/tex; mode=display">
+\sigma ' = \sigma (1-\sigma )x</script></li>
+</ul>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/44591359" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/44591359</a></li>
+<li><a href="https://blog.csdn.net/wgdzz/article/details/48816307" target="_blank" rel="external">https://blog.csdn.net/wgdzz/article/details/48816307</a></li>
+</ul>
 
       
 
@@ -258,11 +303,15 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
         		</li>
       		
 		</ul>
@@ -283,7 +332,7 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/26/机器学习/机器学习算法分类/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/">展开全文 >></a>
         </p>
       
 
@@ -315,7 +364,7 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 
@@ -471,42 +520,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -520,10 +533,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,7 +552,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,15 +600,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,6 +620,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -595,11 +644,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -607,19 +656,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -632,6 +677,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Hive Join 分析和优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/03/Spark/Hive Join 分析和优化/">Hive Join 分析和优化</a>
+      <a class="article-title" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a>
     </h1>
   
 
         
-        <a href="/2019/01/03/Spark/Hive Join 分析和优化/" class="archive-article-date">
-  	<time datetime="2019-01-03T05:34:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-03</time>
+        <a href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/" class="archive-article-date">
+  	<time datetime="2019-01-12T14:06:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-12</time>
 </a>
         
       </header>
@@ -220,10 +220,23 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>Sku对应品牌进行关联，大表对应非大表（这里的非大表并不能用小表来定义）</p>
-<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>进行表左关联时，最后一个reduce任务卡到99%，运行时间很长，发生了严重的数据倾斜。</p>
-<p>什么是数据倾斜？数据倾斜主要表现在，map /reduce程序执行时，reduce节点大部分执行完毕，但是有一个或者几个reduce节点运行很慢，导致整个程序的处理时间很长，这是因为某一个key的条数比其他key多很多（有时是百倍或者千倍之多），这条key所在的reduce节点所处理的数据量比其他节点就大很多，从而导致某几个节点迟迟运行不完。</p>
-<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85690885" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85690885</a> </p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在之前的文章中介绍了多分类逻辑回归算法的数据原理，参考文章链接</p>
+<p>CSDN文章链接：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a><br>公众号：多分类逻辑回归（Multinomial Logistic Regression）<br>该篇文章介绍一下Spark中多分类算法，主要包括的技术点如下</p>
+<ul>
+<li><p>多分类实现方式</p>
+<ul>
+<li>一对一 （One V One）</li>
+<li>一对其余（One V Remaining）</li>
+<li>多对多 （More V More）</li>
+</ul>
+</li>
+<li><p>Spark中的多分类实现</p>
+<h1 id="多分类实现方式"><a href="#多分类实现方式" class="headerlink" title="多分类实现方式"></a>多分类实现方式</h1><h2 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h2><p>假设某个分类中有N个类别，将这N个类别两两配对（继而转化为二分类问题），这样可以得到 N（N-1）/ 2个二分类器，这样训练模型时需要训练 N（N-1）/ 2个模型，预测时将样本输送到这些模型中，最终统计出现次数较多的类别结果作为最终类别。</p>
+</li>
+</ul>
+<p>假设现在有三个类别：类别A，类别B，类别C，类别D。一对一实现多分类如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190112220044121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==,size_16,color_FFFFFF,t_70"></p>
+<hr>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/86378882</a> </p>
 
       
 
@@ -241,7 +254,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hive</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -262,7 +279,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/03/Spark/Hive Join 分析和优化/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">展开全文 >></a>
         </p>
       
 
@@ -294,7 +311,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 
@@ -450,42 +467,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -499,10 +480,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -522,7 +499,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -534,15 +547,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -562,6 +567,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -574,11 +591,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,19 +603,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,6 +624,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

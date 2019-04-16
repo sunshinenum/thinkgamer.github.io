@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/线性模型篇之Logistic Regression数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/线性模型篇之softmax数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/">线性模型篇之Logistic Regression数学公式推导</a>
+      <a class="article-title" href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/">线性模型篇之softmax数学公式推导</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/" class="archive-article-date">
-  	<time datetime="2019-04-02T14:31:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/" class="archive-article-date">
+  	<time datetime="2019-04-06T23:24:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-07</time>
 </a>
         
       </header>
@@ -220,76 +220,91 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="两分类与多分类"><a href="#两分类与多分类" class="headerlink" title="两分类与多分类"></a>两分类与多分类</h1><ul>
-<li>两类分类（Binary Classification）<ul>
-<li>类别标签y只有两种取值，通常设为{0，1}</li>
-<li>线性判别函数，即形如 y = w^T*x + b</li>
-<li>分割超平面（hyper plane）,由满足f(w,x)=0的点组成</li>
-<li>决策边界（Decision boundary）、决策平面（Decision surface）：即分分割超平面，决策边界将特征空间一分为二，划分成两个区域，每个区域对应一个类别。</li>
-<li>有向距离（signed distance）</li>
-</ul>
-</li>
-<li>多样分类（Multi-class Classification）<ul>
-<li>分类的类别个数大于2，多分类一般需要多个线性判别函数，但设计这些判别函数有很多方式。eg：<ul>
-<li>一对其余：属于和不属于</li>
-<li>一对一</li>
-<li>argmax（改进的一对其余）：属于每个类别的概率，找概率最大值</li>
-</ul>
-</li>
-<li>参考：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a></li>
-</ul>
-</li>
-</ul>
-<h1 id="Logistic回归"><a href="#Logistic回归" class="headerlink" title="Logistic回归"></a>Logistic回归</h1><h2 id="LR回归"><a href="#LR回归" class="headerlink" title="LR回归"></a>LR回归</h2><p>Logistic回归（Logistic Regression，LR）是一种常见的处理二分类的线性回归模型。</p>
-<p>为了解决连续的线性回归函数不适合做分类的问题，引入函数g：R^d -&gt; (0,1)来预测类别标签的后验概率p(y=1 | x)</p>
-<p>其中g(.)通常称为激活函数（activation function），其作用是把线性函数的值域从实数区间“挤压”到了（0，1）之间，可以用概率表示。在统计文献中，g(.)的逆函数g(.)^-1也称为联系函数（Link Function）</p>
-<p>在逻辑回归中使用Logistic作为激活函数，标签y=1的后验概率为(公式-1)：</p>
+<blockquote>
+<p>Softmax回归也称多项（multinomial）或者多类（multi-class）的Logistic回归，是Logistic回归在多类分类问题上的推广。和逻辑回归一样属于线性模型。</p>
+</blockquote>
+<h1 id="SoftMax回归简介"><a href="#SoftMax回归简介" class="headerlink" title="SoftMax回归简介"></a>SoftMax回归简介</h1><p>对于多类问题，类别标签</p>
 <script type="math/tex; mode=display">
-p(y=1 | x) = \sigma (w^T x)</script><script type="math/tex; mode=display">
-p(y=1 | x)= \frac{1}{1+exp(-w^T x)}</script><p>标签 y=0的后验概率为(公式-2)：</p>
+y \in {1,2,3,...,C}</script><p>可以用C个取值，给定一个样本x，softmax回归预测的是属于类别c的概率为(公式-1)：</p>
 <script type="math/tex; mode=display">
-p(y=0 | x) =1-p(y=0 | x)</script><script type="math/tex; mode=display">
-p(y=0 | x)= \frac{exp(-w^T x)}{1+exp(-w^T x)}</script><p>将公式-1进行等价变换，可得(公式-3)：</p>
+p(y=c|x)=softmax(w_c^Tx)=\frac{exp(w_c^Tx)}{\sum_{c=1}^{C}exp(w_c^Tx)}</script><p>其中w_c是第c类的权重向量。</p>
+<p>softmax回归的决策函数可以表示为(公式-2)：</p>
 <script type="math/tex; mode=display">
-w^T x = log \frac{p(y=1 | x)}{1-p(y=1 | x)}</script><script type="math/tex; mode=display">
-w^T x = log \frac { p(y=1 | x)}{p(y=0|x)}</script><p>其中</p>
+\hat{y}=  \underset{c=1}{ \overset{C}{arg max} } \ p(y=c|x) =\underset{c=1}{ \overset{C}{arg max} } \ w_c^T x</script><hr>
+<p>softMax与Logistic回归的关系：</p>
+<p>当类别个C=2时，softMax回归的决策函数为(公式-3)：</p>
 <script type="math/tex; mode=display">
-\frac { p(y=1 | x)}{p(y=0|x)}</script><p>为样本x正反例后验概率的比例，称为几率（odds），几率的对数称为对数几率（log odds或者logit），公式-3中第一个表达式，左边是线性函数，logistic回归可以看做是预测值为“标签的对数几率”的线性回归模型，因为Logistic回归也称为对数几率回归（Logit Regression）。</p>
-<p>附公式-1到公式-3的推导：</p>
+\hat{y} = \underset{y\in {0,1}}{ arg max } \ w_y^Tx=I(w_1^Tx - w_0^Tx >0 )=I((w_1 - w_0)^Tx >0 )</script><p>其中I(.)是指示函数，对比二分类决策函数(公式-4)</p>
 <script type="math/tex; mode=display">
-p(y=1 | x)= \frac{1}{1+exp(-w^T x)}</script><script type="math/tex; mode=display">
-=> exp(-w^Tx) = \frac{1-p(y=1 | x)}{p(y=1 | x)}</script><script type="math/tex; mode=display">
-=> - w^T x = log \frac{1- p(y=1 | x)}{p(y=1 | x)}</script><script type="math/tex; mode=display">
-=>  w^T x = log (\frac{1- p(y=1 | x)}{p(y=1 | x)})^{-1}</script><script type="math/tex; mode=display">
-=> w^T x = log \frac{p(y=1 | x)}{1-p(y=1 | x)}</script><script type="math/tex; mode=display">
-=> w^T x = log \frac{p(y=1 | x)}{p(y=0 | x)}</script><h2 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h2><p>LR回归采用交叉熵作为损失函数，并使用梯度下降法对参数进行优化。给定N个训练样本{x_i,y_i}，i&lt;=N，使用LR对每个样本进行预测，并用输出x_i的标签为1的后验概率，记为y’_i(x)  (公式-4)</p>
-<script type="math/tex; mode=display">
-y'_i(x) = \sigma(w^Tx_i),i\in N</script><p>由于y_i属于{0，1}，样本{x_i,y_i}的真实概率可以表示为(公式-5)：</p>
-<script type="math/tex; mode=display">
-p_r(y_i =1 | x_i) = y_i</script><script type="math/tex; mode=display">
-p_r(y_i =0 | x_i) = 1- y_i</script><p>使用交叉熵损失函数，其风险函数为(公式-6)：</p>
-<script type="math/tex; mode=display">
-R(w)= - \frac{1}{N}\sum_{n=1}^{N} (p_r(y_i =1 | x_i) log(y_i') + p_r(y_i =0 | x_i) log(1-y_i') )</script><script type="math/tex; mode=display">
-= - \frac{1}{N}\sum_{n=1}^{N} ( y_i log(y_i') + (1-y_i') log(1-y_i') )</script><p>风险函数R(w)关于参数w的导数为(公式-7)：</p>
-<script type="math/tex; mode=display">
-\frac{ \partial R(w)}{ \partial w} = - \frac{1}{N}\sum_{n=1}^{N}( y_i \frac{y_i'(1-y_i')}{y_i'}x_i -(1-y_i)\frac{y_i'(1-y_i')}{1-y_i'}x_i  )</script><script type="math/tex; mode=display">
-= - \frac{1}{N}\sum_{n=1}^{N}( y_i(1-y_i')x_i -(1-y_i)y_i'x_i)</script><script type="math/tex; mode=display">
-= - \frac{1}{N}\sum_{n=1}^{N}x_i(y_i-y_i')</script><p>采用梯度下降算法，Logistic的回归训练过程为：初始化w_0 为0，然后通过下式来更新迭代参数(公式-8)。</p>
-<script type="math/tex; mode=display">
-w_{t+1} \leftarrow w_t + \alpha \frac{1}{N}\sum_{n=1}^{N} x_i(y_i-y_{w_t}')</script><p>其中a是学习率，y_{wt}’是当参数为w_t 时，Logistic回归的输出。</p>
-<p>从公式-6可知，风险函数R(w)是关于参数w的连续可导的凸函数，因此除了梯度下降算法外，Logistic还可以使用高阶的优化算法，比如牛顿法来进行优化。</p>
-<p>说明:</p>
-<ul>
-<li>两个未知数相乘求导：<script type="math/tex; mode=display">
-(ab)' = a'b + ab'</script></li>
-<li>sigmoid函数求导后为：<script type="math/tex; mode=display">
-\sigma ' = \sigma (1-\sigma )x</script></li>
-</ul>
+g(f(x,w))=sgn(f(x,w))=\begin{cases}
+ & +1 \text{ if } f(x,w)>0 \\ 
+ & -1 \text{ if } f(x,w)<0 
+\end{cases}</script><p>其中sgn表示符号函数(sign function)，可以发现两类分类中的权重向量w=w1-w0</p>
 <hr>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://zhuanlan.zhihu.com/p/44591359" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/44591359</a></li>
-<li><a href="https://blog.csdn.net/wgdzz/article/details/48816307" target="_blank" rel="external">https://blog.csdn.net/wgdzz/article/details/48816307</a></li>
+<p>向量表示：</p>
+<p>公式-1用向量形式可以写为(公式-5)</p>
+<script type="math/tex; mode=display">
+\hat{y}=softmax(W^Tx)=\frac{erp(W^Tx)}{1^Texp(W^Tx)}</script><p>其中W=[w_1,w_2,…,w_C]是由C个类的权重向量组成的矩阵，1为全1的向量，</p>
+<script type="math/tex; mode=display">
+\hat{y}\in  R^C</script><p>为所有类别的预测条件概率组成的向量，第c维的值是第c类的预测条件概率。</p>
+<h1 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h1><p>给定N个训练样本{(x^n, y^n)},n&lt;=N，softmax回归使用交叉熵损失函数来学习最优的参数矩阵W。</p>
+<p>这里用C维的one-hot向量</p>
+<script type="math/tex; mode=display">
+y \in {0,1} ^C</script><p>来表示类别标签，其向量表示为(公式-6)：</p>
+<script type="math/tex; mode=display">
+y = [I(1=c),I(2=c),...,I(C=c)]^T</script><p>其中I(.)为指示函数。</p>
+<p>采用交叉熵损失函数，softmax的经验风险函数为(公式-7)：</p>
+<script type="math/tex; mode=display">
+R(W)=-\frac{1}{N}\sum_{n=1}^{N}\sum_{c=1}^{C}y_c^nlog\hat{y}_c^n
+R(W)=-\frac{1}{N}\sum_{n=1}^{N} (y^n)^Tlog\hat{y}^n</script><p>其中</p>
+<script type="math/tex; mode=display">
+\hat{y}^n = softmax(W^Tx^n)</script><p>为样本x^n在每个类别的后验概率。</p>
+<p>==说明：公式-7第一个式变换到第二个式是因为y_c类别中只有一个为1，其余为0，所以将第二个求和去除。==</p>
+<p>风险函数R(W)关于W的梯度为(公式-8)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial R(W)}{\partial W} = -\frac{1}{N}\sum_{n=1}^{N}x^n(y^n-\hat{y}^n)^T</script><p>==<strong>证明：</strong>==</p>
+<p>计算公式-8中的梯度，关键在于计算每个样本的损失函数</p>
+<script type="math/tex; mode=display">
+L^n(W)=-(y^n)^Tlog\hat{y}^n</script><p>关于参数W的梯度，其中需要用到两个导数公式为：</p>
+<ul>
+<li>若y=softmax(z)，则</li>
 </ul>
+<script type="math/tex; mode=display">
+\frac{\partial y}{\partial z}=diag(y)-yy^T</script><ul>
+<li>若</li>
+</ul>
+<script type="math/tex; mode=display">
+z=W^Tx=[w_1^Tx,w_2^Tx,...,w_C^Tx]^T</script><p>则</p>
+<script type="math/tex; mode=display">
+\frac{\partial y}{\partial w_c}</script><p>为第c列为x，其余为0的矩阵。</p>
+<script type="math/tex; mode=display">
+\frac{\partial z}{\partial w_c} = [ \frac{\partial w_1^Tx}{\partial w_c},\frac{\partial w_2^Tx}{\partial w_c},...,\frac{\partial w_C^Tx}{\partial w_c} ]
+=[0,0,..,x,...,0]
+=M_c(x)</script><p>根据链式法则，</p>
+<script type="math/tex; mode=display">
+L^n(W) = -(y^n)^T log\hat{y}^n</script><p>关于w_c的偏导数为(公式-12)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial w_c}
+= -\frac{ \partial ((y^n)^T log \hat{y}^n) }{\partial w_c}</script><script type="math/tex; mode=display">
+= -\frac{\partial z^n}{ \partial w_c } \frac{\partial \hat{y}^n}{ \partial z^n }\frac{\partial log \hat{y}^n}{ \partial \hat{y}^n } y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(diag(\hat{y}^n)-\hat{y}^n(\hat{y}^n)^T)(diag(\hat{y}^n))^{-1} y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(I-\hat{y}^n1^T)y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(y^n-\hat{y}^n1^Ty^n)</script><script type="math/tex; mode=display">
+=-M_c(x^n)(y^n-\hat{y}^n)</script><script type="math/tex; mode=display">
+=-x^n[y^n-\hat{y}^n]_c</script><p>公式-12也可以表示为非向量形式(公式-13)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial w_c}= -x^n(I(y^n=c)-\hat{y}_c^n)</script><p>其中I(.)为指示函数，根据公式-12可以得到(公式-14)</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial W} = -x^n(y^n-\hat{y}^n)^T</script><p>采用梯度下降法，softmax回归的训练过程为：初始化W_0 &lt;- 0，然后通过下式进行迭代更新。</p>
+<script type="math/tex; mode=display">
+W_{t+1} = W_t + \alpha (\frac{1}{N} \sum_{n=1}^{N}x^n(y^n - \hat{y}_{W_t} ^ n)^T)</script><p>其中a是学习率，</p>
+<script type="math/tex; mode=display">
+\hat{y}_{W_t}^n</script><p>是当参数为W_t时，softmax回归模型的输出。</p>
+<hr>
+<p><strong>注意：</strong></p>
+<blockquote>
+<p>softmax回归中使用的C个权重向量是冗余的，即对所有权重向量都减去一个同样的向量v，不改变其输出结果。因此，softmax往往需要正则化来约束参数。此外，可以利用这个特性来避免计算softmax函数时在数值计算上溢出问题。</p>
+</blockquote>
 
       
 
@@ -303,15 +318,11 @@ w_{t+1} \leftarrow w_t + \alpha \frac{1}{N}\sum_{n=1}^{N} x_i(y_i-y_{w_t}')</scr
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SoftMax</a>
         		</li>
       		
 		</ul>
@@ -332,7 +343,7 @@ w_{t+1} \leftarrow w_t + \alpha \frac{1}{N}\sum_{n=1}^{N} x_i(y_i-y_{w_t}')</scr
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/机器学习/线性模型篇之Logistic Regression数学公式推导/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/">展开全文 >></a>
         </p>
       
 
@@ -364,7 +375,7 @@ w_{t+1} \leftarrow w_t + \alpha \frac{1}{N}\sum_{n=1}^{N} x_i(y_i-y_{w_t}')</scr
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -520,42 +531,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -569,10 +544,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -592,7 +563,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -604,15 +611,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -632,6 +631,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -644,11 +655,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,19 +667,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -681,6 +688,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">

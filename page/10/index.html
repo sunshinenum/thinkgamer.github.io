@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/深度学习中的epochs、batch_size、iterations详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TensorFlow/TensorFlow实现Mnist数据集的多分类逻辑回归模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">深度学习中的epochs、batch_size、iterations详解</a>
+      <a class="article-title" href="/2019/02/27/TensorFlow/TensorFlow实现Mnist数据集的多分类逻辑回归模型/">TensorFlow实现Mnist数据集的多分类逻辑回归模型</a>
     </h1>
   
 
         
-        <a href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/" class="archive-article-date">
-  	<time datetime="2019-02-25T16:32:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-26</time>
+        <a href="/2019/02/27/TensorFlow/TensorFlow实现Mnist数据集的多分类逻辑回归模型/" class="archive-article-date">
+  	<time datetime="2019-02-27T05:15:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-27</time>
 </a>
         
       </header>
@@ -221,34 +221,18 @@
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
 <blockquote>
-<p>深度学习中涉及到很多参数，如果对于一些参数不了解，那么去看任何一个框架都会有难度，在TensorFlow中有一些模型训练的基本参数，这些参数是训练模型的前提，也在一定程度上影响着模型的最终效果。下面主要介绍几个参数。</p>
+<p>多分类逻辑回归基于逻辑回归（Logistic Regression，LR）和softMax实现，其在多分类分类任务中应用广泛，本篇文章基于tf实现多分类逻辑回归，使用的数据集为Mnist。</p>
 </blockquote>
+<p>多分类逻辑回归的基础概要和在Spark上的实现可参考：</p>
 <ul>
-<li>batch_size</li>
-<li>iterations</li>
-<li>epochs</li>
+<li>多分类逻辑回归（Multinomial Logistic Regression）</li>
+<li>多分类实现方式介绍和在Spark上实现多分类逻辑回归（Multinomial Logistic Regression）</li>
 </ul>
-<h1 id="batch-size"><a href="#batch-size" class="headerlink" title="batch_size"></a>batch_size</h1><p>深度学习的优化算法，其实就是梯度下降，在之前的文章中我们也介绍过梯度下降，这里就不详细说明。梯度下降分为三种：</p>
-<ul>
-<li>批量梯度下降算法（BGD，Batch gradient descent algorithm）</li>
-<li>随机梯度下降算法（SGD，Stochastic gradient descent algorithm）</li>
-<li>小批量梯度下降算法（MBGD，Mini-batch gradient descent algorithm）</li>
-</ul>
-<p>批量梯度下降算法，每一次计算都需要遍历全部数据集，更新梯度，计算开销大，花费时间长，不支持在线学习。</p>
-<p>随机梯度下降算法，每次随机选取一条数据，求梯度更新参数，这种方法计算速度快，但是收敛性能不太好，可能在最优点附近晃来晃去，hit不到最优点。两次参数的更新也有可能互相抵消掉，造成目标函数震荡的比较剧烈。</p>
-<p>为了克服两种方法的缺点，现在一般采用的是一种折中手段，mini-batch gradient decent，小批的梯度下降，这种方法把数据分为若干个批，按批来更新参数，这样，一个批中的一组数据共同决定了本次梯度的方向，下降起来就不容易跑偏，减少了随机性。另一方面因为批的样本数与整个数据集相比小了很多，计算量也不是很大。</p>
-<p>tf框架中的batch_size指的就是更新梯度中使用的样本数。当然这里如果把batch_size设置为数据集的长度，就成了批量梯度下降算法，batch_size设置为1就是随机梯度下降算法。</p>
-<h1 id="iterations"><a href="#iterations" class="headerlink" title="iterations"></a>iterations</h1><p>迭代次数，每次迭代更新一次网络结构的参数。</p>
-<p>迭代是重复反馈的动作，神经网络中我们希望通过迭代进行多次的训练以到达所需的目标或结果。</p>
-<p>每一次迭代得到的结果都会被作为下一次迭代的初始值。</p>
-<p>一个迭代 = 一个（batch_size）数据正向通过（forward）+ 一个（batch_size）数据反向（backward）</p>
-<p><img src="https://img-blog.csdnimg.cn/2019022523170956.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="神经网络"></p>
-<p>前向传播：构建由（x1,x2,x3）得到Y（hwb(x)）的表达式</p>
-<p>反向传播：基于给定的损失函数，求解参数的过程</p>
-<h1 id="epochs"><a href="#epochs" class="headerlink" title="epochs"></a>epochs</h1><p>epochs被定义为前向和反向传播中所有批次的单次训练迭代。这意味着1个周期是整个输入数据的单次前向和反向传递。</p>
-<p>简单说，epochs指的就是训练过程中数据将被“轮”多少次</p>
-<p>例如在某次模型训练过程中，总的样本数是10000，batch_size=100，epochs=10，其对应的伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">data = </span><br><span class="line">batch_size = 100</span><br><span class="line">for i in range(epochs):</span><br><span class="line">    for j in range(int(data_length / batch_size - 1)):</span><br><span class="line">        x_data = data[begin:end, ]</span><br><span class="line">        y_data = data[begin:end, ]</span><br><span class="line">        mode.train(x_data, y_data)</span><br><span class="line">        begin += batch_size</span><br><span class="line">        end += batch_size</span><br></pre></td></tr></table></figure></p>
-<p>其中iterations = data_length / batch_size</p>
+<p>本篇文章涉及到的tf相关接口函数及释义如下：</p>
+<h2 id="tf-nn-softmax"><a href="#tf-nn-softmax" class="headerlink" title="tf.nn.softmax"></a>tf.nn.softmax</h2><p>Softmax 在机器学习和深度学习中有着非常广泛的应用。尤其在处理多分类（C &gt; 2）问题，分类器最后的输出单元需要Softmax 函数进行数值处理。关于Softmax 函数的定义如下所示：</p>
+<p>…</p>
+<hr>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/87970776" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/87970776</a> </p>
 
       
 
@@ -266,7 +250,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
         		</li>
       		
 		</ul>
@@ -287,7 +275,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/02/27/TensorFlow/TensorFlow实现Mnist数据集的多分类逻辑回归模型/">展开全文 >></a>
         </p>
       
 
@@ -319,7 +307,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 
@@ -475,42 +463,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">LR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -524,10 +476,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">关键词提取</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,7 +495,43 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">特征过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">LR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,15 +543,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,6 +563,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">距离计算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">回归分析</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">sklearn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多分类</a>
               </li>
              
@@ -599,11 +587,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,19 +599,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
+                <a href="javascript:void(0)" class="js-tag color4">随手记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -636,6 +620,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AUC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PLA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">感知机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常检测</a>
               </li>
              
               <li class="article-tag-list-item">
