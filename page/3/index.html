@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/线性模型之PLA数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/线性模型篇之SVM数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/">线性模型之PLA数学公式推导</a>
+      <a class="article-title" href="/2019/04/21/机器学习/线性模型篇之SVM数学公式推导/">线性模型篇之SVM数学公式推导</a>
     </h1>
   
 
         
-        <a href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/" class="archive-article-date">
-  	<time datetime="2019-04-16T11:13:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-16</time>
+        <a href="/2019/04/21/机器学习/线性模型篇之SVM数学公式推导/" class="archive-article-date">
+  	<time datetime="2019-04-20T16:17:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-21</time>
 </a>
         
       </header>
@@ -220,107 +220,88 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>感知机（Perceptron）是一种广泛使用的线性分类器，相当于最简单的人工神经网络，只有一个神经元。其全称是PLA（Perceptron Linear Algorithm），线性感知机算法。</p>
-<p>感知机是对生物神经元的简单数学模型，有与生物神经元相对应的部件，比如权重（突触）、偏置（阈值）及激活函数（细胞体），输出值为 +1 或者 -1。</p>
+<blockquote>
+<p>支持向量机（Support Vector Machine，SVM）是一个经典两类分类算法，其找到的分割超平面具有更好的鲁棒性，因此广泛使用在很多任务上，并表现出了很强优势。</p>
+</blockquote>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>给定一个两分类数据集D={(x^n, y^n)}，n属于N，其中y_n 属于{+1,-1}，如果两类样本是线性可分的，即存在一个超平面（公式-1）</p>
 <script type="math/tex; mode=display">
-\hat{y} = sgn(w^Tx)</script><p>对于二分类问题，可以使用感知机算法来解决。PLA的原理是逐点解决，首先在超平面上随意取一条分类面，统计分类错误的点，然后随机对某个错误点修正，即变换直线的位置，使该错误点被修正，接着再随机选取另外一个错误点进行修正，分类面不断变化，直到所有点都分类正确了，就得到了最佳分类面。</p>
-<p>利用二维平面进行解释，第一种情况是错误的将正样本（y=1）分类为负样本（y=-1）。此时wx&lt;0，即w与x的夹角大于90度，分类线L的两侧。修正的方法是让夹角变小，修正w值，使二者位于直线同侧。</p>
+w^Tx + b =0</script><p>将两类样本分开，那么对于每个样本都有</p>
 <script type="math/tex; mode=display">
-w:=w+x=w+yx</script><p>修正过程如下：<br><img src="https://img-blog.csdnimg.cn/20190415193607475.jpg" alt="修正过程"></p>
-<p>第二种情况就是错误的将负样本（y=-1）分类为正样本（y=1）。此时，wx&gt;0，即w与x的夹角小于90度，分类线L的同一侧。修正的方法是让夹角变大，修正w值，使二者位于分类线同侧。</p>
+y^n(w^Tx^n + b) > 0</script><p>数据集D中的每个样本x^n 到分隔超平面的距离为：</p>
 <script type="math/tex; mode=display">
-w:=w-x=w+yx</script><p>修正过程如下：<br><img src="https://img-blog.csdnimg.cn/20190415193855372.jpg" alt="修正过程"></p>
-<p>经过上边两种情况分析，PLA每次更新参数w的表达式是一致的，掌握了每次w的优化表达式，那么PLA就能不断地将所有错误的分类样本纠正并分类正确。</p>
-<h1 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h1><p>给定N个训练集样本{(x^n, y^n)},n&lt;=N，其中y^n 属于{+1,-1}，感知机试图学习到参数w*，使得对于每个样本(x^n,y^n)<br>有：</p>
+\gamma ^n = \frac{\left \| w^Tx^n +b \right \|}{ \left \| w \right \|} = \frac{y^n(w^Tx^n + b)}{ \left \| w \right \| }</script><p>我们定义整个数据集D中所有样本到分隔超平面的最短距离为间隔（Margin）（公式-2）</p>
 <script type="math/tex; mode=display">
-y^n w^{*T}x^n>0,\forall n\in [1,N]</script><p>感知机算法是一种错误驱动的在线学习算法，先初始化一个权重向量w&lt;-0（通常是全零向量），然后每次分错一个样本（x,y）时，就用这个样本来更新权重。</p>
+\gamma = \underset{n}{min} \gamma ^ n</script><p>如果间隔 gamma越大，其分隔超平面对两个数据集的划分越稳定，不容易受噪声等因素影响，支持向量机的目的是找到一个超平面(w^<em> , b^ </em>)使得gamma最大，即（公式-3）</p>
 <script type="math/tex; mode=display">
-w \leftarrow w + yx</script><p>具体的感知机算法伪代码如下（==算法-1==）：<br><img src="https://img-blog.csdnimg.cn/20190415202606770.png" alt="感知机算法伪代码"></p>
-<p>根据感知器的学习策略，可以反推出感知器的损失函数为：</p>
+\underset{w,b}{max} \qquad \gamma 
+\\
+s.t.  \qquad  \frac{y^n (w^Tx^n + b)}{\left \| w \right \|} \geq \gamma,\forall_n</script><p>令 </p>
 <script type="math/tex; mode=display">
-L (w;x,y)=max(0, -yw^Tx)</script><p>采用随机梯度的下降，其每次更新的梯度为：</p>
+\left \| w \right \| . \gamma =1</script><p>则（公式-3）等价于（公式-4）</p>
 <script type="math/tex; mode=display">
-\frac{\partial L (w;x,y) }{ \partial w}=\begin{cases}
-0 & \text{ if } y^Tx>0 \\ 
--yx & \text{ if } y^Tx<0 
-\end{cases}</script><p>下图给出了感知机参数学习的过程，其中红色实心为正例，蓝色空心点为负例。黑色箭头表示权重向量，红色虚线箭头表示权重的更新方向。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190415203526997.png" alt="感知机参数学习的过程"></p>
-<h1 id="感知机的收敛"><a href="#感知机的收敛" class="headerlink" title="感知机的收敛"></a>感知机的收敛</h1><p>Novikoff证明对于两类问题，如果训练集是线性可分的，那么感知器<br>算法可以在有限次迭代后收敛。然而，如果训练集不是线性分隔的，那么这个算法则不能确保会收敛。</p>
-<p>当数据集是两类线性可分时，对于数据集D={(x^n,y^n)}，n属于N，其中x^n为样本的增广特征向量，y^n属于{-1，+1}，那么存在一个正的常数r(r&gt;0)和权重向量w，并且||w<em>||=1，对所有n都满足(w^</em>)(y^n x^n)&gt;r。</p>
-<p>可以证明如下定理（定理-1）。</p>
-<hr>
-<p>给定一个训练集</p>
+\underset{w,b}{max} \qquad \frac{1}{ \left \| w \right \| ^2} 
+\\
+s.t.  \qquad  y^n(w^Tx^n + b) \geq 1, \forall_n</script><p>数据集中所有满足 y^n (w^T x^n +b) =1 的样本点，都称为支持向量（support vertor）</p>
+<p>对于一个线性可分数据集，其分隔的超平面有多个，但是间隔最大的超平面是唯一的。下图给定了支持最大间隔分隔超平面的示例，其红色样本点为支持向量。</p>
+<center>
+
+![支持向量机示例](https://img-blog.csdnimg.cn/20190417110614374.png)
+
+</center>
+
+<h1 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h1><p><strong>凸函数 &amp; 凹函数</strong><br>关于凹凸函数的定义和性质可以参考下图：</p>
+<center>
+
+![image](https://img-blog.csdnimg.cn/20190420165249483.jpg)
+</center>
+
+<p>为了找到最大间隔分割超平面，将公式-4改写为凸优化问题（公式-5）：</p>
 <script type="math/tex; mode=display">
-D={(x^n,y^n)},n\in {1,N}</script><p>假设R是训练集中最大的特征向量的模</p>
+\underset{w,b}{min} \qquad \frac{1}{ 2} {\left \| w \right \| ^2} 
+\\
+s.t.  \qquad  1-y^n(w^Tx^n + b) \leq 0, \forall n</script><p>使用拉格朗日乘数法，公式-5的拉格朗日函数为（公式-6）：</p>
 <script type="math/tex; mode=display">
-R=\underset{n}{max} \left \| x^n \right \|</script><p>如果训练集D线性可分，感知机学习算法-1的权重更新次数不超过 R^2/ r^2</p>
-<hr>
-<p>证明：<br>感知机算法的权重更新方式为（==公式-1==）：</p>
+\Lambda (w,b,\lambda )=\frac{1}{2} \left \| w^2 \right \| + \sum_{n-1}^{N} \lambda _n( 1-y^n(w^Tx^n + b) )</script><p>其中</p>
 <script type="math/tex; mode=display">
-w_k = w_{k-1}+y^kx^k</script><p>其中x^k, y^k表示第k个错误分类的条件。<br>因为初始权重为0，在第K次更新时感知器的权重向量为（==公式-2==）：</p>
+\lambda _1 \geq 0,...,\lambda _N \geq 0</script><p>为拉格朗日乘数。计算公式-6关于w和b的导数，并令其等于0得到（公式-7）</p>
 <script type="math/tex; mode=display">
-w_k = =\sum_{k=1}^{K}y^kx^k</script><p>分别计算||w||^2的上下界：</p>
-<p><strong>计算其上界</strong>（公式-2）：</p>
+w = \sum_{n=1}^{ N }\lambda _n y^nx^n</script><p>和（公式-8）</p>
 <script type="math/tex; mode=display">
-\left \| w_k^2 \right \|</script><script type="math/tex; mode=display">
-= \left\| w_{K_1} + y^K x^K \right \|^2</script><script type="math/tex; mode=display">
-= \left \|  w_{K-1} \right \| ^2 + \left \| y^Kx^K \right \| ^2+2y^Kw_{K-1}x^K</script><script type="math/tex; mode=display">
-\leqslant \left \| w_{K-1} \right \|^2 + R^2</script><script type="math/tex; mode=display">
-\leqslant\left \| w_{K-2} \right \|^2+2R^2</script><script type="math/tex; mode=display">
-\leqslant KR^2</script><p><strong>计算其下界</strong>（公式-3）：</p>
+0 = \sum_{n=1}^{N} \lambda _n y^n</script><p>将公式-7代入公式-6，并利用公式-8，得到拉格朗日对偶函数（公式-9）：</p>
 <script type="math/tex; mode=display">
-\left \| w_k^2 \right \|</script><script type="math/tex; mode=display">
-=\left \| w^* \right \|^2 .\left \| w_K \right \|^2</script><script type="math/tex; mode=display">
-\geqslant \left \| w^{*T}w_K \right \| ^2</script><script type="math/tex; mode=display">
-=\left \| w^{*T}\sum_{k=1}^{K}(y^Kx^K) \right \|^2</script><script type="math/tex; mode=display">
-=\left \| \sum_{k=1}^{K}w^{*T}(y^Kx^K) \right \|^2</script><script type="math/tex; mode=display">
-\geq K^2r^2</script><p>==附==：两个向量内积的平方一定小于等于这两个向量的模的乘积。</p>
-<p>由公式-2和公式-3得到（公式-4）</p>
+\Gamma(\lambda) = -\frac{1}{2} \sum_{n=1}^{N}\sum_{m=1}^{N} \lambda_n \lambda_m y^m y^n (x^m)^Tx^n + \sum_{n=1}^{N}\lambda_n</script><p>支持向量机的主优化问题为凸优化问题，满足强对偶性，即主优化问题可以通过最大化对偶函数</p>
 <script type="math/tex; mode=display">
-K^2r^2 \leq \left \| w_K \right \|^2\leq KR^2</script><p>取最左和最右的两项，进一步得到K^2r^2 &lt;= K^2R^2，然后两边同时除以K，最终得到（公式-5）：</p>
+max_{\lambda \geq 0} \Gamma(\lambda)</script><p>对偶函数 Gamma(lambda)是一个凹函数，因此最大化对偶数是一个凸优化问题，可以通过多种凸优化方法进行求解，得到拉格朗日乘数的最优值 lambda^* 。但由于其约束条件的数量为训练样本数量，一般的优化方法代价比较高，因此在实践中通常采样比较高效的优化方法，比如SMO(Sequential Minimal Optimization)算法等。</p>
+<p>根据KKT条件中的互补松弛条件，最优解满足(公式-10)</p>
 <script type="math/tex; mode=display">
-K\leq \frac{R^2}{r^2}</script><p>因此在线性可分的情况下，算法-1会在R^2 / r^2步内收敛。</p>
-<p>虽然感知机线性模型在线性可分的数据上可以保证收敛，但其存在以下不足：</p>
-<ul>
-<li>在数据集线性可分时，感知器虽然可以找到一个超平面把两类数据分开， 但并不能保证能其泛化能力。</li>
-<li>感知器对样本顺序比较敏感。每次迭代的顺序不一致时，找到的分割超平 面也往往不一致。</li>
-<li>如果训练集不是线性可分的，就永远不会收敛。</li>
-</ul>
-<h1 id="参数平均感知机"><a href="#参数平均感知机" class="headerlink" title="参数平均感知机"></a>参数平均感知机</h1><p>根据定理3.1，如果训练数据是线性可分的，那么感知器可以找到一个判别 函数来分割不同类的数据。如果间隔 γ 越大，收敛越快。但是感知器并不能保 证找到的判别函数是最优的(比如泛化能力高)，这样可能导致过拟合。</p>
-<p>感知机的学习到的权重向量和训练样本的顺序相关。在迭代次序上排在后 面的错误样本，比前面的错误样本对最终的权重向量影响更大。比如有 1, 000 个 训练样本，在迭代 100 个样本后，感知器已经学习到一个很好的权重向量。在 接下来的 899 个样本上都预测正确，也没有更新权重向量。但是在最后第 1, 000 个样本时预测错误，并更新了权重。这次更新可能反而使得权重向量变差。</p>
-<p>为了改善这种情况，可以使用“参数平均”的策略提高感知ji的鲁棒性，也叫投票感知机。</p>
-<p>投票感知机记录第k次更新参数之后的权重w_k在之后的训练过程中正确分类样本的次数c_k。这样最后的分类器形式为（公式-6）：</p>
+ \lambda_n ^*(1-y^n(w^{*T}x^n+b^*))=0</script><p>如果样本x^n 不在约束边界上，(lambda_n)^<em>，其约束失效；如果样本x^n在约束边界上，(lambda_n)^</em> &gt;=0。这些在约束边界上的样本点称为支持向量（support vector），即离决策平面距离最近的点。</p>
+<p>再计算出 lambda^<em>后，根据公式-7计算出最优权重w^</em>，最优偏置b^*可以通过任选一个支持向量(x,y)计算得到（公式-11）</p>
 <script type="math/tex; mode=display">
-\hat{y} = sgn(\sum_{k=1}^{K}c_ksgn(w_k^Tx))</script><p>其中sgn(.)为符号函数。</p>
-<p>投票感知机虽然提高了模型的泛化能力，但是需要保存K个权重向量。在实际的操作中会带来额外的开销。因此经常会使用一个简化的版本，即平均感知机。其表达式如下（公式-7）：</p>
+b^* = \tilde{y} - w^{*T}\tilde{x}</script><p>最优参数的支持向量机的决策函数为（公式-12）</p>
 <script type="math/tex; mode=display">
-\hat{y} = sgn(\sum_{k=1}^{K}c_k (w_k^Tx))
-=sgn( (\sum_{k=1}^{K}c_k w_k )^Tx )
-=sgn( \bar{w}^Tx)</script><p>其中 </p>
+f(x)=sgn(w^{*T}x+b^*)=sgn(\sum_{n=1}^{N} \lambda_n^* y^n(x^n)^Tx + b^* )</script><p>支持向量机的决策函数只依赖 lambda_n^*&gt;0的样本点，即支持向量。</p>
+<p>支持向量机的目标函数可以通过SMO等优化方法得到全局最优解，因此比其他分类器的学习效率更高。此外，支持向量机的决策函数只依赖与支持向量。与训练样本总数无关，分类速度比较快。</p>
+<h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>支持向量机还有一个重要的优点是可以使用核函数(kernal)隐式的将样本从原始特征空间映射到更高维的空间，并解决原始特征空间中的线性不可分问题。比如在一个变换后的特征空间中，支持向量机的决策函数为（公式-13）</p>
 <script type="math/tex; mode=display">
-\bar{w}</script><p>为平均的权重向量。</p>
-<p>假设w_{t,n}是在第t轮更新到第n个样本时的权重向量值，平均的权重向量也可以表示为（公式-8）：</p>
+f(x)=sgn(w^{*T} \phi(x)+b^*)=sgn(\sum_{n=1}^{N} \lambda_n^* y^n K(x^n,x) + b^* )</script><p>其中</p>
 <script type="math/tex; mode=display">
-\bar{w} = \frac{\sum_{t=1}^{T} \sum_{n=1}^{N}w_{t,n}}{nT}</script><p>这个方法实现简单，只需要在算法-1中增加一个平均向量，并且在处理每一个样本后，进行更新（公式-9）：</p>
+K(x,z)=\phi(x)^T \phi(z)</script><p>为核函数，通常不需要显式的给出φ(x)的具体形式，可以通过核技巧(kernel trick)来构造。比如以x,z属于R^2为例，我们可以构造一个核函数（公式-14）</p>
 <script type="math/tex; mode=display">
-\bar{w} = \bar{w}+ w_{t,n}</script><p>但这个方法需要在处理每一个样本时都要更新平均权重，因为</p>
+K(x,z)=(1+x^Tz)^2=\phi(x)^T\phi(z)</script><p>来隐式的计算x,z在特征空间φ中的内积，其中:</p>
 <script type="math/tex; mode=display">
- \bar{w} ,w_{t,n}</script><p>都是稠密向量，因此更新操作比较费时。为了提高迭代速度，有很多改进的办法，让这个更新只需要在错误预测时才进行。下图给了一个改进的平均感知机算法的训练过程（算法-2）。<br><img src="https://img-blog.csdnimg.cn/20190416184043264.png" alt="改进的平均感知机算法的训练过程"></p>
-<h1 id="扩展到多分类"><a href="#扩展到多分类" class="headerlink" title="扩展到多分类"></a>扩展到多分类</h1><p>原始的感知机是二分类模型，但也很容易的扩展到多分类，甚至是更一般的结构化学习问题。</p>
-<p>之前介绍的线性分类模型中，分类函数都是在输入x的特征空间上。为了使得感知机可以处理更加复杂的输出，我们引入一个构建输入输出联合空间上的特征函数，将样本(x,y)对映射到一个特征向量空间。</p>
-<p>在联合特征空间中，我们可以建立一个广义的感知机模型（公式-10）：</p>
+\phi(x)=[1,\sqrt{2}x_1,\sqrt{2}x_2,\sqrt{2}x_1x_2,x_1^2,x_2^2]^T</script><h1 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h1><p>在支持向量机的优化问题中，约束条件比较严格。如果训练集中的样本在特征空间中不是线性可分的，就无法找到最优解。为了能够容忍部分不满足约束的样本，我们可以引入松弛变量，将优化问题变为（公式-15）：</p>
 <script type="math/tex; mode=display">
-\hat{y} = \underset{y\in Gen(x)}{ arg max} w^T \phi(x,y)</script><p>其中w为权重向量，Gen(x)表示输入x所有的输出目标集合。当处理C类分类问题时，Gen(x)={1,….,C}</p>
-<p>在C分类中，一种常用的特征函数（公式-11）</p>
+\underset{w,b}{min} \qquad \frac{1}{ 2} {\left \| w \right \| ^2} + C \sum_{n=1}^{N}\xi _n
+\\
+s.t.  \qquad  1-y^n(w^Tx^n + b) -\xi _n \leq 0, \forall n
+\\
+\xi _n \geq 0, \forall n</script><p>其中参数C&gt;0用来控制间隔和松弛变量惩罚的平衡，引入松弛变量的间隔称为软间隔（soft margin）。公式-15也可以表示为经验风险+正则化项的形式（公式-16）。</p>
 <script type="math/tex; mode=display">
-\phi(x,y)</script><p>是y和x的内积，其中y为类别的one-hot向量表示（公式-12）。</p>
+\underset{w,b}{min} \qquad \sum_{n=1}^{N}max(0,1-y^n(w^Tx^n + b)) + \frac{1}{C}.\frac{1}{2}\left \| w \right \|^2</script><p>其中</p>
 <script type="math/tex; mode=display">
- \phi(x,y) = vec(yx^T)\in R^{(d\times C)}</script><p>其中vec是向量化算子。</p>
-<p>给定样本(x,y)，若</p>
+max(0,1-y^n(w^Tx^n + b))</script><p>称为hinge损失函数，1/C可以看作是正则化系数。软间隔支持向量机的参数学习和原始支持向量机类似，其最终决策函数也只和支持向量有关，即满足</p>
 <script type="math/tex; mode=display">
-x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https://img-blog.csdnimg.cn/20190416190108143.png" alt="y为第c维为1的one-hot向量"></p>
-<p>广义感知器算法的训练过程如算法-3所示：</p>
-<p><img src="https://img-blog.csdnimg.cn/20190416190225604.png" alt="广义感知器算法的训练过程"></p>
+1-y^n(w^Tx^n + b) - \xi_n = 0</script><p>的样本。</p>
 
       
 
@@ -338,15 +319,11 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SVM</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">PLA</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">感知机</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">向量机</a>
         		</li>
       		
 		</ul>
@@ -367,7 +344,7 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/21/机器学习/线性模型篇之SVM数学公式推导/">展开全文 >></a>
         </p>
       
 
@@ -399,7 +376,7 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -543,6 +520,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -575,18 +564,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -595,11 +572,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -684,6 +661,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">向量机</a>
               </li>
              
               <li class="article-tag-list-item">

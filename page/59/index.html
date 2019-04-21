@@ -193,46 +193,34 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux/虚拟Ubuntu系统与主机互ping" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hadoop/hadoop命令——hdfs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/">Virtualbox虚拟Ubuntu系统与主机互ping</a>
+      <a class="article-title" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">hadoop命令——hdfs</a>
     </h1>
   
 
         
-        <a href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/" class="archive-article-date">
-  	<time datetime="2015-07-08T15:04:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-08</time>
+        <a href="/2015/07/11/Hadoop/hadoop命令——hdfs/" class="archive-article-date">
+  	<time datetime="2015-07-11T09:11:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>互ping的前提是主机和虚拟机的ip地址在同一波段【eg:主机为：192.168.1.10虚拟Linux：192.168.1.11】</p>
-<h1 id="1、设置主机ip"><a href="#1、设置主机ip" class="headerlink" title="1、设置主机ip"></a>1、设置主机ip</h1><p>打开网络共享中心-&gt;更改适配器设置-&gt;以太网，修改其ip</p>
-<p><img src="http://img.blog.csdn.net/20150708225332168?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>在主机上运行CMD输入ipconfig显示如下</p>
-<p><img src="http://img.blog.csdn.net/20150708225434716?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<h1 id="2、设置虚拟机ip"><a href="#2、设置虚拟机ip" class="headerlink" title="2、设置虚拟机ip"></a>2、设置虚拟机ip</h1><p>打开终端以root身份运行<br>执行 sudo gedit /etc/hosts   修改如下</p>
-<p><img src="http://img.blog.csdn.net/20150708230418229?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>执行 sudo gedit /etc/network/interfaces  修改如下</p>
-<p><img src="http://img.blog.csdn.net/20150708230424484?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>执行 sudo gedit /etc/resolv.conf  修改如下</p>
-<p><img src="http://img.blog.csdn.net/20150708232308064?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>nameserver后边紧跟的是主机的DNS，不同机器对应不同</p>
-<p>重启网络服务</p>
-<p>sudo /etc/init.d/networking restart</p>
-<p>关闭防火墙</p>
-<p>sudo ufw disable</p>
-<h1 id="3、虚拟机网络连接设置"><a href="#3、虚拟机网络连接设置" class="headerlink" title="3、虚拟机网络连接设置"></a>3、虚拟机网络连接设置</h1><p>小编亲测，若虚拟机网络格式设置错误的话是不会ping的通的，因此应该格外注意</p>
-<p>若主机连的是WiFi，则虚拟机设置-&gt;网络-&gt;启用网络连接（桥接网卡，Realtek  ……   Wireless Lan …….）</p>
-<p>若主机连的是有线网，则虚拟机设置-&gt;网络-&gt;启用网络连接（桥接网卡，Realtek  PCIe GBE Family ……..）</p>
-<p>至此，已全部设置成功，主机与虚拟机之间便可以互ping了</p>
+        <p>hdfs是hadoop大体系下的分布式文件管理系统，是英文Hadoop Distributed File System的简写，其常用命令如下：</p>
+<h1 id="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"><a href="#一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）" class="headerlink" title="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"></a>一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）</h1><p><img src="http://img.blog.csdn.net/20150715110547708?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p><img src="http://img.blog.csdn.net/20150715110719331?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<h1 id="二：其他相关命令"><a href="#二：其他相关命令" class="headerlink" title="二：其他相关命令"></a>二：其他相关命令</h1><p>1、hadoop 归档文件shell： hadoop archive -archiveName file.har -p /gyt/input /gyt/output (file.har为归档后的文件  /gyt/inut/为多个文件所在目录   /gyt/output/是归档后的输出目录)</p>
+<p>2、运行JAR程序包shell：hadoop jar /home/hadoop/hadoop-1.1.2/hadoop-examples-1.1.2.jar wordcount  /user/hadoop/input output（XXX.jar是程序目录，wordcount是程序入口，XXX/input是文件输入源，output是文件输出源）</p>
+<p>4、查看HDFS状态：hadoop dfsadmin -report比如有哪些datanode，每个datanode的情况</p>
+<p>5、离开安全模式：hadoop dfsadmin -safemode leave </p>
+<p>6、进入安全模式： hadoop dfsadmin -safemode enter</p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -255,7 +243,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
         		</li>
       		
 		</ul>
@@ -276,7 +264,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +296,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/58/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/57/">57</a><a class="page-number" href="/page/58/">58</a><span class="page-number current">59</span><a class="page-number" href="/page/60/">60</a><a class="page-number" href="/page/61/">61</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/60/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/58/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/57/">57</a><a class="page-number" href="/page/58/">58</a><span class="page-number current">59</span><a class="page-number" href="/page/60/">60</a><a class="page-number" href="/page/61/">61</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/60/">Next &raquo;</a>
     </nav>
   
 
@@ -452,6 +440,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -484,18 +484,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -504,11 +492,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,6 +581,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">向量机</a>
               </li>
              
               <li class="article-tag-list-item">

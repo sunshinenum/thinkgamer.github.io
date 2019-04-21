@@ -193,41 +193,45 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Hadoop/hadoop命令——hdfs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hadoop/MapReducer中的多次归约处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">hadoop命令——hdfs</a>
+      <a class="article-title" href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/">MapReducer中的多次归约处理</a>
     </h1>
   
 
         
-        <a href="/2015/07/11/Hadoop/hadoop命令——hdfs/" class="archive-article-date">
-  	<time datetime="2015-07-11T09:11:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-11</time>
+        <a href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/" class="archive-article-date">
+  	<time datetime="2015-07-28T01:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>hdfs是hadoop大体系下的分布式文件管理系统，是英文Hadoop Distributed File System的简写，其常用命令如下：</p>
-<h1 id="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"><a href="#一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）" class="headerlink" title="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"></a>一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）</h1><p><img src="http://img.blog.csdn.net/20150715110547708?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p><img src="http://img.blog.csdn.net/20150715110719331?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<h1 id="二：其他相关命令"><a href="#二：其他相关命令" class="headerlink" title="二：其他相关命令"></a>二：其他相关命令</h1><p>1、hadoop 归档文件shell： hadoop archive -archiveName file.har -p /gyt/input /gyt/output (file.har为归档后的文件  /gyt/inut/为多个文件所在目录   /gyt/output/是归档后的输出目录)</p>
-<p>2、运行JAR程序包shell：hadoop jar /home/hadoop/hadoop-1.1.2/hadoop-examples-1.1.2.jar wordcount  /user/hadoop/input output（XXX.jar是程序目录，wordcount是程序入口，XXX/input是文件输入源，output是文件输出源）</p>
-<p>4、查看HDFS状态：hadoop dfsadmin -report比如有哪些datanode，每个datanode的情况</p>
-<p>5、离开安全模式：hadoop dfsadmin -safemode leave </p>
-<p>6、进入安全模式： hadoop dfsadmin -safemode enter</p>
+        <p>我们知道，MapReduce是分为Mapper任务和Reducer任务，Mapper任务的输出，通过网络传输到Reducer任务端，作为输入。</p>
+<p>在Reducer任务中，通常做的事情是对数据进行归约处理。既然数据来源是Mapper任务的输出，那么是否可以在Mapper端对数据进行归约处理，业务逻辑与Reducer端做的完全相同。处理后的数据再传送到Reducer端，再做一次归约。这样的好处是减少了网络传输的数量。</p>
+<p>可能有人疑惑几个问题：</p>
+<p>为什么需要在Mapper端进行归约处理？</p>
+<p>为什么可以在Mapper端进行归约处理？</p>
+<p>既然在Mapper端可以进行归约处理，为什么在Reducer端还要处理？</p>
+<p>回答第一个问题：因为在Mapper进行归约后，数据量变小了，这样再通过网络传输时，传输时间就变短了，减少了整个作业的运行时间。</p>
+<p>回答第二个问题：因为Reducer端接收的数据就是来自于Mapper端。我们在Mapper进行归约处理，无非就是把归约操作提前到Mapper端做而已。</p>
+<p>回答第三个问题：因为Mapper端的数据仅仅是本节点处理的数据，而Reducer端处理的数据是来自于多个Mapper任务的输出。因此在Mapper不能归约的数据，在Reducer端有可能归约处理。</p>
+<p>在Mapper进行归约的类称为Combiner。那么，怎么写Combiner哪？非常简单，就是我们自定义的Reducer类。那么，怎么用哪？更简单，见如下代码</p>
+<p>job.setCombineClass(Mapper.class)</p>
+<p>要注意的是，Combiner只在Mapper任务所在的节点运行，不会跨Mapper任务运行。Reduce端接收所有Mapper端的输出来作为输入。虽然两边的归约类是同一个，但是执行的位置完全不一样。</p>
+<p>并不是所有的归约工作都可以使用Combiner来做。比如求平均值就不能使用Combiner。因为对于平均数的归约算法不能多次调用。</p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     <br>
 打开微信扫一扫，关注公众号【数据与算法联盟】
 </center>
-
 
 
 
@@ -264,7 +268,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/">展开全文 >></a>
         </p>
       
 
@@ -296,7 +300,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/57/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/56/">56</a><a class="page-number" href="/page/57/">57</a><span class="page-number current">58</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/59/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/57/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/56/">56</a><a class="page-number" href="/page/57/">57</a><span class="page-number current">58</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/59/">Next &raquo;</a>
     </nav>
   
 
@@ -440,6 +444,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -472,18 +488,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -492,11 +496,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -581,6 +585,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">向量机</a>
               </li>
              
               <li class="article-tag-list-item">

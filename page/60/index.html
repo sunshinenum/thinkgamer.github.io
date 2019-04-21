@@ -193,49 +193,53 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux/linux-ifconfig命令配置ip地址" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux/虚拟Ubuntu系统与主机互ping" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">linux-ifconfig命令配置ip地址</a>
+      <a class="article-title" href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/">Virtualbox虚拟Ubuntu系统与主机互ping</a>
     </h1>
   
 
         
-        <a href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/" class="archive-article-date">
-  	<time datetime="2015-07-08T04:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-08</time>
+        <a href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/" class="archive-article-date">
+  	<time datetime="2015-07-08T15:04:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。<br>lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。 </p>
-<p>ifconfig</p>
-<p>是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>加上参数eth0的话是查看eth0网卡的信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123456712?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>网卡信息的一些解释：<br>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址） </p>
-<p>第二三行：网卡的IP地址、子网、掩码 </p>
-<p>第四行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）<br>MTU:1500（最大传输单元）：1500字节   www.2cto.com  </p>
-<p>下面就是接收、发送数据包情况统计和发送接受数据字节数的统计信息。 </p>
-<p>配置网卡的IP地址 </p>
-<p>ifconfig eth0 192.168.168.64 netmask 255.255.255.0  </p>
-<p>在eth0上配置上192.168.168.64 的IP地址及子网掩码。 </p>
-<p>配置网卡的硬件地址<br>ifconfig eth0 hw ether xx：xx：xx：xx：xx：xx  </p>
-<p>禁用网卡eth0<br>ifconfig eth0 down  </p>
-<p>启用网卡eth0<br>ifconfig eth0 up  </p>
-<p>另外启动和禁用网卡还可以使用ifup | ifdown  eth0</p>
+        <p>互ping的前提是主机和虚拟机的ip地址在同一波段【eg:主机为：192.168.1.10虚拟Linux：192.168.1.11】</p>
+<h1 id="1、设置主机ip"><a href="#1、设置主机ip" class="headerlink" title="1、设置主机ip"></a>1、设置主机ip</h1><p>打开网络共享中心-&gt;更改适配器设置-&gt;以太网，修改其ip</p>
+<p><img src="http://img.blog.csdn.net/20150708225332168?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>在主机上运行CMD输入ipconfig显示如下</p>
+<p><img src="http://img.blog.csdn.net/20150708225434716?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<h1 id="2、设置虚拟机ip"><a href="#2、设置虚拟机ip" class="headerlink" title="2、设置虚拟机ip"></a>2、设置虚拟机ip</h1><p>打开终端以root身份运行<br>执行 sudo gedit /etc/hosts   修改如下</p>
+<p><img src="http://img.blog.csdn.net/20150708230418229?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>执行 sudo gedit /etc/network/interfaces  修改如下</p>
+<p><img src="http://img.blog.csdn.net/20150708230424484?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>执行 sudo gedit /etc/resolv.conf  修改如下</p>
+<p><img src="http://img.blog.csdn.net/20150708232308064?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p>nameserver后边紧跟的是主机的DNS，不同机器对应不同</p>
+<p>重启网络服务</p>
+<p>sudo /etc/init.d/networking restart</p>
+<p>关闭防火墙</p>
+<p>sudo ufw disable</p>
+<h1 id="3、虚拟机网络连接设置"><a href="#3、虚拟机网络连接设置" class="headerlink" title="3、虚拟机网络连接设置"></a>3、虚拟机网络连接设置</h1><p>小编亲测，若虚拟机网络格式设置错误的话是不会ping的通的，因此应该格外注意</p>
+<p>若主机连的是WiFi，则虚拟机设置-&gt;网络-&gt;启用网络连接（桥接网卡，Realtek  ……   Wireless Lan …….）</p>
+<p>若主机连的是有线网，则虚拟机设置-&gt;网络-&gt;启用网络连接（桥接网卡，Realtek  PCIe GBE Family ……..）</p>
+<p>至此，已全部设置成功，主机与虚拟机之间便可以互ping了</p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     <br>
 打开微信扫一扫，关注公众号【数据与算法联盟】
 </center>
+
 
 
 
@@ -251,7 +255,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -272,7 +276,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/07/08/Linux/虚拟Ubuntu系统与主机互ping/">展开全文 >></a>
         </p>
       
 
@@ -304,7 +308,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/59/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="page-number" href="/page/59/">59</a><span class="page-number current">60</span><a class="page-number" href="/page/61/">61</a><a class="page-number" href="/page/62/">62</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/61/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/59/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="page-number" href="/page/59/">59</a><span class="page-number current">60</span><a class="page-number" href="/page/61/">61</a><a class="page-number" href="/page/62/">62</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/61/">Next &raquo;</a>
     </nav>
   
 
@@ -448,6 +452,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -480,18 +496,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -500,11 +504,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,6 +593,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">向量机</a>
               </li>
              
               <li class="article-tag-list-item">

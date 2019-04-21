@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/基于神经网络实现Mnist数据集的多分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/">基于神经网络实现Mnist数据集的多分类</a>
+      <a class="article-title" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">从线性回归看偏差-方差分解（Bias-Variance Decomposition）</a>
     </h1>
   
 
         
-        <a href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/" class="archive-article-date">
-  	<time datetime="2019-03-09T13:19:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-09</time>
+        <a href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/" class="archive-article-date">
+  	<time datetime="2019-03-25T15:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-25</time>
 </a>
         
       </header>
@@ -220,20 +220,51 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<blockquote>
-<p>在之前的文章中介绍了基于Logistic Regression实现Mnist数据集的多分类，本篇文章主要介绍基于TensorFlow实现Mnist数据集的多分类。</p>
-</blockquote>
-<p>一个典型的神经网络训练图如下所示：<br><img src="https://img-blog.csdnimg.cn/20190308005540655.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p>只不过在Mnist数据集是十分类的，起输出由y1和y2换成y1，….，y10。本文实现的神经网络如下所示：</p>
-<p>这是使用的是两层的神经网络，第一层神经元个数是256，第二层为128，最终输出的是10个类别。对应的神经网络结果如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190309205947261.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p>接着我们创建一个MutilClass类，并初始化相关参数用来实现基于神经网络的多分类函数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">from tensorflow.examples.tutorials.mnist import input_data</span><br><span class="line"> </span><br><span class="line">class MutilClass:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        # 加载数据集</span><br><span class="line">        self.Mnsit = input_data.read_data_sets(&quot;./data/&quot;, one_hot=True)</span><br><span class="line"> </span><br><span class="line">        # 设置神经网络层参数</span><br><span class="line">        self.n_hidden_1 = 256</span><br><span class="line">        self.n_hidden_2 = 128</span><br><span class="line">        self.n_input = 784</span><br><span class="line">        self.n_classes = 10</span><br><span class="line"> </span><br><span class="line">        self.x = tf.placeholder(dtype=float, shape=[None, self.n_input], name=&quot;x&quot;)</span><br><span class="line">        self.y = tf.placeholder(dtype=float, shape=[None, self.n_classes], name=&quot;y&quot;)</span><br><span class="line">        # random_normal 高斯分布初始化权重</span><br><span class="line">        self.weights = &#123;</span><br><span class="line">            &quot;w1&quot;: tf.Variable(tf.random_normal([self.n_input, self.n_hidden_1],stddev = 0.1)),</span><br><span class="line">            &quot;w2&quot;: tf.Variable(tf.random_normal([self.n_hidden_1, self.n_hidden_2], stddev = 0.1)),</span><br><span class="line">            &quot;out&quot;: tf.Variable(tf.random_normal([self.n_hidden_2, self.n_classes], stddev = 0.1))</span><br><span class="line">        &#125;</span><br><span class="line">        self.bias = &#123;</span><br><span class="line">            &quot;b1&quot;: tf.Variable(tf.random_normal([ self.n_hidden_1 ])),</span><br><span class="line">            &quot;b2&quot;: tf.Variable(tf.random_normal([ self.n_hidden_2 ])),</span><br><span class="line">            &quot;out&quot;: tf.Variable(tf.random_normal([ self.n_classes ]))</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        print(&quot;参数初始化完成！&quot;)</span><br></pre></td></tr></table></figure>
-<p>神经网络首次循环，是根据初始化的参数和偏置，向前传播，经过两层隐层，最终的到一个对应各个类别的概率，然后再根据反向传播，最小化损失函数求解参数，所以这里创建一个前向传播和反向传播的函数，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 定义一个MLP，前向感知器</span><br><span class="line">def _multilayer_perceptron(self,_X, _weights, _bias):</span><br><span class="line">    layer_1 = tf.nn.sigmoid(tf.add ( tf.matmul(_X, _weights[&quot;w1&quot;]), _bias[&quot;b1&quot;] ) )</span><br><span class="line">    layer_2 = tf.nn.sigmoid(tf.add ( tf.matmul(layer_1, _weights[&quot;w2&quot;]), _bias[&quot;b2&quot;] ) )</span><br><span class="line">    return (tf.matmul( layer_2 ,_weights[&quot;out&quot;] ) + _bias[&quot;out&quot;])</span><br><span class="line"> </span><br><span class="line"># 定义反向传播</span><br><span class="line">def _back_propagation(self):</span><br><span class="line">    pred = self._multilayer_perceptron(self.x, self.weights, self.bias)</span><br><span class="line">    # logits 未归一化的概率</span><br><span class="line">    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=self.y) )</span><br><span class="line">    optimizer = tf.train.GradientDescentOptimizer( learning_rate= 0.001).minimize(cost)</span><br><span class="line">    corr = tf.equal(tf.argmax(pred, 1), tf.argmax(self.y, 1) )</span><br><span class="line">    accr =tf.reduce_mean(tf.cast(corr, dtype=float))</span><br><span class="line"> </span><br><span class="line">    init = tf.global_variables_initializer()</span><br><span class="line">    return init, optimizer,cost, accr</span><br></pre></td></tr></table></figure></p>
-<p>接着就是训练网络了，指定的迭代次数为：100，batch_size：100，其对应的函数未：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 训练模型</span><br><span class="line">def _train_model(self, _init, _optimizer, _cost, _accr):</span><br><span class="line">    epochs = 100</span><br><span class="line">    batch_size = 100</span><br><span class="line">    display_steps = 1</span><br><span class="line">    sess = tf.Session()</span><br><span class="line">    sess.run(_init)</span><br><span class="line"> </span><br><span class="line">    for epoch in range(epochs):</span><br><span class="line">        avg_cost = 0</span><br><span class="line">        total_batch = int (self.Mnsit.train.num_examples / batch_size)</span><br><span class="line">        for i in range(total_batch):</span><br><span class="line">            batch_xs, batch_ys = self.Mnsit.train.next_batch(batch_size)</span><br><span class="line">            feeds = &#123;self.x: batch_xs, self.y: batch_ys&#125;</span><br><span class="line">            sess.run(_optimizer, feed_dict=feeds)</span><br><span class="line">            avg_cost += sess.run(_cost, feed_dict=feeds)</span><br><span class="line">        avg_cost = avg_cost / total_batch</span><br><span class="line"> </span><br><span class="line">        if (epoch +1) % display_steps ==0:</span><br><span class="line">            print(&quot;Epoch: &#123;&#125; / &#123;&#125;, cost: &#123;&#125;&quot;.format(epoch, epochs, avg_cost))</span><br><span class="line">            feeds = &#123;self.x: batch_xs, self.y: batch_ys&#125;</span><br><span class="line">            train_acc = sess.run(_accr, feed_dict=feeds)</span><br><span class="line">            print(&quot;Train Accuracy: &#123;&#125;&quot;.format(train_acc))</span><br><span class="line"> </span><br><span class="line">            feeds = &#123;self.x : self.Mnsit.test.images, self.y: self.Mnsit.test.labels&#125;</span><br><span class="line">            test_acc = sess.run(_accr, feed_dict= feeds)</span><br><span class="line">            print(&quot;Test Accuracy: &#123;&#125;&quot;.format(test_acc))</span><br><span class="line">            print(&quot;-&quot; * 50)</span><br></pre></td></tr></table></figure>
-<p>创建主函数，进行迭代训练<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    network = MutilClass()</span><br><span class="line">    init, optimizer, cost, accr = network._back_propagation()</span><br><span class="line">    network._train_model(init, optimizer,cost, accr)</span><br></pre></td></tr></table></figure></p>
-<p>最后的迭代结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Epoch: 0 / 100, cost: 2.4407591546665537</span><br><span class="line">Train Accuracy: 0.12999999523162842</span><br><span class="line">Test Accuracy: 0.12960000336170197</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 1 / 100, cost: 2.290777679356662</span><br><span class="line">Train Accuracy: 0.12999999523162842</span><br><span class="line">Test Accuracy: 0.1469999998807907</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 2 / 100, cost: 2.2774649468335237</span><br><span class="line">Train Accuracy: 0.17000000178813934</span><br><span class="line">Test Accuracy: 0.21799999475479126</span><br><span class="line">--------------------------------------------------</span><br><span class="line"> </span><br><span class="line">.......</span><br><span class="line"> </span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 98 / 100, cost: 0.7186844098567963</span><br><span class="line">Train Accuracy: 0.8299999833106995</span><br><span class="line">Test Accuracy: 0.8371999859809875</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 99 / 100, cost: 0.7124480505423112</span><br><span class="line">Train Accuracy: 0.8100000023841858</span><br><span class="line">Test Accuracy: 0.8377000093460083</span><br><span class="line">--------------------------------------------------</span><br></pre></td></tr></table></figure></p>
-<p>从结果中可以看出，cost是一直在减少，训练集和测试集评估模型的准确率也在一直提高。当然我们也可以通过调节epoch，batch_size来重新训练模型。</p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>对于数字序列1，3，5，7，？，正常情况下大家脑海里蹦出的是9，但是217314也是其一个解<br>9对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=2x-1</script><p>217314对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=\frac{18111}{2} x^{4}-90555x^{3}+\frac{633885}{2}x^{2}-452773x+217331</script><p>Python 实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def f(x):</span><br><span class="line">...     return 18111/2 * pow(x,4) -90555 * pow(x,3) + 633885/2 * pow(x,2) -452773 * x +217331</span><br><span class="line">... </span><br><span class="line">&gt;&gt;&gt; f(1)</span><br><span class="line">1.0</span><br><span class="line">&gt;&gt;&gt; f(2)</span><br><span class="line">3.0</span><br><span class="line">&gt;&gt;&gt; f(3)</span><br><span class="line">5.0</span><br><span class="line">&gt;&gt;&gt; f(4)</span><br><span class="line">7.0</span><br><span class="line">&gt;&gt;&gt; f(5)</span><br><span class="line">217341.0</span><br></pre></td></tr></table></figure></p>
+<p>当机器学习模型进行预测的时候，通常都需要把握一个非常微妙的平衡，一方面我们希望模型能够匹配更多的训练数据，相应的增加其复杂度，否则会丢失相关特征的趋势（即模型过拟合）；但是另一方面，我们又不想让模型过分的匹配训练数据，相应的舍弃部分复杂的，因为这样存在过度解析所有异常值和伪规律的风险，导致模型的泛化能力差（即模型欠拟合）。因此在模型的拟合能力和复杂度之前取得一个比较好的权衡，对于一个模型来讲十分重要。而偏差-方差分解（Bias-Variance Decomposition）就是用来指导和分析这种情况的工具。</p>
+<h1 id="偏差和方差定义"><a href="#偏差和方差定义" class="headerlink" title="偏差和方差定义"></a>偏差和方差定义</h1><ul>
+<li>偏差（Bias）：即预测数据偏离真实数据的情况。</li>
+<li>方差（Variance）：描述的是随机变量的离散程度，即随机变量在其期望值附近的波动程度。</li>
+</ul>
+<h1 id="偏差-方差推导过程"><a href="#偏差-方差推导过程" class="headerlink" title="偏差-方差推导过程"></a>偏差-方差推导过程</h1><p>以回归问题为例，假设样本的真实分布为p_r(x,y)，并采用平方损失函数，模型f(x)的期望错误为(公式2.1)：</p>
+<script type="math/tex; mode=display">
+R(f) = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f(x))^2 \right ]</script><p>那么最优模型为(公式2.2)：</p>
+<script type="math/tex; mode=display">
+f^*(x) = E_{y\sim p_r{(y|x)}} \left [ y \right ]</script><p>其中p_r(y|x)为真实的样本分布，f^*(x)为使用平方损失作为优化目标的最优模型，其损失为(公式2.3)：</p>
+<script type="math/tex; mode=display">
+\varepsilon  = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f^*(x))^2 \right ]</script><p>损失</p>
+<script type="math/tex; mode=display">
+\varepsilon</script><p>通常是由于样本分布及其噪声引起的，无法通过优化模型来减少。<br>期望错误可以分解为(公式2.4)：</p>
+<script type="math/tex; mode=display">
+R(f)</script><script type="math/tex; mode=display">
+= E_{(x,y)\sim p_r{(x,y)}} \left [ (y- f^*(x) + f^*(x) -f(x))^2 \right ]</script><script type="math/tex; mode=display">
+= E_{x\sim p_r{(x)}}\left [ (f(x) - f^*(x))^2 \right ] + \varepsilon</script><p>公式2.4中的第一项是机器学习可以优化的真实目标，是当前模型和最优模型之间的差距。</p>
+<p>在实际训练一个模型f(x)时，训练集D是从真实分布p_r(x,y)上独立同分布的采样出来的有限样本集合。不同的训练集会得到不同的模型。令f_D(x)表示在训练集D上学习到的模型，一个机器学习算法（包括模型和优化算法）的能力可以通过模型在不同训练集上的平均性能来体现。</p>
+<p>对于单个样本x，不同训练集D得到的模型f_D(x)和最优模型f^*(x)的上的期望差距为（公式2.5）：</p>
+<script type="math/tex; mode=display">
+E_D[( f_D(x)-f^*(x) )^2]</script><script type="math/tex; mode=display">
+=E_D\left [  ( f_D(x)  - E_D[f_D(x)] +E_D[f_D(x)]   -f^*(x) )^2   \right ]</script><script type="math/tex; mode=display">
+=( E_D[f_D(x)]   -f^*(x) )^2 )  + E_D[(f_D(x)  - E_D[f_D(x)] )^2]</script><p>公式2.5最后一行中的第一项为偏差(bias)，是指一个模型在不同训练集上的平均性能和与最优模型的差异，偏差可以用来衡量一个模型的拟合能力；第二项是方差（variance），是指一个模型在不同训练集上的差异，可以用来衡量一个模型是否容易过拟合。</p>
+<p>集合公式2.4和公式2.5，期望错误可以分解为(公式2.6)：</p>
+<script type="math/tex; mode=display">
+R(f)= (bias)^2 + variance +  \varepsilon</script><p>其中</p>
+<script type="math/tex; mode=display">
+(bias)^2 =  E_X[E_D[f_D(x)]   -f^*(x) )^2 ]</script><script type="math/tex; mode=display">
+variance = E_X [ E_D[(f_D(x)  - E_D[f_D(x)] )^2] ]</script><p>最小化期望错误等价于最小化偏差和方差之和。</p>
+<h1 id="偏差和方差分析"><a href="#偏差和方差分析" class="headerlink" title="偏差和方差分析"></a>偏差和方差分析</h1><p><img src="https://img-blog.csdnimg.cn/20190325231703314.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>上图为机器学习中偏差和方差的四种不同情况。每个图的中心点为最优模型f*(x)，蓝点为不同训练集D 上得到的模型f_D(x)。</p>
+<ul>
+<li>(a)给出了一种理想情况，方差和偏差都比较小</li>
+<li>(b)为高偏差低方差的情况，表示模型的泛化能力很好，但拟合能力不足</li>
+<li>(c)为低偏差高方差的情况，表示模型的拟合能力很好，但泛化能力比较差。当训练数据比较少时会导致过拟合</li>
+<li>(d)为高偏差高方差的情况，是一种最差的情况</li>
+</ul>
+<p>方差一般会随着训练样本的增加而减少。当样本比较多时，方差比较少，我们可以选择能力强的模型来减少偏差。然而在很多机器学习任务上，训练集上往往都比较有限，最优的偏差和最优的方差就无法兼顾。</p>
+<p>随着模型复杂度的增加，模型的拟合能力变强，偏差减少而方差增大，从而导致过拟合。以结构错误最小化为例，我们可以调整正则化系数λ来控制模型的复杂度。当λ变大时，模型复杂度会降低，可以有效地减少方差，避免过拟合，但偏差会上升。当λ过大时，总的期望错误反而会上升。因此，正则化系数λ需要在偏差和方差之间取得比较好的平衡。下图给出了机器学习模型的期望错误、偏差和方差随复杂度的变化情况。最优的模型并不一定是偏差曲线和方差曲线的交点。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190325231720819.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>偏差和方差分解给机器学习模型提供了一种分析途径，但在实际操作中难以直接衡量。一般来说，当一个模型在训练集上的错误率比较高时，说明模型的拟合能力不够，偏差比较高。这种情况可以增加数据特征、提高模型复杂度，减少正则化系数等操作来改进模型。当模型在训练集上的错误率比较低，但验证集上的错误率比较高时，说明模型过拟合，方差比较高。这种情况可以通过降低模型复杂度，加大正则化系数，引入先验等方法来缓解。此外，还有一种有效的降低方差的方法为集成模型，即通过多个高方差模型的平均来降低方差。 </p>
 
       
 
@@ -247,15 +278,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性回归</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">方差</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">偏差</a>
         		</li>
       		
 		</ul>
@@ -276,7 +311,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +343,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
     </nav>
   
 
@@ -452,6 +487,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
@@ -484,18 +531,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -504,11 +539,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hive</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,6 +628,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">梯度下降</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">向量机</a>
               </li>
              
               <li class="article-tag-list-item">
