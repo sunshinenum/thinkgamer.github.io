@@ -193,89 +193,60 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Spark提交参数说明和常见优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/记一次百G数据的聚类算法实施过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">Spark提交参数说明和常见优化</a>
+      <a class="article-title" href="/2018/01/27/Spark/记一次百G数据的聚类算法实施过程/">记一次百G数据的聚类算法实施过程</a>
     </h1>
   
 
         
-        <a href="/2018/01/23/Spark/Spark提交参数说明和常见优化/" class="archive-article-date">
-  	<time datetime="2018-01-22T16:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-23</time>
+        <a href="/2018/01/27/Spark/记一次百G数据的聚类算法实施过程/" class="archive-article-date">
+  	<time datetime="2018-01-26T16:08:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相关知识，在后续文章会具体涉及到相关的”实战经历“。</p>
-<h1 id="对Spark的认识"><a href="#对Spark的认识" class="headerlink" title="对Spark的认识"></a>对Spark的认识</h1><p>由于之前接触过Hadoop，对Spark也是了解一些皮毛，但中间隔了好久才重新使用spark，期间也产生过一些错误的认识。</p>
-<p>之前觉得MapReduce耗费时间，写一个同等效果的Spark程序很快就能执行完，很长一段时间自己都是在本地的单机环境进行测试学习，所以这种错误的认知就会更加深刻，但事实却并非如此，MR之所以慢是因为每一次操作数据都写在了磁盘上，大量的IO造成了时间和资源的浪费，但是Spark是基于内存的计算引擎，相比MR，减少的是大量的IO，但并不是说给一个Spark程序足够的资源，就可以为所欲为了，在提交一个spark程序时，不仅要考虑所在资源队列的总体情况，还要考虑代码本身的高效性，要尽量避免大量的shuffle操作和action操作，尽量使用同一个rdd。</p>
-<p>会用spark，会调api和能用好spark是两回事，在进行开发的过程中，不仅要了解运行原理，还要了解业务，将合适的方法和业务场景合适的结合在一起，才能发挥最大的价值。</p>
-<h1 id="spark-submit"><a href="#spark-submit" class="headerlink" title="spark-submit"></a>spark-submit</h1><p>进入spark的home目录，执行以下命令查看帮助<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/spark-submit --help</span><br></pre></td></tr></table></figure></p>
-<p>spark提交任务常见的两种模式<br>1：local/local[K]</p>
+        <p>如题，记一次百G数据的聚类算法实施过程，用的技术都不难，spark和kmeans，我想你会认为这没有什么难度，我接到这个任务的时候也认为没有难度，可是一周之后我发现我错了，数据量100G的确不大，但难度在于我需要对 kmeans 的 train过程执行将近3000次，而且需要高效的完成。那么问题就来了，如何保证高效和准确性。（声明小编对Spark也不是说很熟悉）</p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>数据格式为三列，第一列为类别ID，第二列为商品ID，第三列为价格，数据格式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1000    2000    45.3</span><br><span class="line">1000    2001    121.3</span><br><span class="line">1001    2002    4125.3</span><br><span class="line">1000    2003    225.3</span><br><span class="line">1001    2004    3415.3</span><br><span class="line">1000    2005    12245.3   </span><br><span class="line">...     ...     ....</span><br></pre></td></tr></table></figure></p>
+<p>数据有很多条，数据量为将近100G，存储在hdfs上，第一列品类ID不唯一，每个品类ID下有多个商品ID，商品ID唯一，价格为浮点型数据</p>
+<p>现在要对每个品类下的价格进行聚类，得到1~7个价格level（7level的价格要比6level的价格高，以此类推）</p>
+<h1 id="第一次尝试"><a href="#第一次尝试" class="headerlink" title="第一次尝试"></a>第一次尝试</h1><p>第一次尝试很天真，思路也很正常，如下：<br>1：全量加载数据，形成rdd<br>2：数据split之后，按key进行groupby<br>3：针对每个key（也就是类别ID）进行kmeans聚类和预测，并将结果写入hdfs<br>4：加载每个类别的结果，进行聚合形成最终结果</p>
+<p>那么开始写代码。papapa写了一堆，发现groupBy之后的数据格式是CompactBuffer，转化成spark kmeans train所需要的格式之后，代码卡着不会动，不明所以（我估计是格式没有转正确，不是kmeans 所需要的格式，但是如果不是kmeans 需要的格式，应该会报错呀），后来当我把代码打包，提交到集群上运行时，提示我kmeans train所在的函数中没有指定master url，可是我明明指定了，后来才发现是因为，我在rdd操作过程中能够，嵌套了函数，函数中又重新使用了rdd，也就是说rdd 不能嵌套rdd使用，具体可参考 <a href="https://www.zhihu.com/question/54439266" target="_blank" rel="external">Spark 为什么 不允许 RDD 嵌套-如 RDD[RDD[T]]</a>，而我在本地测试时指的都是local，没有进行报错，至此这条路行不通，也就是说不能按这样的思路执行</p>
+<p>在该思路的基础上进行改进：<br>既然rdd不能嵌套rdd使用，何不先得到所有的类别id，然后在全量数据总filter单个类别id进行kmeans操作呢？</p>
+<p>该代码，测试，伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leibieID_list = XXXXX</span><br><span class="line">leibieID_list.map(one =&gt; kmeans(one,path))</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是 leibieID_list.map 操作并不是分布式的，而是for 循环，这样3000个类别id运行完，时间可想而知，是极其耗时的，所以这条路也失败了（不是说行不通，是因为耗时）</p>
+<h1 id="第二次尝试"><a href="#第二次尝试" class="headerlink" title="第二次尝试"></a>第二次尝试</h1><p>经过上边的尝试发现不行，那么我想是不是先全量读取数据，然后按照类别ID，将同一个类别ID的数据写到一个文件（或者文件夹下），然后再对之操作</p>
+<p>开始写classify by ID 的代码，这里遇到了问题是如何让同一个类别ID的数据写到一个文件中，上网查了一些资料，可以参考之前整理的笔记</p>
+<p><a href="http://blog.csdn.net/gamer_gyt/article/details/79157055" target="_blank" rel="external"> Spark多路径输出和二次排序</a></p>
+<p>这里边有实现的办法，但是还有一个问题，对全量数据（100G）进行shuffle的时候，由于数据量特别大，也特别占用资源，往往会出现一些内存上的错误。</p>
+<p>这里采用的策略是将全量数据rdd进行random split，然后for循环遍历split之后的rdd，进行saveAsTestFile，保存的目录这样设计<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/path/split=0/</span><br><span class="line">/path/split=1/</span><br><span class="line">/path/split=2/</span><br><span class="line">/path/split=3/</span><br><span class="line">    ...  ...</span><br></pre></td></tr></table></figure></p>
+<p>这样的话，就可以避免大量数据 shuffle 耗费资源的问题了，而且也不影响后续数据的使用，同时这一步也会把类别id提取出来，保存在hdfs上，供下一步使用。</p>
+<p>经历了上一步的数据准备，开始step 2的开发，第二步的思路：<br>加载第一步保存的类别id list文件，分成5份，启动5个spark任务进行train，至此，思路是正确的，但却忽略了一个很严正的问题：数据倾斜</p>
+<p>由于是随机对类别 id 进行分组操作，那么不能保证没组中每个类别id对应的数据条数的大概一致性，也就是存在某个ID 数据条数只有几十条，而有些ID 数据条数千万条，这种情况下就会导致代码在运行过程中，有些task很快运行完了，有些执行了好久也没完事。</p>
+<h1 id="第三次尝试"><a href="#第三次尝试" class="headerlink" title="第三次尝试"></a>第三次尝试</h1><p>有了第二次的经验，想法就是如何将数据条数差不多的分到同一组里，我采用的方法是进行统计，按照10的X次方形式进行分组，比如说<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1~10    1</span><br><span class="line">10~100  2</span><br><span class="line">100~1000    3</span><br><span class="line">....</span><br></pre></td></tr></table></figure></p>
+<p>但是这样也有一个问题，就是这样大概符合正太分布，4、5、6这样的组里数据条数比较多，1、2、3和7、8、9这样的数据条数少，这样就会因为4、5、6组的程序运行时间较长，整体任务运行时间也较长。</p>
+<p>所以这里采用合并和拆分的策略，比如说将1,2,3合并到一组，4、5、6分别拆成两组，7、8、9合成一组，这样就会保证每组运行的时间是差不多的。（实际情况中，要根据数据的分布进行合理的拆分和合并）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>至此，问题算是最终解决了，相比原先的MR版本，时间缩减了将近8个小时，在整个优化的过程中，其实对于经验足够的开发者来说，可能很快就会解决，但对于我们这些新手，可能就要耗费些时间，涨涨记性了，在整个过程中对spark也算是有进一步的了解了。</p>
+<p>其他的相关笔记：</p>
 <ul>
-<li>本地使用一个worker线程运行spark程序</li>
-<li>本地使用K个worker线程运行spark程序</li>
-</ul>
-<p>此种模式下适合小批量数据在本地调试代码</p>
-<p>2：yarn-client/yarn-cluster</p>
-<ul>
-<li>yarn-client：以client方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver在client运行。</li>
-<li>yarn-cluster：以cluster方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver也在集群中运行。</li>
-</ul>
-<p>注意：若使用的是本地文件需要在file路径前加：file://</p>
-<p>在提交任务时的几个重要参数</p>
-<ul>
-<li>executor-cores —— 每个executor使用的内核数，默认为1</li>
-<li>num-executors —— 启动executors的数量，默认为2</li>
-<li>executor-memory —— executor内存大小，默认1G</li>
-<li>driver-cores —— driver使用内核数，默认为1</li>
-<li>driver-memory —— driver内存大小，默认512M</li>
-</ul>
-<p>下边给一个提交任务的样式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">spark-submit \</span><br><span class="line">  --master local[5]  \</span><br><span class="line">  --driver-cores 2   \</span><br><span class="line">  --driver-memory 8g \</span><br><span class="line">  --executor-cores 4 \</span><br><span class="line">  --num-executors 10 \</span><br><span class="line">  --executor-memory 8g \</span><br><span class="line">  --class PackageName.ClassName XXXX.jar \</span><br><span class="line">  --name &quot;Spark Job Name&quot; \</span><br><span class="line">  InputPath      \</span><br><span class="line">  OutputPath</span><br><span class="line">  </span><br><span class="line">如果这里通过--queue 指定了队列，那么可以免去写--master</span><br></pre></td></tr></table></figure></p>
-<p>以上就是通过spark-submit来提交一个任务</p>
-<h1 id="几个参数的常规设置"><a href="#几个参数的常规设置" class="headerlink" title="几个参数的常规设置"></a>几个参数的常规设置</h1><ul>
-<li><p>executor_cores*num_executors<br>表示的是能够并行执行Task的数目<br>不宜太小或太大！一般不超过总队列 cores 的 25%，比如队列总 cores 400，最大不要超过100，最小不建议低于 40，除非日志量很小。</p>
+<li><p><a href="http://blog.csdn.net/gamer_gyt/article/details/79157055" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/79157055</a></p>
 </li>
-<li><p>executor_cores<br>不宜为1！否则 work 进程中线程数过少，一般 2~4 为宜。</p>
-</li>
-<li><p>executor_memory<br>一般 6~10g 为宜，最大不超过20G，否则会导致GC代价过高，或资源浪费严重。</p>
-</li>
-<li><p>driver-memory<br>driver 不做任何计算和存储，只是下发任务与yarn资源管理器和task交互，除非你是 spark-shell，否则一般 1-2g</p>
+<li><p><a href="http://blog.csdn.net/gamer_gyt/article/details/79135118" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/79135118</a></p>
 </li>
 </ul>
 <hr>
-<p>增加每个executor的内存量，增加了内存量以后，对性能的提升，有三点：</p>
-<ul>
-<li>1、如果需要对RDD进行cache，那么更多的内存，就可以缓存更多的数据，将更少的数据写入磁盘，<br>甚至不写入磁盘。减少了磁盘IO。</li>
-<li>2、对于shuffle操作，reduce端，会需要内存来存放拉取的数据并进行聚合。如果内存不够，也会写入磁盘。如果给executor分配更多内存以后，就有更少的数据，需要写入磁盘，甚至不需要写入磁盘。减少了磁盘IO，提升了性能。</li>
-<li>3、对于task的执行，可能会创建很多对象。如果内存比较小，可能会频繁导致JVM堆内存满了，然后频繁GC，垃圾回收，minor GC和full GC。（速度很慢）。内存加大以后，带来更少的GC，垃圾回收，避免了速度变慢，性能提升。</li>
-</ul>
-<h1 id="常规注意事项"><a href="#常规注意事项" class="headerlink" title="常规注意事项"></a>常规注意事项</h1><ul>
-<li>预处理数据，丢掉一些不必要的数据</li>
-<li>增加Task的数量</li>
-<li>过滤掉一些容易导致发生倾斜的key</li>
-<li>避免创建重复的RDD</li>
-<li>尽可能复用一个RDD</li>
-<li>对多次使用的RDD进行持久化</li>
-<li>尽量避免使用shuffle算子</li>
-<li>在要使用groupByKey算子的时候,尽量用reduceByKey或者aggregateByKey算子替代.因为调用groupByKey时候,按照相同的key进行分组,形成RDD[key,Iterable[value]]的形式,此时所有的键值对都将被重新洗牌,移动,对网络数据传输造成理论上的最大影响.</li>
-<li>使用高性能的算子</li>
-</ul>
-<hr>
-<p>参考：<br>1：<a href="http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html" target="_blank" rel="external">http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html</a><br>2：<a href="https://www.jianshu.com/p/4c584a3bac7d" target="_blank" rel="external">https://www.jianshu.com/p/4c584a3bac7d</a></p>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     <br>
 打开微信扫一扫，关注公众号【数据与算法联盟】
 </center>
-
 
       
 
@@ -310,7 +281,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/01/27/Spark/记一次百G数据的聚类算法实施过程/">展开全文 >></a>
         </p>
       
 
@@ -342,7 +313,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/36/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/36/">Next &raquo;</a>
     </nav>
   
 
@@ -514,10 +485,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -534,7 +501,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,6 +510,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -566,6 +537,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -575,10 +550,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -643,6 +614,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

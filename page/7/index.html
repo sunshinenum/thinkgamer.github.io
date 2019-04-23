@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/机器学习算法分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/线性模型篇之softmax数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/26/机器学习/机器学习算法分类/">机器学习算法分类</a>
+      <a class="article-title" href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/">线性模型篇之softmax数学公式推导</a>
     </h1>
   
 
         
-        <a href="/2019/03/26/机器学习/机器学习算法分类/" class="archive-article-date">
-  	<time datetime="2019-03-26T09:43:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-26</time>
+        <a href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/" class="archive-article-date">
+  	<time datetime="2019-04-06T23:24:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-07</time>
 </a>
         
       </header>
@@ -221,30 +221,90 @@
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
 <blockquote>
-<p>机器学习算法可以按照不同的标准进行分类。比如按函数f(X)的不同，机器学习算法可以分为线性模型和非线性模型；按照学习准则的不同，机器学习算法也可以分为统计方法和非统计方法。</p>
-<p>但一般而言，会按照训练样本提供的信息以及反馈方式不同，将机器学习算法分为以下几类，下面将一一细说。</p>
+<p>Softmax回归也称多项（multinomial）或者多类（multi-class）的Logistic回归，是Logistic回归在多类分类问题上的推广。和逻辑回归一样属于线性模型。</p>
 </blockquote>
+<h1 id="SoftMax回归简介"><a href="#SoftMax回归简介" class="headerlink" title="SoftMax回归简介"></a>SoftMax回归简介</h1><p>对于多类问题，类别标签</p>
+<script type="math/tex; mode=display">
+y \in {1,2,3,...,C}</script><p>可以用C个取值，给定一个样本x，softmax回归预测的是属于类别c的概率为(公式-1)：</p>
+<script type="math/tex; mode=display">
+p(y=c|x)=softmax(w_c^Tx)=\frac{exp(w_c^Tx)}{\sum_{c=1}^{C}exp(w_c^Tx)}</script><p>其中w_c是第c类的权重向量。</p>
+<p>softmax回归的决策函数可以表示为(公式-2)：</p>
+<script type="math/tex; mode=display">
+\hat{y}=  \underset{c=1}{ \overset{C}{arg max} } \ p(y=c|x) =\underset{c=1}{ \overset{C}{arg max} } \ w_c^T x</script><hr>
+<p>softMax与Logistic回归的关系：</p>
+<p>当类别个C=2时，softMax回归的决策函数为(公式-3)：</p>
+<script type="math/tex; mode=display">
+\hat{y} = \underset{y\in {0,1}}{ arg max } \ w_y^Tx=I(w_1^Tx - w_0^Tx >0 )=I((w_1 - w_0)^Tx >0 )</script><p>其中I(.)是指示函数，对比二分类决策函数(公式-4)</p>
+<script type="math/tex; mode=display">
+g(f(x,w))=sgn(f(x,w))=\begin{cases}
+ & +1 \text{ if } f(x,w)>0 \\ 
+ & -1 \text{ if } f(x,w)<0 
+\end{cases}</script><p>其中sgn表示符号函数(sign function)，可以发现两类分类中的权重向量w=w1-w0</p>
+<hr>
+<p>向量表示：</p>
+<p>公式-1用向量形式可以写为(公式-5)</p>
+<script type="math/tex; mode=display">
+\hat{y}=softmax(W^Tx)=\frac{erp(W^Tx)}{1^Texp(W^Tx)}</script><p>其中W=[w_1,w_2,…,w_C]是由C个类的权重向量组成的矩阵，1为全1的向量，</p>
+<script type="math/tex; mode=display">
+\hat{y}\in  R^C</script><p>为所有类别的预测条件概率组成的向量，第c维的值是第c类的预测条件概率。</p>
+<h1 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h1><p>给定N个训练样本{(x^n, y^n)},n&lt;=N，softmax回归使用交叉熵损失函数来学习最优的参数矩阵W。</p>
+<p>这里用C维的one-hot向量</p>
+<script type="math/tex; mode=display">
+y \in {0,1} ^C</script><p>来表示类别标签，其向量表示为(公式-6)：</p>
+<script type="math/tex; mode=display">
+y = [I(1=c),I(2=c),...,I(C=c)]^T</script><p>其中I(.)为指示函数。</p>
+<p>采用交叉熵损失函数，softmax的经验风险函数为(公式-7)：</p>
+<script type="math/tex; mode=display">
+R(W)=-\frac{1}{N}\sum_{n=1}^{N}\sum_{c=1}^{C}y_c^nlog\hat{y}_c^n
+R(W)=-\frac{1}{N}\sum_{n=1}^{N} (y^n)^Tlog\hat{y}^n</script><p>其中</p>
+<script type="math/tex; mode=display">
+\hat{y}^n = softmax(W^Tx^n)</script><p>为样本x^n在每个类别的后验概率。</p>
+<p>==说明：公式-7第一个式变换到第二个式是因为y_c类别中只有一个为1，其余为0，所以将第二个求和去除。==</p>
+<p>风险函数R(W)关于W的梯度为(公式-8)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial R(W)}{\partial W} = -\frac{1}{N}\sum_{n=1}^{N}x^n(y^n-\hat{y}^n)^T</script><p>==<strong>证明：</strong>==</p>
+<p>计算公式-8中的梯度，关键在于计算每个样本的损失函数</p>
+<script type="math/tex; mode=display">
+L^n(W)=-(y^n)^Tlog\hat{y}^n</script><p>关于参数W的梯度，其中需要用到两个导数公式为：</p>
 <ul>
-<li>监督学习</li>
-<li>无监督学习</li>
-<li>强化学习</li>
+<li>若y=softmax(z)，则</li>
 </ul>
-<h1 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h1><p>如果机器学习的目标是通过建模样本的特征x和标签y之间的关系：</p>
 <script type="math/tex; mode=display">
-y=f(x,\theta )</script><p>或</p>
+\frac{\partial y}{\partial z}=diag(y)-yy^T</script><ul>
+<li>若</li>
+</ul>
 <script type="math/tex; mode=display">
-p(y|x,\theta)</script><p>并且训练集中的每个样本都有标签，那么这类学习称之为监督学习（Supervised Learning）。根据标签类型的不同，监督学习又可以分为回归和分类两种。</p>
-<h2 id="回归（Regression）"><a href="#回归（Regression）" class="headerlink" title="回归（Regression）"></a>回归（Regression）</h2><p>回归问题中的标签y是连续值（实数或者连续整数）</p>
+z=W^Tx=[w_1^Tx,w_2^Tx,...,w_C^Tx]^T</script><p>则</p>
 <script type="math/tex; mode=display">
-y=f(x,\theta )</script><p>的输出也是连续值。</p>
-<h2 id="分类（Classification）"><a href="#分类（Classification）" class="headerlink" title="分类（Classification）"></a>分类（Classification）</h2><p>分类问题中的标签y是离散的类别，在分类问题中，学习到的模型也成为分类器（Classifier）。分类问题根据其类别的数量又可以分为二分类（Binary Clssification）和多分类（Mutil-class Classification）。</p>
-<h2 id="机构化学习（Structured-Learning）"><a href="#机构化学习（Structured-Learning）" class="headerlink" title="机构化学习（Structured Learning）"></a>机构化学习（Structured Learning）</h2><p>结构化学习的输出对象是结构化的对象，比如序列、树、图等，由于结构化学习的输出空间比较大，因此我们一般定义一个联合特征空间，将x,y映射为该空间中的联合特征向量（x,y）,预测模型可以写为：</p>
+\frac{\partial y}{\partial w_c}</script><p>为第c列为x，其余为0的矩阵。</p>
 <script type="math/tex; mode=display">
-\hat{y}=\underset{y \in Gen(x)}{arg max f(\phi (x,y),\theta )}</script><p>其中gen(x)表示x所有可能的输出目标集合。计算arg max的过程也称为解码（decoding）过程，一般通过动态规划的方法来计算。</p>
-<h1 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h1><p>无监督学习（Unsupervised Learning）是指从不包含目标标签的训练样本中自动学习到一些有价值的信息。典型的无监督学习问题有聚类、密度估计、特征学习、降维等。</p>
-<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p>强化学习（Reinforcement Learning）是一类通过交互来学习的机器学习算法。在强化学习中，智能体根据环境的状态作出一个动作，并得到即时或延时的奖励。智能体在和环境的交互中不断学习并调整策略，以取得最大化的期望总回报。</p>
-<p>下表给出了三种机器学习类型</p>
-<p><img src="https://img-blog.csdnimg.cn/20190326174240856.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>监督学习需要每个样本都有标签，而无监督学习则不需要标签。一般而言，监督学习通常大量的有标签数据集，这些数据集是一般都需要由人工进行标注，成本很高。因此，也出现了很多弱监督学习（Weak Supervised Learning）和半监督学习（Semi-Supervised Learning）的方法，希望从大规模的无标注数据中充分挖掘有用的信息，降低对标注样本数量的要求。强化学习和监督学习的不同在于强化学习不需要显式地以“输入/输出对”的方式给出训练样本，是一种在线的学习机制。</p>
+\frac{\partial z}{\partial w_c} = [ \frac{\partial w_1^Tx}{\partial w_c},\frac{\partial w_2^Tx}{\partial w_c},...,\frac{\partial w_C^Tx}{\partial w_c} ]
+=[0,0,..,x,...,0]
+=M_c(x)</script><p>根据链式法则，</p>
+<script type="math/tex; mode=display">
+L^n(W) = -(y^n)^T log\hat{y}^n</script><p>关于w_c的偏导数为(公式-12)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial w_c}
+= -\frac{ \partial ((y^n)^T log \hat{y}^n) }{\partial w_c}</script><script type="math/tex; mode=display">
+= -\frac{\partial z^n}{ \partial w_c } \frac{\partial \hat{y}^n}{ \partial z^n }\frac{\partial log \hat{y}^n}{ \partial \hat{y}^n } y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(diag(\hat{y}^n)-\hat{y}^n(\hat{y}^n)^T)(diag(\hat{y}^n))^{-1} y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(I-\hat{y}^n1^T)y^n</script><script type="math/tex; mode=display">
+=-M_c(x^n)(y^n-\hat{y}^n1^Ty^n)</script><script type="math/tex; mode=display">
+=-M_c(x^n)(y^n-\hat{y}^n)</script><script type="math/tex; mode=display">
+=-x^n[y^n-\hat{y}^n]_c</script><p>公式-12也可以表示为非向量形式(公式-13)：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial w_c}= -x^n(I(y^n=c)-\hat{y}_c^n)</script><p>其中I(.)为指示函数，根据公式-12可以得到(公式-14)</p>
+<script type="math/tex; mode=display">
+\frac{\partial L^n(W) }{\partial W} = -x^n(y^n-\hat{y}^n)^T</script><p>采用梯度下降法，softmax回归的训练过程为：初始化W_0 &lt;- 0，然后通过下式进行迭代更新。</p>
+<script type="math/tex; mode=display">
+W_{t+1} = W_t + \alpha (\frac{1}{N} \sum_{n=1}^{N}x^n(y^n - \hat{y}_{W_t} ^ n)^T)</script><p>其中a是学习率，</p>
+<script type="math/tex; mode=display">
+\hat{y}_{W_t}^n</script><p>是当参数为W_t时，softmax回归模型的输出。</p>
+<hr>
+<p><strong>注意：</strong></p>
+<blockquote>
+<p>softmax回归中使用的C个权重向量是冗余的，即对所有权重向量都减去一个同样的向量v，不改变其输出结果。因此，softmax往往需要正则化来约束参数。此外，可以利用这个特性来避免计算softmax函数时在数值计算上溢出问题。</p>
+</blockquote>
 
       
 
@@ -258,11 +318,11 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SoftMax</a>
         		</li>
       		
 		</ul>
@@ -283,7 +343,7 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/26/机器学习/机器学习算法分类/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/07/机器学习/线性模型篇之softmax数学公式推导/">展开全文 >></a>
         </p>
       
 
@@ -315,7 +375,7 @@ y=f(x,\theta )</script><p>的输出也是连续值。</p>
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 
@@ -487,10 +547,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -507,7 +563,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,6 +572,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -539,6 +599,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -548,10 +612,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -616,6 +676,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

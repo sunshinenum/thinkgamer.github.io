@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-随手记/用大把的时间仿徨，却用几个瞬间成长" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/Spark多路径输出和二次排序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/31/随手记/用大把的时间仿徨，却用几个瞬间成长/">用大把的时间仿徨，却用几个瞬间成长</a>
+      <a class="article-title" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">Spark多路径输出和二次排序</a>
     </h1>
   
 
         
-        <a href="/2017/12/31/随手记/用大把的时间仿徨，却用几个瞬间成长/" class="archive-article-date">
-  	<time datetime="2017-12-31T03:02:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-31</time>
+        <a href="/2018/01/25/Spark/Spark多路径输出和二次排序/" class="archive-article-date">
+  	<time datetime="2018-01-24T16:22:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-25</time>
 </a>
         
       </header>
@@ -214,44 +214,41 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>人总要在特定的阶段去完成特定的事情，然后转身告诉自己，继续往前。</p>
+<p>在实际应用场景中，我们对于Spark往往有各式各样的需求，比如说想MR中的二次排序，Top N，多路劲输出等。那么这篇文章我们就来看下这几个问题。</p>
 </blockquote>
-<p>提笔写这篇文章，内心是毫无波澜的，或许是因为曾经的经历让我意识到那一切都是缘的力所能及。以下的内容可能没有章节，没有顺序，但都是心灵能够触及的地方。</p>
-<p>2017年对我个人来讲是比较重要的一年，可以说是完成了自我的一个改变吧，但是脱壳之后，需要的是更加努力的完善自我，这样才能够避免被淘汰。为什么这么说？因为这一年我觉得对我个人影响最大的两件事是：买了首套房（虽然只是付了首付）；在年末之时选择离开，侥幸的入职了京东。一个是为“家庭”做了必要的准备，一个是为“事业”做了点缀。而至于其他的大大小小的事情，则是17年的五味杂粮，并不是那么重要，但却也缺一不可。感谢17年，那些我认识的，或者我不认识的，帮助过我的，或者我帮助过的人。</p>
-<h1 id="过往"><a href="#过往" class="headerlink" title="过往"></a>过往</h1><p>人上了年纪，总爱回忆！</p>
-<p>刚好这两天，“18岁”刷爆了朋友圈和QQ空间，或许这是连腾讯有没有预料到的起死回生或者苟延残喘吧。趁机翻了下我的QQ空间相册，突然发现了，这二十多年来以来，我也是经历颇丰。</p>
-<p>从上海到江苏，从沈阳到长春，从南京到天津，最后到北京，这一条路一走便是4年。<br>从初中到高中，从大学到社会，这一条路一走便是11年。</p>
-<p>过往的这条路上遇见了很多人，碰见很多事，但终究还是走散了，看淡了，不过庆幸的是那些一直还有联系的，我们还能彼此叫出姓名的人，不管是18岁之前，还是18岁之后，我想我们是幸运的，</p>
-<p>年少的我们曾经难免会埋下羞涩的种子，在记忆深处藏着一些不可告人的秘密，直到有一天我们盘膝而坐，三巡酒过，才道出那些现在我们认为可笑的不能再可笑的羞涩，从此，稚嫩青春里的唯一一朵留恋，也该告一段落。</p>
-<p>一杯敬明天，一杯敬过往。灵魂不再无处安放。</p>
-<h1 id="遇见"><a href="#遇见" class="headerlink" title="遇见"></a>遇见</h1><p>人有了目标，便爱胡闹！</p>
-<p>2017年，不管是工作，还是自我学习都收获了挺多知识，感谢万维接受了我这个毫无工作经验的“学生”吧，在这里的确收获了挺多，让我明白没有结合业务的技术，只是向别人吹嘘而毫无创造价值的垃圾，不管你在哪，技术都是为了推动业务的增长。</p>
-<p>2017年，还是习惯性的写一些学习笔记，只不过是频率明显了降了下来，这只能归结于自己变得懒惰了，从开通博客到现在，所有的表层的收获只能通过这些浅显的数据来表达：</p>
-<center><img src="http://img.blog.csdn.net/20171231110350995?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"></center>
-
-<p>只是没有17年尾的时候访问量达到100W，不过一切随缘吧。</p>
-<p>下边这几张图是最近一个月的访问分析情况，不管怎样，你学习了，也帮助其他人了，这就是成长。</p>
-<center>
-<img src="http://img.blog.csdn.net/20171231111249749?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">    
-<img src="http://img.blog.csdn.net/20171231111301875?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">    
-<img src="http://img.blog.csdn.net/20171231111312908?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">    
-<img src="http://img.blog.csdn.net/20171231111325084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">    
-</center>
-
-<p>2017年，开通了微信公众号【数据与算法联盟】（原名为码农故事多），没有刻意的运营，没有刻意的传播积累用户，一切随缘。当然如果你想加入我们的数据与算法学习交流群的话，欢迎加我的微信，拉你入群，群里有很多大牛，不定时进行“扯淡”。我们的宗旨就是以技术会友，分享与进步！感谢2017年和以往遇见的所有好友！</p>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-长按二维码识别，关注微信公众号【数据与算法联盟】
-</center>
-
-
-<p>2017年，很侥幸的加入了JD这个大家庭，未来的一切都是未知数，但你能做的就是向他人学习，围绕着工作进行深度的学习和成长。</p>
-<h1 id="新生"><a href="#新生" class="headerlink" title="新生"></a>新生</h1><p>人过了18，要努力发芽！</p>
-<p>过去的一年里定了太多的目标，结果大部分都没有实现，哎，分析一下，大部门的目标都是盲目的，没有围绕工作的目标（学习规划吧算是），其实实现起来是有难度的，所以新的一年里调整计划，重新出发。</p>
-<p>2018不会定太多的目标，主要是想在技术和业务层面提升下自己，不管是学习大数据还是算法，都会围绕功能工作和一条主旋律进行展开。</p>
-<p>感谢一路以来，遇见的所有人！</p>
+<h1 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h1><p>假设我们的数据是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1   2</span><br><span class="line">1   3</span><br><span class="line">1   1</span><br><span class="line">1   6</span><br><span class="line">1   4</span><br><span class="line">2   5</span><br><span class="line">2   8</span><br><span class="line">2   3</span><br></pre></td></tr></table></figure></p>
+<p>我们想要实现第一列按降序排列，当第一列相同时，第二列按降序排列</p>
+<p>定义一个SecondSortKey类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first == 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后这样去使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val pairs = lines.map &#123; x =&gt;</span><br><span class="line">      (new SecondSortKey(x.split(&quot;\\s+&quot;)(0).toInt,</span><br><span class="line">        x.split(&quot;\\s+&quot;)(1).toInt), x)</span><br><span class="line">    &#125;</span><br><span class="line">val sortedPairs = pairs.sortByKey(false);</span><br><span class="line">sortedPairs.map(_._2).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<p>当然这里如果想按第一列升序，当第一列相同时，第二列升序的顺序排列，只需要对SecondSoryKey做如下修改即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class SecondSortKey(val first: Int, val second: Int)</span><br><span class="line">  extends Ordered[SecondSortKey] with Serializable &#123;</span><br><span class="line">  override def compare(that: SecondSortKey): Int = &#123;</span><br><span class="line">    if (this.first - that.first !== 0) &#123;</span><br><span class="line">      this.second - that.second</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      this.first - that.first</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当时使用的使用去掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pairs.sortByKey(false)</span><br></pre></td></tr></table></figure></p>
+<p>中的false</p>
+<h1 id="Top-N"><a href="#Top-N" class="headerlink" title="Top N"></a>Top N</h1><p>同样还是上边的数据，假设我们要得到第一列中的前五位<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val lines = sc.textFile(&quot;test.txt&quot;)</span><br><span class="line">val rdd = lines</span><br><span class="line">        .map(x =&gt; x.split(&quot;\\s+&quot;))</span><br><span class="line">        .map(x =&gt; (x(0),x(1)))</span><br><span class="line">        .sortByKey()</span><br><span class="line">rdd.take(N).foreach(println)</span><br></pre></td></tr></table></figure></p>
+<h1 id="多路径输出"><a href="#多路径输出" class="headerlink" title="多路径输出"></a>多路径输出</h1><p>自己在使用的过程中，通过搜索发现了两种方法<br>1：调用saveAsHadoopFile函数并自定义一个OutputFormat类</p>
+<p>自定义RDDMultipleTextOutputFormat类</p>
+<p>RDDMultipleTextOutputFormat类中的generateFileNameForKeyValue函数有三个参数，key和value就是我们RDD的Key和Value，而name参数是每个Reduce的编号。本例中没有使用该参数，而是直接将同一个Key的数据输出到同一个文件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat  </span><br><span class="line">  </span><br><span class="line">class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] &#123;  </span><br><span class="line">  override def generateFileNameForKeyValue(key: Any, value: Any, name: String): String =  </span><br><span class="line">    key.asInstanceOf[String]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sc.parallelize(List((&quot;w&quot;, &quot;www&quot;), (&quot;b&quot;, &quot;blog&quot;), (&quot;c&quot;, &quot;com&quot;), (&quot;w&quot;, &quot;bt&quot;)))  </span><br><span class="line">      .map(value =&gt; (value._1, value._2 + &quot;Test&quot;))  </span><br><span class="line">      .partitionBy(new HashPartitioner(3))  </span><br><span class="line">      .saveAsHadoopFile(&quot;/iteblog&quot;, classOf[String],classOf[String],classOf[RDDMultipleTextOutputFormat])</span><br></pre></td></tr></table></figure></p>
+<p>这里的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new HashPartitioner(3)</span><br></pre></td></tr></table></figure></p>
+<p>中的3是有key的种类决定的，当然在实际应用场景中，我们可能并不知道有多少k，这个时候就可以通过一个rdd 的 distinct操作来得到唯一key的数目。</p>
+<p>2：使用dataframe<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">people_rdd = sc.parallelize([(1, &quot;alice&quot;), (1, &quot;bob&quot;), (2,&quot;charlie&quot;)])</span><br><span class="line">people_df = people_rdd.toDF([&quot;number&quot;, &quot;name&quot;])</span><br><span class="line">people_df.write.partitionBy(&quot;number&quot;).format(&quot;text&quot;).save(path  )</span><br></pre></td></tr></table></figure></p>
+<p>当然这两种方法都有一个缺陷，就是当数据量特别大的时候，数据在repartition的过程中特别耗费资源，也会容易出现任务failed的情况，小编采用的解决办法是，适当的对原rdd进行split，然后遍历每个rdd，进行multioutput操作</p>
+<p>形似如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val rdd = sc.textFile(input)</span><br><span class="line">var split_rdd = rdd.randomSplit(Array(1.0,1.0,1.0,1.0))</span><br><span class="line">for (one &lt;- Array(1,2,3,4))</span><br><span class="line">&#123;</span><br><span class="line">    split_rdd(one)XXXX</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <hr>
+<p>参考：</p>
+<ul>
+<li><a href="https://andone1cc.github.io/2017/03/04/Spark/%E4%BA%8C%E6%AC%A1%E6%8E%92%E5%BA%8Ftopn/" target="_blank" rel="external">Spark学习笔记——二次排序，TopN，TopNByGroup</a></li>
+<li><a href="https://www.iteblog.com/archives/1281.html" target="_blank" rel="external">Spark多文件输出(MultipleOutputFormat)</a></li>
+<li><a href="https://code.i-harness.com/en/q/16e22a0" target="_blank" rel="external">scala - Write to multiple outputs by key Spark - one Spark job</a></li>
+<li><a href="https://stackoverflow.com/questions/23995040/write-to-multiple-outputs-by-key-spark-one-spark-job/26051042#26051042" target="_blank" rel="external">Write to multiple outputs by key Spark - one Spark job
+</a></li>
+</ul>
+<hr>
+<center>
+<img src="http://img.blog.csdn.net/20171231121058707?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<br>
+打开微信扫一扫，关注微信公众号【数据与算法联盟】 
+</center>
+
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 
       
@@ -266,7 +263,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">随手记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		
 		</ul>
@@ -278,7 +275,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/随手记//" class="article-tag-list-link color4">随手记</a>
+        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
         		</li>
       		
 		</ul>
@@ -287,7 +284,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/31/随手记/用大把的时间仿徨，却用几个瞬间成长/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/01/25/Spark/Spark多路径输出和二次排序/">展开全文 >></a>
         </p>
       
 
@@ -319,7 +316,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
     </nav>
   
 
@@ -491,10 +488,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -511,7 +504,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,6 +513,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,6 +540,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -552,10 +553,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,6 +617,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

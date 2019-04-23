@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-推荐系统/机器学习在微博信息流推荐中的应用实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/">机器学习在微博信息流推荐中的应用实践</a>
+      <a class="article-title" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">从线性回归看偏差-方差分解（Bias-Variance Decomposition）</a>
     </h1>
   
 
         
-        <a href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/" class="archive-article-date">
-  	<time datetime="2019-03-05T00:03:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
+        <a href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/" class="archive-article-date">
+  	<time datetime="2019-03-25T15:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-25</time>
 </a>
         
       </header>
@@ -220,47 +220,51 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<p>本文分为四部分介绍机器学习在微博信息流中的应用实践，分别为：微博信息流推荐场景介绍，内容理解与用户画像，大规模推荐系统实践和总结展望。</p>
-<h1 id="微博信息流推荐场景介绍"><a href="#微博信息流推荐场景介绍" class="headerlink" title="微博信息流推荐场景介绍"></a>微博信息流推荐场景介绍</h1><blockquote>
-<p>微博的feed流内容形态各异，有视频，图片，文字，长文，问答等，其用户量也很大，2018年Q2统计DAU（日活）为1.9亿，MAU（月活）为4.3亿，这么庞大的用户量，如何做好首页feed流的个性化推荐就显得格外重要。</p>
-</blockquote>
-<p><img src="https://img-blog.csdnimg.cn/20190305162718873.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305162740161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<h1 id="内容理解与用户画像"><a href="#内容理解与用户画像" class="headerlink" title="内容理解与用户画像"></a>内容理解与用户画像</h1><blockquote>
-<p>由于个性化推荐是给用户推荐其感兴趣的内容，所以对于微博的内容理解和用户画像部分就显得格外重要。内容理解即通过文本内容理解和视觉理解技术，对微博内容进行细粒度表征，即形成每篇微博内容的表征向量。</p>
-</blockquote>
-<p><img src="https://img-blog.csdnimg.cn/20190305162850198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305162905934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<blockquote>
-<p>用户画像即基于用户的发博内容，行为数据，自填信息等进行深度挖掘，精准分析刻画用户，从而在进行微博内容推送时能够实现其个性化。</p>
-</blockquote>
-<p><img src="https://img-blog.csdnimg.cn/20190305162934416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<h1 id="大规模推荐系统实践"><a href="#大规模推荐系统实践" class="headerlink" title="大规模推荐系统实践"></a>大规模推荐系统实践</h1><blockquote>
-<p>目前推荐架构的实现思路都是先从海量原始数据中，依据用户画像，召回用户偏好的数据，在利用排序算法对其进行排序，最终选择top K返回给用户。微博推荐亦是如此。其整体的流程图如下所示：</p>
-<p>物料召回：即从候选物料集合中粗筛物料，作为进行模型的待排序物料。</p>
-</blockquote>
-<p><img src="https://img-blog.csdnimg.cn/20190305163036955.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190305163059488.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190305163120489.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<blockquote>
-<p>算法排序则是结合相关特征对物料召回的内容进行预估排序，其特征主要分为：用户特征，内容特征，环境特征，组合特征和上下文特征等。</p>
-</blockquote>
-<p><img src="https://img-blog.csdnimg.cn/20190305163427457.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163455977.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163515432.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163530356.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163645420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163705966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163719819.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163749462.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163805882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163818878.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163833250.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<h1 id="总结与展望"><a href="#总结与展望" class="headerlink" title="总结与展望"></a>总结与展望</h1><ul>
-<li><p>总结</p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>对于数字序列1，3，5，7，？，正常情况下大家脑海里蹦出的是9，但是217314也是其一个解<br>9对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=2x-1</script><p>217314对应的数学公式为</p>
+<script type="math/tex; mode=display">
+f(x)=\frac{18111}{2} x^{4}-90555x^{3}+\frac{633885}{2}x^{2}-452773x+217331</script><p>Python 实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def f(x):</span><br><span class="line">...     return 18111/2 * pow(x,4) -90555 * pow(x,3) + 633885/2 * pow(x,2) -452773 * x +217331</span><br><span class="line">... </span><br><span class="line">&gt;&gt;&gt; f(1)</span><br><span class="line">1.0</span><br><span class="line">&gt;&gt;&gt; f(2)</span><br><span class="line">3.0</span><br><span class="line">&gt;&gt;&gt; f(3)</span><br><span class="line">5.0</span><br><span class="line">&gt;&gt;&gt; f(4)</span><br><span class="line">7.0</span><br><span class="line">&gt;&gt;&gt; f(5)</span><br><span class="line">217341.0</span><br></pre></td></tr></table></figure></p>
+<p>当机器学习模型进行预测的时候，通常都需要把握一个非常微妙的平衡，一方面我们希望模型能够匹配更多的训练数据，相应的增加其复杂度，否则会丢失相关特征的趋势（即模型过拟合）；但是另一方面，我们又不想让模型过分的匹配训练数据，相应的舍弃部分复杂的，因为这样存在过度解析所有异常值和伪规律的风险，导致模型的泛化能力差（即模型欠拟合）。因此在模型的拟合能力和复杂度之前取得一个比较好的权衡，对于一个模型来讲十分重要。而偏差-方差分解（Bias-Variance Decomposition）就是用来指导和分析这种情况的工具。</p>
+<h1 id="偏差和方差定义"><a href="#偏差和方差定义" class="headerlink" title="偏差和方差定义"></a>偏差和方差定义</h1><ul>
+<li>偏差（Bias）：即预测数据偏离真实数据的情况。</li>
+<li>方差（Variance）：描述的是随机变量的离散程度，即随机变量在其期望值附近的波动程度。</li>
+</ul>
+<h1 id="偏差-方差推导过程"><a href="#偏差-方差推导过程" class="headerlink" title="偏差-方差推导过程"></a>偏差-方差推导过程</h1><p>以回归问题为例，假设样本的真实分布为p_r(x,y)，并采用平方损失函数，模型f(x)的期望错误为(公式2.1)：</p>
+<script type="math/tex; mode=display">
+R(f) = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f(x))^2 \right ]</script><p>那么最优模型为(公式2.2)：</p>
+<script type="math/tex; mode=display">
+f^*(x) = E_{y\sim p_r{(y|x)}} \left [ y \right ]</script><p>其中p_r(y|x)为真实的样本分布，f^*(x)为使用平方损失作为优化目标的最优模型，其损失为(公式2.3)：</p>
+<script type="math/tex; mode=display">
+\varepsilon  = E_{(x,y)\sim p_r{(x,y)}} \left [ (y-f^*(x))^2 \right ]</script><p>损失</p>
+<script type="math/tex; mode=display">
+\varepsilon</script><p>通常是由于样本分布及其噪声引起的，无法通过优化模型来减少。<br>期望错误可以分解为(公式2.4)：</p>
+<script type="math/tex; mode=display">
+R(f)</script><script type="math/tex; mode=display">
+= E_{(x,y)\sim p_r{(x,y)}} \left [ (y- f^*(x) + f^*(x) -f(x))^2 \right ]</script><script type="math/tex; mode=display">
+= E_{x\sim p_r{(x)}}\left [ (f(x) - f^*(x))^2 \right ] + \varepsilon</script><p>公式2.4中的第一项是机器学习可以优化的真实目标，是当前模型和最优模型之间的差距。</p>
+<p>在实际训练一个模型f(x)时，训练集D是从真实分布p_r(x,y)上独立同分布的采样出来的有限样本集合。不同的训练集会得到不同的模型。令f_D(x)表示在训练集D上学习到的模型，一个机器学习算法（包括模型和优化算法）的能力可以通过模型在不同训练集上的平均性能来体现。</p>
+<p>对于单个样本x，不同训练集D得到的模型f_D(x)和最优模型f^*(x)的上的期望差距为（公式2.5）：</p>
+<script type="math/tex; mode=display">
+E_D[( f_D(x)-f^*(x) )^2]</script><script type="math/tex; mode=display">
+=E_D\left [  ( f_D(x)  - E_D[f_D(x)] +E_D[f_D(x)]   -f^*(x) )^2   \right ]</script><script type="math/tex; mode=display">
+=( E_D[f_D(x)]   -f^*(x) )^2 )  + E_D[(f_D(x)  - E_D[f_D(x)] )^2]</script><p>公式2.5最后一行中的第一项为偏差(bias)，是指一个模型在不同训练集上的平均性能和与最优模型的差异，偏差可以用来衡量一个模型的拟合能力；第二项是方差（variance），是指一个模型在不同训练集上的差异，可以用来衡量一个模型是否容易过拟合。</p>
+<p>集合公式2.4和公式2.5，期望错误可以分解为(公式2.6)：</p>
+<script type="math/tex; mode=display">
+R(f)= (bias)^2 + variance +  \varepsilon</script><p>其中</p>
+<script type="math/tex; mode=display">
+(bias)^2 =  E_X[E_D[f_D(x)]   -f^*(x) )^2 ]</script><script type="math/tex; mode=display">
+variance = E_X [ E_D[(f_D(x)  - E_D[f_D(x)] )^2] ]</script><p>最小化期望错误等价于最小化偏差和方差之和。</p>
+<h1 id="偏差和方差分析"><a href="#偏差和方差分析" class="headerlink" title="偏差和方差分析"></a>偏差和方差分析</h1><p><img src="https://img-blog.csdnimg.cn/20190325231703314.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>上图为机器学习中偏差和方差的四种不同情况。每个图的中心点为最优模型f*(x)，蓝点为不同训练集D 上得到的模型f_D(x)。</p>
 <ul>
-<li>业务和数据决定了模型算法的应用场景</li>
-<li>模型算法殊途同归</li>
-<li>工程能力和算法架构是基本保障</li>
+<li>(a)给出了一种理想情况，方差和偏差都比较小</li>
+<li>(b)为高偏差低方差的情况，表示模型的泛化能力很好，但拟合能力不足</li>
+<li>(c)为低偏差高方差的情况，表示模型的拟合能力很好，但泛化能力比较差。当训练数据比较少时会导致过拟合</li>
+<li>(d)为高偏差高方差的情况，是一种最差的情况</li>
 </ul>
-</li>
-<li><p>展望</p>
-<ul>
-<li>采用多模型融合，能更好的对非结构化内容进行表征</li>
-<li>更多的融合网络结构适用于CTR预估场景</li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/88164127" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/88164127</a> </p>
+<p>方差一般会随着训练样本的增加而减少。当样本比较多时，方差比较少，我们可以选择能力强的模型来减少偏差。然而在很多机器学习任务上，训练集上往往都比较有限，最优的偏差和最优的方差就无法兼顾。</p>
+<p>随着模型复杂度的增加，模型的拟合能力变强，偏差减少而方差增大，从而导致过拟合。以结构错误最小化为例，我们可以调整正则化系数λ来控制模型的复杂度。当λ变大时，模型复杂度会降低，可以有效地减少方差，避免过拟合，但偏差会上升。当λ过大时，总的期望错误反而会上升。因此，正则化系数λ需要在偏差和方差之间取得比较好的平衡。下图给出了机器学习模型的期望错误、偏差和方差随复杂度的变化情况。最优的模型并不一定是偏差曲线和方差曲线的交点。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190325231720819.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>偏差和方差分解给机器学习模型提供了一种分析途径，但在实际操作中难以直接衡量。一般来说，当一个模型在训练集上的错误率比较高时，说明模型的拟合能力不够，偏差比较高。这种情况可以增加数据特征、提高模型复杂度，减少正则化系数等操作来改进模型。当模型在训练集上的错误率比较低，但验证集上的错误率比较高时，说明模型过拟合，方差比较高。这种情况可以通过降低模型复杂度，加大正则化系数，引入先验等方法来缓解。此外，还有一种有效的降低方差的方法为集成模型，即通过多个高方差模型的平均来降低方差。 </p>
 
       
 
@@ -274,15 +278,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">推荐系统</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性回归</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">方差</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">偏差</a>
         		</li>
       		
 		</ul>
@@ -303,7 +311,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/25/机器学习/从线性回归看偏差-方差分解（Bias-Variance Decomposition）/">展开全文 >></a>
         </p>
       
 
@@ -335,7 +343,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 
@@ -507,10 +515,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -527,7 +531,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -536,6 +540,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,6 +567,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -568,10 +580,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -636,6 +644,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/深度学习中的epochs、batch_size、iterations详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-推荐系统/机器学习在微博信息流推荐中的应用实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">深度学习中的epochs、batch_size、iterations详解</a>
+      <a class="article-title" href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/">机器学习在微博信息流推荐中的应用实践</a>
     </h1>
   
 
         
-        <a href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/" class="archive-article-date">
-  	<time datetime="2019-02-25T16:32:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-26</time>
+        <a href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/" class="archive-article-date">
+  	<time datetime="2019-03-05T00:03:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
 </a>
         
       </header>
@@ -220,35 +220,47 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<blockquote>
-<p>深度学习中涉及到很多参数，如果对于一些参数不了解，那么去看任何一个框架都会有难度，在TensorFlow中有一些模型训练的基本参数，这些参数是训练模型的前提，也在一定程度上影响着模型的最终效果。下面主要介绍几个参数。</p>
+<p>本文分为四部分介绍机器学习在微博信息流中的应用实践，分别为：微博信息流推荐场景介绍，内容理解与用户画像，大规模推荐系统实践和总结展望。</p>
+<h1 id="微博信息流推荐场景介绍"><a href="#微博信息流推荐场景介绍" class="headerlink" title="微博信息流推荐场景介绍"></a>微博信息流推荐场景介绍</h1><blockquote>
+<p>微博的feed流内容形态各异，有视频，图片，文字，长文，问答等，其用户量也很大，2018年Q2统计DAU（日活）为1.9亿，MAU（月活）为4.3亿，这么庞大的用户量，如何做好首页feed流的个性化推荐就显得格外重要。</p>
 </blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190305162718873.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305162740161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<h1 id="内容理解与用户画像"><a href="#内容理解与用户画像" class="headerlink" title="内容理解与用户画像"></a>内容理解与用户画像</h1><blockquote>
+<p>由于个性化推荐是给用户推荐其感兴趣的内容，所以对于微博的内容理解和用户画像部分就显得格外重要。内容理解即通过文本内容理解和视觉理解技术，对微博内容进行细粒度表征，即形成每篇微博内容的表征向量。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190305162850198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305162905934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<blockquote>
+<p>用户画像即基于用户的发博内容，行为数据，自填信息等进行深度挖掘，精准分析刻画用户，从而在进行微博内容推送时能够实现其个性化。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190305162934416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<h1 id="大规模推荐系统实践"><a href="#大规模推荐系统实践" class="headerlink" title="大规模推荐系统实践"></a>大规模推荐系统实践</h1><blockquote>
+<p>目前推荐架构的实现思路都是先从海量原始数据中，依据用户画像，召回用户偏好的数据，在利用排序算法对其进行排序，最终选择top K返回给用户。微博推荐亦是如此。其整体的流程图如下所示：</p>
+<p>物料召回：即从候选物料集合中粗筛物料，作为进行模型的待排序物料。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190305163036955.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190305163059488.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190305163120489.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<blockquote>
+<p>算法排序则是结合相关特征对物料召回的内容进行预估排序，其特征主要分为：用户特征，内容特征，环境特征，组合特征和上下文特征等。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190305163427457.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163455977.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163515432.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163530356.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163645420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163705966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163719819.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163749462.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163805882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163818878.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"><br><img src="https://img-blog.csdnimg.cn/20190305163833250.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
+<h1 id="总结与展望"><a href="#总结与展望" class="headerlink" title="总结与展望"></a>总结与展望</h1><ul>
+<li><p>总结</p>
 <ul>
-<li>batch_size</li>
-<li>iterations</li>
-<li>epochs</li>
+<li>业务和数据决定了模型算法的应用场景</li>
+<li>模型算法殊途同归</li>
+<li>工程能力和算法架构是基本保障</li>
 </ul>
-<h1 id="batch-size"><a href="#batch-size" class="headerlink" title="batch_size"></a>batch_size</h1><p>深度学习的优化算法，其实就是梯度下降，在之前的文章中我们也介绍过梯度下降，这里就不详细说明。梯度下降分为三种：</p>
+</li>
+<li><p>展望</p>
 <ul>
-<li>批量梯度下降算法（BGD，Batch gradient descent algorithm）</li>
-<li>随机梯度下降算法（SGD，Stochastic gradient descent algorithm）</li>
-<li>小批量梯度下降算法（MBGD，Mini-batch gradient descent algorithm）</li>
+<li>采用多模型融合，能更好的对非结构化内容进行表征</li>
+<li>更多的融合网络结构适用于CTR预估场景</li>
 </ul>
-<p>批量梯度下降算法，每一次计算都需要遍历全部数据集，更新梯度，计算开销大，花费时间长，不支持在线学习。</p>
-<p>随机梯度下降算法，每次随机选取一条数据，求梯度更新参数，这种方法计算速度快，但是收敛性能不太好，可能在最优点附近晃来晃去，hit不到最优点。两次参数的更新也有可能互相抵消掉，造成目标函数震荡的比较剧烈。</p>
-<p>为了克服两种方法的缺点，现在一般采用的是一种折中手段，mini-batch gradient decent，小批的梯度下降，这种方法把数据分为若干个批，按批来更新参数，这样，一个批中的一组数据共同决定了本次梯度的方向，下降起来就不容易跑偏，减少了随机性。另一方面因为批的样本数与整个数据集相比小了很多，计算量也不是很大。</p>
-<p>tf框架中的batch_size指的就是更新梯度中使用的样本数。当然这里如果把batch_size设置为数据集的长度，就成了批量梯度下降算法，batch_size设置为1就是随机梯度下降算法。</p>
-<h1 id="iterations"><a href="#iterations" class="headerlink" title="iterations"></a>iterations</h1><p>迭代次数，每次迭代更新一次网络结构的参数。</p>
-<p>迭代是重复反馈的动作，神经网络中我们希望通过迭代进行多次的训练以到达所需的目标或结果。</p>
-<p>每一次迭代得到的结果都会被作为下一次迭代的初始值。</p>
-<p>一个迭代 = 一个（batch_size）数据正向通过（forward）+ 一个（batch_size）数据反向（backward）</p>
-<p><img src="https://img-blog.csdnimg.cn/2019022523170956.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="神经网络"></p>
-<p>前向传播：构建由（x1,x2,x3）得到Y（hwb(x)）的表达式</p>
-<p>反向传播：基于给定的损失函数，求解参数的过程</p>
-<h1 id="epochs"><a href="#epochs" class="headerlink" title="epochs"></a>epochs</h1><p>epochs被定义为前向和反向传播中所有批次的单次训练迭代。这意味着1个周期是整个输入数据的单次前向和反向传递。</p>
-<p>简单说，epochs指的就是训练过程中数据将被“轮”多少次</p>
-<p>例如在某次模型训练过程中，总的样本数是10000，batch_size=100，epochs=10，其对应的伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">data = </span><br><span class="line">batch_size = 100</span><br><span class="line">for i in range(epochs):</span><br><span class="line">    for j in range(int(data_length / batch_size - 1)):</span><br><span class="line">        x_data = data[begin:end, ]</span><br><span class="line">        y_data = data[begin:end, ]</span><br><span class="line">        mode.train(x_data, y_data)</span><br><span class="line">        begin += batch_size</span><br><span class="line">        end += batch_size</span><br></pre></td></tr></table></figure></p>
-<p>其中iterations = data_length / batch_size</p>
+</li>
+</ul>
+<hr>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/88164127" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/88164127</a> </p>
 
       
 
@@ -266,7 +278,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">推荐系统</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -287,7 +303,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/05/推荐系统/机器学习在微博信息流推荐中的应用实践/">展开全文 >></a>
         </p>
       
 
@@ -319,7 +335,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
     </nav>
   
 
@@ -491,10 +507,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -511,7 +523,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,6 +532,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,6 +559,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -552,10 +572,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,6 +636,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -193,138 +193,140 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/MachingLearning中的距离和相似性计算以及python实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/回归分析之理论篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/16/机器学习/MachingLearning中的距离和相似性计算以及python实现/">MachingLearning中的距离和相似性计算以及python实现</a>
+      <a class="article-title" href="/2017/09/17/机器学习/回归分析之理论篇/">回归分析之理论篇</a>
     </h1>
   
 
         
-        <a href="/2017/07/16/机器学习/MachingLearning中的距离和相似性计算以及python实现/" class="archive-article-date">
-  	<time datetime="2017-07-16T04:14:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-16</time>
+        <a href="/2017/09/17/机器学习/回归分析之理论篇/" class="archive-article-date">
+  	<time datetime="2017-09-17T00:10:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>写这篇文章的目的不是说摘抄网上其他人的总结，刚才最近在看这方面的东西，为了让自己能够实际的去感受下每种求距离公式的差别，然后用python进行具体实现。</p>
-<p>在机器学习中，经常要用到距离和相似性的计算公式，我么要常计算个体之间的差异大小，继而评价个人之间的差异性和相似性，最常见的就是数据分析中的相关分析，数据挖掘中的分类和聚类算法。如利用k-means进行聚类时，判断个体所属的类别，要利用距离计算公式计算个体到簇心的距离，如利用KNN进行分类时，计算个体与已知类别之间的相似性，从而判断个体所属的类别等。</p>
-<p>文章编辑的过程中或许存在一个错误或者不合理的地方，欢迎指正。</p>
-<p>参考：<a href="http://www.cnblogs.com/heaad/archive/2011/03/08/1977733.html" target="_blank" rel="external">http://www.cnblogs.com/heaad/archive/2011/03/08/1977733.html</a></p>
-<p>推荐：<a href="https://my.oschina.net/hunglish/blog/787596" target="_blank" rel="external">https://my.oschina.net/hunglish/blog/787596</a></p>
-<h1 id="欧氏距离"><a href="#欧氏距离" class="headerlink" title="欧氏距离"></a>欧氏距离</h1><p>也称欧几里得距离，是指在m维空间中两个点之间的真实距离。欧式距离在ML中使用的范围比较广，也比较通用，就比如说利用k-Means对二维平面内的数据点进行聚类，对魔都房价的聚类分析（price/m^2 与平均房价）等。</p>
-<h2 id="二维空间的欧氏距离"><a href="#二维空间的欧氏距离" class="headerlink" title="二维空间的欧氏距离"></a>二维空间的欧氏距离</h2><p>二维平面上两点a(x1,y1)与b(x2,y2)间的欧氏距离</p>
+        <p>2015年的机器学习博客其实都是看《机器学习实战》这本书时学到的，说实话当时也是知其然，不知其所以然，以至于对其理解不深刻，好多细节和理论知识都搞的是乱七八糟，自从工作之后再去看一个算法，思考的比之前多了点，查看资料也比之前多了点，生怕理解错误，影响其他人，当然在理解的程度上还是不够深刻，这也是一个学习的过程吧，记录一下，欢迎指正。</p>
+<p>CSDN链接：<a href="http://blog.csdn.net/gamer_gyt/article/details/78008144" target="_blank" rel="external">点击阅读</a></p>
+<h1 id="一：一些名词定义"><a href="#一：一些名词定义" class="headerlink" title="一：一些名词定义"></a>一：一些名词定义</h1><h2 id="1）指数分布族"><a href="#1）指数分布族" class="headerlink" title="1）指数分布族"></a>1）指数分布族</h2><p>指数分布族是指可以表示为指数形式的概率分布。</p>
 <script type="math/tex; mode=display">
-d12 =\sqrt{(x_{1}-x_{2})^2+(y_{1}-y_{2})^2}</script><p>python 实现为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># coding: utf-8</span><br><span class="line"></span><br><span class="line">from numpy import *</span><br><span class="line"></span><br><span class="line">def twoPointDistance(a,b):</span><br><span class="line">	d = sqrt( (a[0]-b[0])**2 + (a[1]-b[1])**2 )</span><br><span class="line">	return d</span><br><span class="line"></span><br><span class="line">print &apos;a,b 二维距离为：&apos;,twoPointDistance((1,1),(2,2))</span><br></pre></td></tr></table></figure>
-<h2 id="三维空间的欧氏距离"><a href="#三维空间的欧氏距离" class="headerlink" title="三维空间的欧氏距离"></a>三维空间的欧氏距离</h2><p>三维空间两点a(x1,y1,z1)与b(x2,y2,z2)间的欧氏距离</p>
-<script type="math/tex; mode=display">d12 =\sqrt{(x_{1}-x_{2})^2+(y_{1}-y_{2})^2+(z_{1}-z_{2})^2}</script><p>python 实现为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def threePointDistance(a,b):</span><br><span class="line">	d = sqrt( (a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2 )</span><br><span class="line">	return d</span><br><span class="line"></span><br><span class="line">print &apos;a,b 三维距离为：&apos;,threePointDistance((1,1,1),(2,2,2))</span><br></pre></td></tr></table></figure></p>
-<h2 id="多维空间的欧氏距离"><a href="#多维空间的欧氏距离" class="headerlink" title="多维空间的欧氏距离"></a>多维空间的欧氏距离</h2><p>两个n维向量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的欧氏距离</p>
+f_X(x\mid\theta) = h(x) \exp \left (\eta(\theta) \cdot T(x) -A(\theta)\right )</script><p>其中，η为自然参数(nature parameter)，T(x)是充分统计量（sufficient statistic）。当参数A，h，T都固定以后，就定义了一个以η为参数的函数族。</p>
+<p>伯努利分布与高斯分布是两个典型的指数分布族</p>
+<h3 id="伯努利分布"><a href="#伯努利分布" class="headerlink" title="伯努利分布"></a>伯努利分布</h3><p>又名两点分布或者0-1分布，是一个离散型概率分布。假设1的概率为p，0的概率为q，则<br>其概率质量函数为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;\displaystyle f_&#123;X&#125;(x)=p^&#123;x&#125;(1-p)^&#123;1-x&#125;=\left\&#123;&#123;\begin&#123;matrix&#125;p&amp;&#123;\mbox&#123;if &#125;&#125;x=1,\\q\ &amp;&#123;\mbox&#123;if &#125;&#125;x=0.\\\end&#123;matrix&#125;&#125;\right.&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其期望值为：</p>
 <script type="math/tex; mode=display">
-\sqrt{\sum_{n}^{k=1}(x_{1k}-x_{2k})^2 }</script><p>python 实现为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def distance(a,b):</span><br><span class="line">	sum = 0</span><br><span class="line">	for i in range(len(a)):</span><br><span class="line">		sum += (a[i]-b[i])**2</span><br><span class="line">	return sqrt(sum)</span><br><span class="line"></span><br><span class="line">print &apos;a,b 多维距离为：&apos;,distance((1,1,2,2),(2,2,4,4))</span><br></pre></td></tr></table></figure>
-<p>这里传入的参数可以是任意维的，该公式也适应上边的二维和三维</p>
-<h1 id="标准欧氏距离"><a href="#标准欧氏距离" class="headerlink" title="标准欧氏距离"></a>标准欧氏距离</h1><p>标准化欧氏距离是针对简单欧氏距离的缺点而作的一种改进方案。标准欧氏距离的思路：既然数据各维分量的分布不一样，好吧！那我先将各个分量都“标准化”到均值、方差相等吧。均值和方差标准化到多少呢？这里先复习点统计学知识吧，假设样本集X的均值(mean)为m，标准差(standard deviation)为s，那么X的“标准化变量”表示为：</p>
-<p>　　而且标准化变量的数学期望为0，方差为1。因此样本集的标准化过程(standardization)用公式描述就是：
-　　</p>
+{\displaystyle \operatorname {E} [X]=\sum _{i=0}^{1}x_{i}f_{X}(x)=0+p=p}</script><p>其方差为：</p>
 <script type="math/tex; mode=display">
-X^* = \frac{X-m}{s}</script><p>标准化后的值 =  ( 标准化前的值  － 分量的均值 ) /分量的标准差</p>
-<p>经过简单的推导就可以得到两个n维向量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的标准化欧氏距离的公式：</p>
+{\displaystyle \operatorname {var} [X]=\sum _{i=0}^{1}(x_{i}-E[X])^{2}f_{X}(x)=(0-p)^{2}(1-p)+(1-p)^{2}p=p(1-p)=pq}</script><h3 id="正态分布-高斯分布"><a href="#正态分布-高斯分布" class="headerlink" title="正态分布(高斯分布)"></a>正态分布(高斯分布)</h3><p>若随机变量X服从一个位置参数为 ${\displaystyle \mu }$ 、尺度参数为 ${\displaystyle \sigma } $ 的概率分布，记为：</p>
 <script type="math/tex; mode=display">
-d_{12} =\sqrt {\sum_{k=1}^{n} (\frac{x_{1k}-x_{2k}}{s_{k}})^2}</script><p>如果将方差的倒数看成是一个权重，这个公式可以看成是一种加权欧氏距离(Weighted Euclidean distance)。</p>
-<p>python 实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def moreBZOSdis(a,b):</span><br><span class="line">    sumnum = 0</span><br><span class="line">    for i in range(len(a)):</span><br><span class="line">        # 计算si 分量标准差</span><br><span class="line">        avg = (a[i]-b[i])/2</span><br><span class="line">        si = sqrt( (a[i] - avg) ** 2 + (b[i] - avg) ** 2 )</span><br><span class="line">        sumnum += ((a[i]-b[i])/si ) ** 2</span><br><span class="line">	</span><br><span class="line">    return sqrt(sumnum)</span><br><span class="line"></span><br><span class="line">print &apos;a,b 标准欧式距离：&apos;,moreBZOSdis((1,2,1,2),(3,3,3,4))</span><br></pre></td></tr></table></figure></p>
-<h1 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h1><p>又称为城市街区距离（City Block distance）, 想象你在曼哈顿要从一个十字路口开车到另外一个十字路口，驾驶距离是两点间的直线距离吗？显然不是，除非你能穿越大楼。实际驾驶距离就是这个“曼哈顿距离”。而这也是曼哈顿距离名称的来源。同样曼哈顿距离也分为二维，三维和多维。</p>
-<p>在计程车几何学中，一个圆是由从圆心向各个固定曼哈顿距离标示出来的点围成的区域，因此这种圆其实就是旋转了45度的正方形。如果有一群圆，且任两圆皆相交，则整群圆必在某点相交；因此曼哈顿距离会形成一个超凸度量空间。</p>
-<p>这里有一篇人脸表情分类的论文采用的曼哈顿距离进行计算的，<a href="http://download.csdn.net/detail/gamer_gyt/9899825" target="_blank" rel="external">一种人脸表情分类的新方法——Manhattan距离</a></p>
-<h2 id="二维曼哈顿距离"><a href="#二维曼哈顿距离" class="headerlink" title="二维曼哈顿距离"></a>二维曼哈顿距离</h2><p>二维平面两点a(x1,y1)与b(x2,y2)间的曼哈顿距离</p>
+X \sim N(\mu,\sigma^2),</script><p>其概率密度函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(x) = &#123;1 \over \sigma\sqrt&#123;2\pi&#125; &#125;\,e^&#123;- &#123;&#123;(x-\mu )^2 \over 2\sigma^2&#125;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>正态分布的数学期望值或期望值$ {\displaystyle \mu } $ 等于位置参数，决定了分布的位置；其方差 $ {\displaystyle \sigma ^{2}} $ 的开平方或标准差$ {\displaystyle \sigma }$ 等于尺度参数，决定了分布的幅度。</p>
+<h3 id="标准正态分布："><a href="#标准正态分布：" class="headerlink" title="标准正态分布："></a>标准正态分布：</h3><p>如果$ {\displaystyle \mu =0} $ 并且 $ {\displaystyle \sigma =1} $ 则这个正态分布称为标准正态分布。简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(x) = \frac&#123;1&#125;&#123;\sqrt&#123;2\pi&#125;&#125; \, \exp\left(-\frac&#123;x^2&#125;&#123;2&#125; \right)</span><br></pre></td></tr></table></figure></p>
+<p>如下图所示：</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Normal_distribution_pdf.png/650px-Normal_distribution_pdf.png" alt="image"></p>
+<p>正态分布中一些值得注意的量：</p>
+<ul>
+<li>密度函数关于平均值对称</li>
+<li>平均值与它的众数（statistical mode）以及中位数（median）同一数值。</li>
+<li>函数曲线下68.268949%的面积在平均数左右的一个标准差范围内。</li>
+<li>95.449974%的面积在平均数左右两个标准差 $ {\displaystyle 2\sigma } $ 的范围内。</li>
+<li>99.730020%的面积在平均数左右三个标准差$ {\displaystyle 3\sigma } $ 的范围内。</li>
+<li>99.993666%的面积在平均数左右四个标准差$ {\displaystyle 4\sigma } $ 的范围内。</li>
+<li>函数曲线的反曲点（inflection point）为离平均数一个标准差距离的位置。</li>
+</ul>
+<h2 id="2）多重共线性和完全共线性"><a href="#2）多重共线性和完全共线性" class="headerlink" title="2）多重共线性和完全共线性"></a>2）多重共线性和完全共线性</h2><p>多重共线性：指线性回归模型中的解释变量之间由于存在精确相关关系或高度相关关系而使模型估计失真或难以估计准确。一般来说，由于经济数据的限制使得模型设计不当，导致设计矩阵中解释变量间存在普遍的相关关系。通俗点理解就是自变量里边有一些是打酱油的，可以由另外一些变量推导出来，当变量中存在大量的多重共线性变量就会导致模型误差很大，这个时候就需要从自变量中将“打酱油”的变量给剔除掉。</p>
+<p>完全共线性：在多元回归中，一个自变量是一个或多个其他自变量的线性函数。</p>
+<p>两者在某种特殊情况下是有交集的。</p>
+<h2 id="3）T检验"><a href="#3）T检验" class="headerlink" title="3）T检验"></a>3）T检验</h2><p>T检验又叫student T 检验，主要用于样本含量小，总标准差 $\sigma$ 未知的正太分布数据。T检验是用于小样本的两个平均值差异程度的检查方法，他是用T分布理论值来推断事件发生的概率，从而判断两个平均数的差异是否显著。<br>参考: <a href="http://blog.csdn.net/shulixu/article/details/53354206" target="_blank" rel="external">http://blog.csdn.net/shulixu/article/details/53354206</a></p>
+<h2 id="4）关系"><a href="#4）关系" class="headerlink" title="4）关系"></a>4）关系</h2><ul>
+<li>函数关系<blockquote>
+<p>确定性关系，y=3+2x</p>
+</blockquote>
+</li>
+<li>相关关系<blockquote>
+<p>非确定性关系，比如说高中时数学成绩好的人，一般物理成绩也好，这是因为它们背后使用的都是数学逻辑，这种酒叫做非确定性关系。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="5）虚拟变量"><a href="#5）虚拟变量" class="headerlink" title="5）虚拟变量"></a>5）虚拟变量</h2><p>定义：</p>
+<blockquote>
+<p>又称虚设变量、名义变量或哑变量，用以反映质的属性的一个人工变量，是量化了的自变量，通常取值为0或1。（通常为离散变量，因子变量）</p>
+</blockquote>
+<p>作用：</p>
+<blockquote>
+<p>引入哑变量可使线形回归模型变得更复杂，但对问题描述更简明，一个方程能达到两个方程的作用，而且接近现实。</p>
+</blockquote>
+<p>设置：</p>
+<blockquote>
+<p>例如：体重（w）和身高（h），性别（s）的关系，但这里性别并非连续的或者数字可以表示的变量，你并不能拿 1表示男，2表示女，这里的性别是离散变量，只能为男或者女，所以这里就需要引入哑变量来处理。<br>性别（s） =》 isman（男1，非男0），iswoman （因为只有两种可能，所以这里只需要引入一个哑变量即可），同理假设这里有另外一个变量肤色（有黑，白，黄三种可能），那么这里只需引入两个哑变量即可（isblack，iswhite），因为不是这两种的话那肯定是黄色皮肤了。</p>
+</blockquote>
+<p>例子：<br>针对上边所说的体重和身高，性别的关系。</p>
+<p>构建模型：</p>
+<ul>
+<li>1）加法模型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w = a + b * h + c * isman</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>针对数据样本而言，性别是确定的，所以 c * isman 的结果不是c就是0，所以在加法模型下，影响的是模型在y轴上的截距。这说明的是针对不同的性别而言，回归方程是平衡的，只不过是截距不一样。</p>
+<ul>
+<li>2）乘法模型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w = a + b * h + c * isman * h + d * iswoman * h</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>同样针对数据样本而言，性别也是确定的，假设一个男性，isman 为1，iswoman 为0，则上述模型变成了 w = a + b<em>h + c </em> h =a + (b+c) * h，这个时候就是在y轴上的截距一样，而斜率不一致。</p>
+<ul>
+<li>3）混合模型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w = a + b * h + c * isman + d * iswoman + e * isman * h + f * iswoman * h</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>假设一个针对一个性别为男的样本数据，该模型变可以变成 w = a + b<em>h + c + e </em> h = a +c + (b+e)*h，这个时候斜率和截距都是不一样的。</p>
+<h1 id="二：什么是回归（分析）"><a href="#二：什么是回归（分析）" class="headerlink" title="二：什么是回归（分析）"></a>二：什么是回归（分析）</h1><p>回归就是利用样本（已知数据），产生拟合方程，从而（对未知数据）进行预测。比如说我有一组随机变量X（X1，X2，X3…）和另外一组随机变量Y（Y1，Y2，Y3…）,那么研究变量X与Y之间的统计学方法就叫做回归分析。当然这里X和Y是单一对应的，所以这里是一元线性回归。</p>
+<p>回归分为线性回归和非线性回归，其中一些非线性回归可以用线性回归的方法来进行分析的叫做==广义线性回归==，接下来我们来了解下每一种回归：</p>
+<h2 id="1）线性回归"><a href="#1）线性回归" class="headerlink" title="1）线性回归"></a>1）线性回归</h2><p>线性回归可以分为一元线性回归和多元线性回归。当然线性回归中自变量的指数都是1，这里的线性并非真的是指用一条线将数据连起来，也可以是一个二维平面，三维平面等。</p>
+<p>一元线性回归：自变量只有一个的回归，比如说北京二环的房子面积（Area）和房子总价（Money）的关系，随着面积（Area）的增大，房屋价格也是不断增长。这里的自变量只有面积，所以这里是一元线性回归。</p>
+<p>多元线性回归：自变量大于等于两个，比如说北京二环的房子面积（Area），楼层（floor）和房屋价格（Money）的关系，这里自变量是两个，所以是二元线性回归，三元，多元同理。</p>
+<h2 id="2）非线性回归"><a href="#2）非线性回归" class="headerlink" title="2）非线性回归"></a>2）非线性回归</h2><p>有一类模型，其回归参数不是线性的，也不能通过转换的方法将其变为线性的参数，这类模型称为非线性回归模型。非线性回归可以分为一元回归和多元回归。非线性回归中至少有一个自变量的指数不为1。回归分析中，当研究的因果关系只涉及因变量和一个自变量时，叫做一元回归分析；当研究的因果关系涉及因变量和两个或两个以上自变量时，叫做多元回归分析。</p>
+<h2 id="3）广义线性回归"><a href="#3）广义线性回归" class="headerlink" title="3）广义线性回归"></a>3）广义线性回归</h2><p>一些非线性回归可以用线性回归的方法来进行分析叫做广义线性回归。<br>典型的代表是Logistic回归。</p>
+<h2 id="4）如何衡量相关关系既判断适不适合使用线性回归模型？"><a href="#4）如何衡量相关关系既判断适不适合使用线性回归模型？" class="headerlink" title="4）如何衡量相关关系既判断适不适合使用线性回归模型？"></a>4）如何衡量相关关系既判断适不适合使用线性回归模型？</h2><p>使用相关系数（-1，1），绝对值越接近于1，相关系数越高，越适合使用线性回归模型（Rxy&gt;0,代表正相关，Rxy&lt;0,代表负相关）</p>
 <script type="math/tex; mode=display">
-d12 =\left | x_{1}-x_{2} \right |  + \left |y_{1}-y_{2}  \right |</script><p>python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def twoMHDdis(a,b):</span><br><span class="line">    return abs(a[0]-b[0])+abs(a[1]-b[1])</span><br><span class="line"></span><br><span class="line">print &apos;a,b 二维曼哈顿距离为：&apos;, twoMHDdis((1,1),(2,2))</span><br></pre></td></tr></table></figure></p>
-<h2 id="三维曼哈顿距离"><a href="#三维曼哈顿距离" class="headerlink" title="三维曼哈顿距离"></a>三维曼哈顿距离</h2><p>三维平面两点a(x1,y1,z1)与b(x2,y2,z2)间的曼哈顿距离</p>
+r_{XY} = \frac{ \sum (X_{i}-\bar{X})(Y_{i}-\bar{Y}) }{ \sqrt{ \sum (X_{i}-\bar{X})^2) \sum (Y_{i}-\bar{Y})^2) } }</script><h1 id="三：回归中困难点"><a href="#三：回归中困难点" class="headerlink" title="三：回归中困难点"></a>三：回归中困难点</h1><h2 id="1）选定变量"><a href="#1）选定变量" class="headerlink" title="1）选定变量"></a>1）选定变量</h2><blockquote>
+<p>假设自变量特别多，有一些是和因变量相关的，有一些是和因变量不相关的，这里我们就需要筛选出有用的变量，如果筛选后变量还特别多的话，可以采用降维的方式进行变量缩减（可以参考之前的PCA降维的文章：<a href="http://blog.csdn.net/gamer_gyt/article/details/51418069" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/51418069</a> ，基本是整理《机器学习实战》这本书的笔记）</p>
+</blockquote>
+<h2 id="2）发现多重共线性"><a href="#2）发现多重共线性" class="headerlink" title="2）发现多重共线性"></a>2）发现多重共线性</h2><p>(1).方差扩大因子法( VIF)</p>
+<blockquote>
+<p>一般认为如果最大的VIF超过10，常常表示存在多重共线性。</p>
+</blockquote>
+<p>(2).容差容忍定法</p>
+<blockquote>
+<p>如果容差（tolerance）&lt;=0.1，常常表示存在多重共线性。</p>
+</blockquote>
+<p>(3). 条件索引</p>
+<blockquote>
+<p>条件索引(condition index)&gt;10，可以说明存在比较严重的共线性</p>
+</blockquote>
+<h2 id="3）过拟合与欠拟合问题"><a href="#3）过拟合与欠拟合问题" class="headerlink" title="3）过拟合与欠拟合问题"></a>3）过拟合与欠拟合问题</h2><p>过拟合和欠拟合其实对每一个模型来讲都是存在的，过拟合就是模型过于符合训练数据的趋势，欠拟合就是模型对于训练数据和测试数据都表现出不好的情况。针对于欠拟合来讲，是很容易发现的，通常不被讨论。</p>
+<p>在进行模型训练的时候，算法要进行不断的学习，模型在训练数据和测试数据上的错误都在不断下降，但是，如果学习的时间过长的话，模型在训练数据集上的表现将会继续下降，这是因为模型已经过拟合，并且学习到了训练数据集中不恰当的细节和噪音，同时，测试集上的错误率开始上升，也是模型泛化能力在下降。</p>
+<p>这个完美的临界点就在于测试集中的错误率在上升时，此时训练集和测试集上都有良好的表现。通常有两种手段可以帮助你找到这个完美的临界点：重采样方法和验证集方法。</p>
+<h3 id="如何限制过拟合？"><a href="#如何限制过拟合？" class="headerlink" title="如何限制过拟合？"></a>如何限制过拟合？</h3><blockquote>
+<p>过拟合和欠拟合可以导致很差的模型表现。但是到目前为止大部分机器学习实际应用时的问题都是过拟合。<br>过拟合是个问题因为训练数据上的机器学习算法的评价方法与我们最关心的实际上的评价方法，也就是算法在位置数据上的表现是不一样的。<br>当评价机器学习算法时我们有两者重要的技巧来限制过拟合<br>使用重采样来评价模型效能<br>保留一个验证数据集<br>最流行的重采样技术是k折交叉验证。指的是在训练数据的子集上训练和测试模型k次，同时建立对于机器学习模型在未知数据上表现的评估。<br>验证集只是训练数据的子集，你把它保留到你进行机器学习算法的最后才使用。在训练数据上选择和调谐机器学习算法之后，我们在验证集上在对于模型进行评估，以便得到一些关于模型在未知数据上的表现的认知。</p>
+</blockquote>
+<h2 id="4）检验模型是否合理"><a href="#4）检验模型是否合理" class="headerlink" title="4）检验模型是否合理"></a>4）检验模型是否合理</h2><p>验证目前主要采用如下三类办法：<br>1、拟合优度检验<br>主要有R^2，t检验，f检验等等<br>这三种检验为常规验证，只要在95%的置信度内满足即可说明拟合效果良好。<br>2、预测值和真实值比较<br>主要是差值和比值，一般差值和比值都不超过5%。<br>3、另外的办法<br>GEH方法最为常用。GEH是Geoffrey E. Havers于1970年左右提出的一种模型验证方法，其巧妙的运用一个拟定的公式和标准界定模型的拟合优劣。<br>GEH=(2(M-C)^2/(M+C))^(1/2)<br>其中M是预测值，C是实际观测值<br>如果GEH小于5，认为模型拟合效果良好，如果GEH在5-10之间，必须对数据不可靠需要进行检查，如果GEH大于10，说明数据存在问题的几率很高。<br><a href="http://blog.sina.com.cn/s/blog_66188c300100hl45.html" target="_blank" rel="external">http://blog.sina.com.cn/s/blog_66188c300100hl45.html</a></p>
+<h2 id="5）线性回归的模型评判"><a href="#5）线性回归的模型评判" class="headerlink" title="5）线性回归的模型评判"></a>5）线性回归的模型评判</h2><ul>
+<li>误差平方和（残差平方和）</li>
+</ul>
+<p>例如二维平面上的一点（x1，y1），经过线性回归模型预测其值为 y_1，那么预测模型的好与坏就是计算预测结果到直线的距离的大小，由于是一组数据，那么便是这一组数据的和。</p>
+<p>点到直线的距离公式为： </p>
 <script type="math/tex; mode=display">
-d12 =\left | x_{1}-x_{2} \right |  + \left |y_{1}-y_{2}  \right | + \left |z_{1}-z_{2}  \right |</script><p>python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def threeMHDdis(a,b):</span><br><span class="line">	return abs(a[0]-b[0])+abs(a[1]-b[1]) + abs(a[2]-b[2])</span><br><span class="line"> </span><br><span class="line">print &apos;a,b 三维曼哈顿距离为：&apos;, threeMHDdis((1,1,1),(2,2,2))</span><br></pre></td></tr></table></figure></p>
-<h2 id="多维曼哈顿距离"><a href="#多维曼哈顿距离" class="headerlink" title="多维曼哈顿距离"></a>多维曼哈顿距离</h2><p>多维平面两点a(x1,y1)与b(x2,y2)间的曼哈顿距离</p>
+ \frac{\left | A_{x_{0}}+B_{y_{0}} +C \right |}{\sqrt{A^2 + B^2 }}</script><p>由于涉及到开方，在计算过程中十分不方便，所以这里转换为纵轴上的差值，即利用预测值与真实值的差进行累加求和，最小时即为最佳的线性回归模型，但是这里涉及到预测值与真实值的差可能为负数，所以这里用平方，所以最终的误差平方和为：</p>
 <script type="math/tex; mode=display">
-d12 = \sum_{k=1}^{n} \left | x_{1k} - x_{2k} \right |</script><p>python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def moreMHDdis(a,b):</span><br><span class="line">    sum = 0 </span><br><span class="line">    for i in range(len(a)):</span><br><span class="line">        sum += abs(a[i]-b[i])</span><br><span class="line">    return sum</span><br><span class="line"></span><br><span class="line">print &apos;a,b 多维曼哈顿距离为：&apos;, moreMHDdis((1,1,1,1),(2,2,2,2))</span><br></pre></td></tr></table></figure></p>
-<p>由于维距离计算是比较灵活的，所以也同样适合二维和三维。</p>
-<h1 id="切比雪夫距离"><a href="#切比雪夫距离" class="headerlink" title="切比雪夫距离"></a>切比雪夫距离</h1><p>切比雪夫距离（Chebyshev Distance）的定义为：max( | x2-x1 | , |y2-y1 | , … ), 切比雪夫距离用的时候数据的维度必须是三个以上，这篇文章中<a href="http://blog.csdn.net/jerry81333/article/details/52632687" target="_blank" rel="external">曼哈顿距离，欧式距离，明式距离，切比雪夫距离区别</a> 给了一个很形象的解释如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">比如，有同样两个人，在纽约准备到北京参拜天安门，同一个地点出发的话，按照欧式距离来计算，是完全一样的。</span><br><span class="line"></span><br><span class="line">但是按照切比雪夫距离，这是完全不同的概念了。</span><br><span class="line"></span><br><span class="line">譬如，其中一个人是土豪，另一个人是中产阶级，第一个人就能当晚直接头等舱走人，而第二个人可能就要等机票什么时候打折再去，或者选择坐船什么的。</span><br><span class="line"></span><br><span class="line">这样来看的话，距离是不是就不一样了呢？</span><br><span class="line"></span><br><span class="line">或者还是不清楚，我再说的详细点。</span><br><span class="line"></span><br><span class="line">同样是这两个人，欧式距离是直接算最短距离的，而切比雪夫距离可能还得加上财力，比如第一个人财富值100，第二个只有30，虽然物理距离一样，但是所包含的内容却是不同的。</span><br></pre></td></tr></table></figure></p>
-<h2 id="二维切比雪夫距离"><a href="#二维切比雪夫距离" class="headerlink" title="二维切比雪夫距离"></a>二维切比雪夫距离</h2><p>二维平面两点a(x1,y1)与b(x2,y2)间的切比雪夫距离</p>
-<script type="math/tex; mode=display">
-d_{12} = max( \left | x_{1} - x_{2} \right | , \left | y_{1} - y_{2} \right |)</script><p>python 实现为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def twoQBXFdis(a,b):</span><br><span class="line">    return max( abs(a[0]-b[0]), abs(a[1]-b[1]))</span><br><span class="line"></span><br><span class="line">print &apos;a,b二维切比雪夫距离：&apos; , twoQBXFdis((1,2),(3,4))</span><br></pre></td></tr></table></figure>
-<h2 id="多维切比雪夫距离"><a href="#多维切比雪夫距离" class="headerlink" title="多维切比雪夫距离"></a>多维切比雪夫距离</h2><p>两个n维向量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的切比雪夫距离</p>
-<script type="math/tex; mode=display">
-d12 = max_{i\epsilon n}( \left | x_{1i} - x_{2i} \right | )</script><p>python 实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def moreQBXFdis(a,b):</span><br><span class="line">    maxnum = 0</span><br><span class="line">    for i in range(len(a)):</span><br><span class="line">        if abs(a[i]-b[i]) &gt; maxnum:</span><br><span class="line">            maxnum = abs(a[i]-b[i])</span><br><span class="line">    return maxnum</span><br><span class="line"></span><br><span class="line">print &apos;a,b多维切比雪夫距离：&apos; , moreQBXFdis((1,1,1,1),(3,4,3,4))</span><br></pre></td></tr></table></figure></p>
-<h1 id="马氏距离"><a href="#马氏距离" class="headerlink" title="马氏距离"></a>马氏距离</h1><p>有M个样本向量X1~Xm，协方差矩阵记为S，均值记为向量μ，则其中样本向量X到u的马氏距离表示为</p>
-<script type="math/tex; mode=display">
-D(x) = \sqrt{(X-\mu )^TS^{-1}(X-\mu)}</script><p>而其中向量Xi与Xj之间的马氏距离定义为</p>
-<script type="math/tex; mode=display">
-D(X_{i},X_{j}) = \sqrt{(X_{i}-X_{j} )^TS^{-1}(X_{i}-X_{j} )}</script><p> 若协方差矩阵是单位矩阵（各个样本向量之间独立同分布）,则公式就成了：</p>
-<script type="math/tex; mode=display">
-D(X_{i},X_{j}) = \sqrt{(X_{i}-X_{j} )^T(X_{i}-X_{j} )}</script><p>也就是欧氏距离了。</p>
-<p>若协方差矩阵是对角矩阵，公式变成了标准化欧氏距离。</p>
-<p>马氏距离的优缺点：量纲无关，排除变量之间的相关性的干扰。</p>
-<h1 id="夹角余弦"><a href="#夹角余弦" class="headerlink" title="夹角余弦"></a>夹角余弦</h1><p>几何中夹角余弦可用来衡量两个向量方向的差异，机器学习中借用这一概念来衡量样本向量之间的差异。</p>
-<h2 id="二维空间向量的夹角余弦相似度"><a href="#二维空间向量的夹角余弦相似度" class="headerlink" title="二维空间向量的夹角余弦相似度"></a>二维空间向量的夹角余弦相似度</h2><p>在二维空间中向量A(x1,y1)与向量B(x2,y2)的夹角余弦公式：</p>
-<script type="math/tex; mode=display">
-\cos \theta  = \frac{x_{1}x_{2} + y_{1}y_{2}}{ \sqrt{ x_{1}^2+x_{2}^2 }\sqrt{ y_{1}^2+y_{2}^2 } }</script><p>python 实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def twoCos(a,b):</span><br><span class="line">    cos = (a[0]*b[0]+a[1]*b[1]) / (sqrt(a[0]**2 + b[0]**2) * sqrt(a[1]**2 + b[1]**2) )</span><br><span class="line"></span><br><span class="line">    return cos</span><br><span class="line">print &apos;a,b 二维夹角余弦距离：&apos;,twoCos((1,1),(2,2))</span><br></pre></td></tr></table></figure></p>
-<h2 id="多维空间向量的夹角余弦相似度"><a href="#多维空间向量的夹角余弦相似度" class="headerlink" title="多维空间向量的夹角余弦相似度"></a>多维空间向量的夹角余弦相似度</h2><p>两个n维样本点a(x11,x12,…,x1n)和b(x21,x22,…,x2n)的夹角余弦</p>
-<p>类似的，对于两个n维样本点a(x11,x12,…,x1n)和b(x21,x22,…,x2n)，可以使用类似于夹角余弦的概念来衡量它们间的相似程度。</p>
-<script type="math/tex; mode=display">
-\cos \theta  = \frac{a \cdot  b}{\left | a \right | \left | b \right |}</script><p>即：</p>
-<script type="math/tex; mode=display">
-\cos \theta  = \frac{ \sum_{k=1}^{n} x_{1k}x_{2k} }{ \sqrt{ \sum_{k=1}^{n}x_{1k}^2 }\sqrt{ \sum_{k=1}^{n} x_{2k}^2 } }</script><p>python实现为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def moreCos(a,b):</span><br><span class="line">    sum_fenzi = 0.0</span><br><span class="line">    sum_fenmu_1,sum_fenmu_2 = 0,0</span><br><span class="line">    for i in range(len(a)):</span><br><span class="line">        sum_fenzi += a[i]*b[i]</span><br><span class="line">        sum_fenmu_1 += a[i]**2 </span><br><span class="line">        sum_fenmu_2 += b[i]**2 </span><br><span class="line"></span><br><span class="line">    return sum_fenzi/( sqrt(sum_fenmu_1) * sqrt(sum_fenmu_2) )</span><br><span class="line">print &apos;a,b 多维夹角余弦距离：&apos;,moreCos((1,1,1,1),(2,2,2,2))</span><br></pre></td></tr></table></figure></p>
-<p>夹角余弦取值范围为[-1,1]。夹角余弦越大表示两个向量的夹角越小，夹角余弦越小表示两向量的夹角越大。当两个向量的方向重合时夹角余弦取最大值1，当两个向量的方向完全相反夹角余弦取最小值-1。</p>
-<h1 id="闵可夫斯基距离"><a href="#闵可夫斯基距离" class="headerlink" title="闵可夫斯基距离"></a>闵可夫斯基距离</h1><p>闵氏距离不是一种距离，而是一组距离的定义</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为：</p>
-<script type="math/tex; mode=display">
-\sqrt[p]{ \sum_{k=1}^{n} \left | x_{1k}-x_{2k} \right |^p}</script><p>其中p是一个变参数。</p>
-<p>当p=1时，就是曼哈顿距离</p>
-<p>当p=2时，就是欧氏距离</p>
-<p>当p→∞时，就是切比雪夫距离</p>
-<p>根据变参数的不同，闵氏距离可以表示一类的距离。</p>
-<h2 id="闵氏距离的缺点"><a href="#闵氏距离的缺点" class="headerlink" title="闵氏距离的缺点"></a>闵氏距离的缺点</h2><p>闵氏距离，包括曼哈顿距离、欧氏距离和切比雪夫距离都存在明显的缺点。</p>
-<p>举个例子：二维样本(身高,体重)，其中身高范围是150 ~ 190，体重范围是50 ~ 60，有三个样本：a(180,50)，b(190,50)，c(180,60)。那么a与b之间的闵氏距离（无论是曼哈顿距离、欧氏距离或切比雪夫距离）等于a与c之间的闵氏距离，但是身高的10cm真的等价于体重的10kg么？因此用闵氏距离来衡量这些样本间的相似度很有问题。</p>
-<p>简单说来，闵氏距离的缺点主要有两个：(1)将各个分量的量纲(scale)，也就是“单位”当作相同的看待了。(2)没有考虑各个分量的分布（期望，方差等)可能是不同的。</p>
-<h1 id="汉明距离"><a href="#汉明距离" class="headerlink" title="汉明距离"></a>汉明距离</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>两个等长字符串s1与s2之间的汉明距离定义为将其中一个变为另外一个所需要作的最小替换次数。例如字符串“1111”与“1001”之间的汉明距离为2。</p>
-<p>应用：信息编码（为了增强容错性，应使得编码间的最小汉明距离尽可能大）。</p>
-<h2 id="python-实现"><a href="#python-实现" class="headerlink" title="python 实现"></a>python 实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def hanmingDis(a,b):</span><br><span class="line">    sumnum = 0</span><br><span class="line">    for i in range(len(a)):</span><br><span class="line">        if a[i]!=b[i]:</span><br><span class="line">            sumnum += 1</span><br><span class="line">    return sumnum</span><br><span class="line"></span><br><span class="line">print &apos;a,b 汉明距离：&apos;,hanmingDis((1,1,2,3),(2,2,1,3))</span><br></pre></td></tr></table></figure>
-<h1 id="杰卡德距离-amp-杰卡德相似系数"><a href="#杰卡德距离-amp-杰卡德相似系数" class="headerlink" title="杰卡德距离 &amp; 杰卡德相似系数"></a>杰卡德距离 &amp; 杰卡德相似系数</h1><h2 id="杰卡德距离"><a href="#杰卡德距离" class="headerlink" title="杰卡德距离"></a>杰卡德距离</h2><p>与杰卡德相似系数相反的概念是杰卡德距离(Jaccard distance)。杰卡德距离可用如下公式表示：</p>
-<script type="math/tex; mode=display">
-J_{\delta} (A,B) = \frac{| A \bigcup B | - | A \bigcap B |}{| A \bigcup B |}</script><p>杰卡德距离用两个集合中不同元素占所有元素的比例来衡量两个集合的区分度。</p>
-<p>python 实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def jiekadeDis(a,b):</span><br><span class="line">    set_a = set(a)</span><br><span class="line">    set_b = set(b)</span><br><span class="line">    dis = float(len( (set_a | set_b) - (set_a &amp; set_b) ) )/ len(set_a | set_b)</span><br><span class="line">    return dis</span><br><span class="line"></span><br><span class="line">print &apos;a,b 杰卡德距离：&apos;, jiekadeDis((1,2,3),(2,3,4))</span><br></pre></td></tr></table></figure></p>
-<h2 id="杰卡德相似系数"><a href="#杰卡德相似系数" class="headerlink" title="杰卡德相似系数"></a>杰卡德相似系数</h2><p>两个集合A和B的交集元素在A，B的并集中所占的比例，称为两个集合的杰卡德相似系数，用符号J(A,B)表示。</p>
-<script type="math/tex; mode=display">
-J(A,B) = \frac{| A \bigcap B |}{| A \bigcup B |}</script><p>杰卡德相似系数是衡量两个集合的相似度一种指标。</p>
-<p>python 实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def jiekadeXSDis(a,b):</span><br><span class="line">    set_a = set(a)</span><br><span class="line">    set_b = set(b)</span><br><span class="line">    dis = float(len(set_a &amp; set_b)  )/ len(set_a | set_b)</span><br><span class="line">    return dis</span><br><span class="line"></span><br><span class="line">print &apos;a,b 杰卡德相似系数：&apos;, jiekadeXSDis((1,2,3),(2,3,4))</span><br></pre></td></tr></table></figure></p>
-<h2 id="杰卡德相似系数与杰卡德距离的应用"><a href="#杰卡德相似系数与杰卡德距离的应用" class="headerlink" title="杰卡德相似系数与杰卡德距离的应用"></a>杰卡德相似系数与杰卡德距离的应用</h2><p>可将杰卡德相似系数用在衡量样本的相似度上。</p>
-<p>　　样本A与样本B是两个n维向量，而且所有维度的取值都是0或1。例如：A(0111)和B(1011)。我们将样本看成是一个集合，1表示集合包含该元素，0表示集合不包含该元素。</p>
-<p>p ：样本A与B都是1的维度的个数</p>
-<p>q ：样本A是1，样本B是0的维度的个数</p>
-<p>r ：样本A是0，样本B是1的维度的个数</p>
-<p>s ：样本A与B都是0的维度的个数</p>
-<p>那么样本A与B的杰卡德相似系数可以表示为：</p>
-<p>这里p+q+r可理解为A与B的并集的元素个数，而p是A与B的交集的元素个数。</p>
-<p>而样本A与B的杰卡德距离表示为：</p>
-<script type="math/tex; mode=display">
-J= \frac{p}{p+q+r}</script><h1 id="相关系数-amp-相关距离"><a href="#相关系数-amp-相关距离" class="headerlink" title="相关系数 &amp; 相关距离"></a>相关系数 &amp; 相关距离</h1><h2 id="相关系数"><a href="#相关系数" class="headerlink" title="相关系数"></a>相关系数</h2><script type="math/tex; mode=display">
-\rho_{XY} = \frac{Cov(X,Y)}{\sqrt{D(X)} \sqrt{D(Y)}}=\frac{ E( (X-EX) (Y-EY) ) }{ \sqrt{D(X)} \sqrt{D(Y)} }</script><p>相关系数是衡量随机变量X与Y相关程度的一种方法，相关系数的取值范围是[-1,1]。相关系数的绝对值越大，则表明X与Y相关度越高。当X与Y线性相关时，相关系数取值为1（正线性相关）或-1（负线性相关）。</p>
-<p>python 实现<br>相关系数可以利用numpy库中的corrcoef函数来计算<br>例如 对于矩阵a,numpy.corrcoef(a)可计算行与行之间的相关系数，numpy.corrcoef(a,rowvar=0)用于计算各列之间的相关系数，输出为相关系数矩阵。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">from numpy import  *</span><br><span class="line">a = array([[1, 1, 2, 2, 3],  </span><br><span class="line">       [2, 2, 3, 3, 5],  </span><br><span class="line">       [1, 4, 2, 2, 3]]) </span><br><span class="line"></span><br><span class="line">print corrcoef(a)</span><br><span class="line"></span><br><span class="line">&gt;&gt;array([[ 1.        ,  0.97590007,  0.10482848],</span><br><span class="line">       [ 0.97590007,  1.        ,  0.17902872],</span><br><span class="line">       [ 0.10482848,  0.17902872,  1.        ]])</span><br><span class="line"></span><br><span class="line">print corrcoef(a,rowvar=0)</span><br><span class="line"></span><br><span class="line">&gt;&gt;array([[ 1.        , -0.18898224,  1.        ,  1.        ,  1.        ],</span><br><span class="line">       [-0.18898224,  1.        , -0.18898224, -0.18898224, -0.18898224],</span><br><span class="line">       [ 1.        , -0.18898224,  1.        ,  1.        ,  1.        ],</span><br><span class="line">       [ 1.        , -0.18898224,  1.        ,  1.        ,  1.        ],</span><br><span class="line">       [ 1.        , -0.18898224,  1.        ,  1.        ,  1.        ]])</span><br></pre></td></tr></table></figure></p>
-<h2 id="相关距离"><a href="#相关距离" class="headerlink" title="相关距离"></a>相关距离</h2><script type="math/tex; mode=display">
-D_{xy} = 1 - \rho _{XY}</script><p>python 实现（基于相关系数）<br>同样针对矩阵a<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 行之间的相关距离</span><br><span class="line">ones(shape(corrcoef(a)),int) - corrcoef(a)</span><br><span class="line"></span><br><span class="line">&gt;&gt;array([[ 0.        ,  0.02409993,  0.89517152],</span><br><span class="line">       [ 0.02409993,  0.        ,  0.82097128],</span><br><span class="line">       [ 0.89517152,  0.82097128,  0.        ]])</span><br><span class="line">       </span><br><span class="line">       </span><br><span class="line"># 列之间的相关距离</span><br><span class="line">ones(shape(corrcoef(a,rowvar = 0)),int) - corrcoef(a,rowvar = 0)</span><br><span class="line"></span><br><span class="line">&gt;&gt;array([[ 0.        ,  1.18898224,  0.        ,  0.        ,  0.        ],</span><br><span class="line">       [ 1.18898224,  0.        ,  1.18898224,  1.18898224,  1.18898224],</span><br><span class="line">       [ 0.        ,  1.18898224,  0.        ,  0.        ,  0.        ],</span><br><span class="line">       [ 0.        ,  1.18898224,  0.        ,  0.        ,  0.        ],</span><br><span class="line">       [ 0.        ,  1.18898224,  0.        ,  0.        ,  0.        ]])</span><br></pre></td></tr></table></figure></p>
-<h1 id="信息熵"><a href="#信息熵" class="headerlink" title="信息熵"></a>信息熵</h1><p>信息熵并不属于一种相似性度量，是衡量分布的混乱程度或分散程度的一种度量。分布越分散(或者说分布越平均)，信息熵就越大。分布越有序（或者说分布越集中），信息熵就越小。</p>
-<p>计算给定的样本集X的信息熵的公式：</p>
-<script type="math/tex; mode=display">
-Entropy(X) = \sum_{i=1}^{n} -p_{i} log_{2}p_{i}</script><p>参数的含义：</p>
-<p>n：样本集X的分类数</p>
-<p>pi：X中第i类元素出现的概率</p>
-<p>信息熵越大表明样本集S分类越分散，信息熵越小则表明样本集X分类越集中。。当S中n个分类出现的概率一样大时（都是1/n），信息熵取最大值log2(n)。当X只有一个分类时，信息熵取最小值0</p>
-<p>python进行计算和实现可参考：<br><a href="http://blog.csdn.net/autoliuweijie/article/details/52244246" target="_blank" rel="external">http://blog.csdn.net/autoliuweijie/article/details/52244246</a></p>
+RSS = \sum_{i=1}^{n}(y_{i}- \hat{y_{i}} )^2 = \sum_{i=1}^{n}[y_{i} - (\alpha +\beta x_{i})]^2</script><ul>
+<li>AIC准则（赤池信息准则）<script type="math/tex; mode=display">
+AIC=n ln (RSSp/n)+2p</script>n为变量总个数，p为选出的变量个数，AIC越小越好</li>
+</ul>
 
       
 
@@ -338,7 +340,11 @@ Entropy(X) = \sum_{i=1}^{n} -p_{i} log_{2}p_{i}</script><p>参数的含义：</p
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">距离计算</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回归分析</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">正态分布</a>
         		</li>
       		
 		</ul>
@@ -359,7 +365,7 @@ Entropy(X) = \sum_{i=1}^{n} -p_{i} log_{2}p_{i}</script><p>参数的含义：</p
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/16/机器学习/MachingLearning中的距离和相似性计算以及python实现/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/09/17/机器学习/回归分析之理论篇/">展开全文 >></a>
         </p>
       
 
@@ -391,7 +397,7 @@ Entropy(X) = \sum_{i=1}^{n} -p_{i} log_{2}p_{i}</script><p>参数的含义：</p
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/50/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><span class="page-number current">51</span><a class="page-number" href="/page/52/">52</a><a class="page-number" href="/page/53/">53</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/52/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/50/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><span class="page-number current">51</span><a class="page-number" href="/page/52/">52</a><a class="page-number" href="/page/53/">53</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/52/">Next &raquo;</a>
     </nav>
   
 
@@ -563,10 +569,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -583,7 +585,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -592,6 +594,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -615,6 +621,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -624,10 +634,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -692,6 +698,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

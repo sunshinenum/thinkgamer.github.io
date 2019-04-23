@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/Spark排序算法系列之（MLLib、ML）GBTs使用方式介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a>
+      <a class="article-title" href="/2019/01/29/机器学习/Spark排序算法系列之（MLLib、ML）GBTs使用方式介绍/">Spark排序算法系列之（MLLib、ML）GBTs使用方式介绍</a>
     </h1>
   
 
         
-        <a href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/" class="archive-article-date">
-  	<time datetime="2019-01-12T14:06:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-12</time>
+        <a href="/2019/01/29/机器学习/Spark排序算法系列之（MLLib、ML）GBTs使用方式介绍/" class="archive-article-date">
+  	<time datetime="2019-01-29T13:16:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-29</time>
 </a>
         
       </header>
@@ -220,23 +220,30 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在之前的文章中介绍了多分类逻辑回归算法的数据原理，参考文章链接</p>
-<p>CSDN文章链接：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a><br>公众号：多分类逻辑回归（Multinomial Logistic Regression）<br>该篇文章介绍一下Spark中多分类算法，主要包括的技术点如下</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>【Spark排序算法系列】主要介绍的是目前推荐系统或者广告点击方面用的比较广的几种算法，和他们在Spark中的应用实现，本篇文章主要介绍GBDT算法，本系列还包括（持续更新）：</p>
 <ul>
-<li><p>多分类实现方式</p>
+<li>Spark排序算法系列之LR（逻辑回归）</li>
+<li>Spark排序算法系列之模型融合（GBDT+LR）</li>
+<li>Spark排序算法系列之XGBoost</li>
+<li>Spark排序算法系列之FTRL（Follow-the-regularized-Leader）</li>
+<li>Spark排序算法系列之FM与FFM</li>
+</ul>
+<p>在本篇文章中你可以学到：</p>
 <ul>
-<li>一对一 （One V One）</li>
-<li>一对其余（One V Remaining）</li>
-<li>多对多 （More V More）</li>
+<li>Spark MLLib包中的GBDT使用方式</li>
+<li>模型的通过保存、加载、预测</li>
+<li>PipeLine</li>
+<li>ML包中的GBDT</li>
 </ul>
-</li>
-<li><p>Spark中的多分类实现</p>
-<h1 id="多分类实现方式"><a href="#多分类实现方式" class="headerlink" title="多分类实现方式"></a>多分类实现方式</h1><h2 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h2><p>假设某个分类中有N个类别，将这N个类别两两配对（继而转化为二分类问题），这样可以得到 N（N-1）/ 2个二分类器，这样训练模型时需要训练 N（N-1）/ 2个模型，预测时将样本输送到这些模型中，最终统计出现次数较多的类别结果作为最终类别。</p>
-</li>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>LR因为其容易并行最早应用到推荐排序中的，但学习能力有限，需要大量的特征工程来增加模型的学习能力。但大量的特征工程耗时耗力，且不一定带来效果的提升，因此在如何能有效的发现特征组合，来缩短LR特征实验周期的背景下，GBDT被应用了起来。GBDT模型全称是Gradient Boosting Decision Tree，梯度提升决策树。是属于Boosing算法中的一种，关于Boosting的介绍可以参考文章集成学习（Ensemble Learning)</p>
+<p>关于GBDT算法理解可参考：</p>
+<ul>
+<li>Spark排序算法系列之GBTs基础——梯度上升和梯度下降</li>
+<li>梯度提升决策树GBDT（Gradient Boosting Decision Tree）</li>
 </ul>
-<p>假设现在有三个类别：类别A，类别B，类别C，类别D。一对一实现多分类如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190112220044121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==,size_16,color_FFFFFF,t_70"></p>
+<p>其实相信很多人对Spark 机器学习包（ml和mllib）中的GBDT傻傻分不清楚，这里我们先来捋一捋。Spark中的GBDT较GBTs——梯度提升树，因为其是基于决策树（Decision Tree，DT）实现的，所以叫GBDT。Spark 中的GBDT算法存在于ml包和mllib包中，mllib是基于RDD的，ml包则是针对DataFrame的，ml包中的GBDT分为分类和回归，在实际使用过程中，需要根据具体情况进行衡量和选择。由于在实际生产环境中使用基于RDD的较多，所以下面将着重介绍下MLLib包中的GBTs，ML包中的将进行简单说明。</p>
 <hr>
-<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/86378882</a> </p>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86695837" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/86695837</a></p>
 
       
 
@@ -251,10 +258,6 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -279,7 +282,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/29/机器学习/Spark排序算法系列之（MLLib、ML）GBTs使用方式介绍/">展开全文 >></a>
         </p>
       
 
@@ -311,7 +314,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
     </nav>
   
 
@@ -483,10 +486,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -503,7 +502,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,6 +511,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,6 +538,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -544,10 +551,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -612,6 +615,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/机器学习中的AUC理解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TensorFlow/TensorFlow实现线性回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/15/机器学习/机器学习中的AUC理解/">机器学习中的AUC理解</a>
+      <a class="article-title" href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/">TensorFlow实现线性回归</a>
     </h1>
   
 
         
-        <a href="/2018/04/15/机器学习/机器学习中的AUC理解/" class="archive-article-date">
-  	<time datetime="2018-04-14T19:23:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-15</time>
+        <a href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/" class="archive-article-date">
+  	<time datetime="2018-04-22T06:27:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
 </a>
         
       </header>
@@ -214,42 +214,26 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>最近在做GBDT模型，里边用到胡模型评价方法就是AUC，刚好趁此机会，好好学习一下。</p>
+<p>TensorFlow写简单的代码是大财小用，需要很繁琐的代码方能实现简单的功能，但对于复杂的机器学习算法和深度神经网络却是十分的简单，下边看一个tf实现线性回归的Demo</p>
 </blockquote>
-<h1 id="混淆矩阵-Confusion-matrix"><a href="#混淆矩阵-Confusion-matrix" class="headerlink" title="混淆矩阵(Confusion matrix)"></a>混淆矩阵(Confusion matrix)</h1><p>混淆矩阵是理解大多数评价指标的基础，毫无疑问也是理解AUC的基础。丰富的资料介绍着混淆矩阵的概念，下边用一个实例讲解什么是混淆矩阵</p>
 <hr>
-<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/79945987" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/79945987</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
+<p>转载请注明出处：<a href="https://blog.csdn.net/gamer_gyt/article/details/80038679" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/80038679</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<p>如有100个样本数据，这些数据分成2类，每类50个。分类结束后得到的混淆矩阵为：<br><img src="https://img-blog.csdn.net/20180415002706538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>说明：<br>40个为0类别的，预测正确，60个事实是0类别的给预测为1类别的<br>40个为1类别的，预测正确，60个事实是1类别的给预测为0类别的</p>
-<p>其对应的混淆矩阵如下：<br><img src="https://img-blog.csdn.net/2018041500331853?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>混淆矩阵包含四部分的信息：</p>
-<ul>
-<li>True negative(TN)，称为真阴率，表明实际是负样本预测成负样本的样本数</li>
-<li>False positive(FP)，称为假阳率，表明实际是负样本预测成正样本的样本数</li>
-<li>False negative(FN)，称为假阴率，表明实际是正样本预测成负样本的样本数</li>
-<li>True positive(TP)，称为真阳率，表明实际是正样本预测成正样本的样本数</li>
-</ul>
-<p>从上边的图可以分析出，对角线带True的为判断对了，斜对角线带False的为判断错了。</p>
-<p>像常见的准确率，精准率，召回率，F1-score，AUC都是建立在混淆矩阵上的。</p>
-<p>准确率（Accuracy）：判断正确的占总的数目的比例【（TN+TP）/100=(40+40)/100=0.8】<br>精准率（precision）：判断正确的正类占进行判断的数目的比例（针对判别结果而言的，表示预测为正的数据中有多少是真的正确）【TP/(TP+FP) = 40/(40+60 )=0.4】<br>召回率（recall）: 判断正确正类占应该应该判断正确的正类的比例（针对原样本而言，表示样本中的正例有多少被判断正确了）【TP/(TP+FN)=40/(40+60)=0.4】<br>F1-Measure：精确值和召回率的调和均值【2<em>R</em>R/(P+R)=2<em>0.4</em>0.4/(0.4+0.4)=1】</p>
-<h1 id="AUC-amp-ROC"><a href="#AUC-amp-ROC" class="headerlink" title="AUC &amp; ROC"></a>AUC &amp; ROC</h1><p>AUC是一个模型评价指标，只能用于二分类模型的评价，对于二分类模型，还有损失函数（logloss），正确率（accuracy），准确率（precision），但相比之下AUC和logloss要比accuracy和precision用的多，原因是因为很多的机器学习模型计算结果都是概率的形式，那么对于概率而言，我们就需要去设定一个阈值来判定分类，那么这个阈值的设定就会对我们的正确率和准确率造成一定成都的影响。</p>
-<p>AUC(Area under Curve)，表面上意思是曲线下边的面积，这么这条曲线是什么？——ROC曲线（receiver operating characteristic curve，接收者操作特征曲线）。</p>
-<p>接下来分析下面这张图（图片来自百度百科）：<br><img src="https://img-blog.csdn.net/20180415015350726?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>X轴是假阳率：FP/(FP+TN)<br>Y轴是真阳性：TP(TP+FN)<br>ROC曲线给出的是当阈值(分类器必须提供每个样例被判为阳性或者阴性的可信程度值)变化时假阳率和真阳率的变化情况，左下角的点所对应的是将所有样例判为反例的情况，而右上角的点对应的则是将所有样例判断为正例的情况。<br>ROC曲线不但可以用于比较分类器，还可以基于成本效益分析来做出决策。在理想情况下，最佳的分类器应该尽可能地处于左上角，这就意味着分类器在假阳率很低的同时获得了很高的真阳率。</p>
-<h1 id="AUC计算"><a href="#AUC计算" class="headerlink" title="AUC计算"></a>AUC计算</h1><p>以下部分引用 <a href="https://blog.csdn.net/guohecang/article/details/52858019" target="_blank" rel="external">ROC曲线与AUC计算</a> 中的举例</p>
+<p>首先引入tf包的相关的package，并初始化100个点。这里我们假定线性回归中的w为0.1 b为0.3，并设置一个随机数保证在y=0.1X + 0.3 上下浮动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># coding: utf-8</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">create by: Thinkgamer</span><br><span class="line">create time: 2018/04/22</span><br><span class="line">desc: 使用tensorflow创建线性回归模型</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"># 随机生成100个点</span><br><span class="line">num_points = 100</span><br><span class="line">vectors_set = list()</span><br><span class="line">for i in range(num_points):</span><br><span class="line">    x1 = np.random.normal(0.00,00.55)</span><br><span class="line">    y1 = x1* 0.1 + 0.3 + np.random.normal(0.0,0.03)</span><br><span class="line">    vectors_set.append([x1,y1])</span><br><span class="line"></span><br><span class="line"># 生成一些样本</span><br><span class="line">x_data = [v[0] for v in vectors_set]</span><br><span class="line">y_data = [v[1] for v in vectors_set]</span><br><span class="line"># print(x_data)</span><br><span class="line"># print(y_data)</span><br><span class="line">plt.scatter(x_data,y_data,c=&apos;r&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>生成的图如下所示：<br><img src="https://img-blog.csdn.net/20180422142414284?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>用刚才生成的数据进行线性回归拟合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 构造线性回归模型</span><br><span class="line"></span><br><span class="line"># 生成一维的W矩阵，取值是[-1,1]之间的随机数</span><br><span class="line">W = tf.Variable(tf.random_uniform([1],-1,1),name=&apos;W&apos;)</span><br><span class="line"># 生成一维的b矩阵，初始值为0</span><br><span class="line">b = tf.Variable(tf.zeros([1]),name=&apos;b&apos;)</span><br><span class="line"># 经过计算得出预估值y</span><br><span class="line">y=W*x_data + b</span><br><span class="line"></span><br><span class="line"># 定义损失函数，以预估值y和y_data之间的均方误差作为损失</span><br><span class="line">loss = tf.reduce_mean(tf.square(y - y_data),name=&apos;loss&apos;)</span><br><span class="line"># 采用地图下降算法来优化参数</span><br><span class="line">optimizer = tf.train.GradientDescentOptimizer(0.5)</span><br><span class="line"># 训练过程就是最小化误差</span><br><span class="line">train = optimizer.minimize(loss,name=&apos;train&apos;)</span><br><span class="line"></span><br><span class="line">sess = tf.Session()</span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"># 初始化W 和 b</span><br><span class="line">print(&quot;初始化值：  W = &quot;,sess.run(W), &quot;b= &quot;,sess.run(b))</span><br><span class="line">for step in range(20):</span><br><span class="line">    sess.run(train)</span><br><span class="line">    # 打印出每次训练后的w和b</span><br><span class="line">    print(&quot;第 %s 步：  W = &quot; % step,sess.run(W), &quot;b= &quot;,sess.run(b))</span><br><span class="line">    </span><br><span class="line"># 展示</span><br><span class="line">plt.scatter(x_data,y_data,c=&apos;r&apos;)</span><br><span class="line">plt.plot(x_data,sess.run(W)*x_data+sess.run(b),c=&apos;b&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>对应的输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">初始化值：  W =  [-0.300848] b=  [0.]</span><br><span class="line">第 0 步：  W =  [-0.17744449] b=  [0.3065566]</span><br><span class="line">第 1 步：  W =  [-0.09421768] b=  [0.30550653]</span><br><span class="line">第 2 步：  W =  [-0.03631891] b=  [0.3047983]</span><br><span class="line">第 3 步：  W =  [0.0039596] b=  [0.3043056]</span><br><span class="line">第 4 步：  W =  [0.0319802] b=  [0.3039629]</span><br><span class="line">第 5 步：  W =  [0.05147332] b=  [0.30372444]</span><br><span class="line">第 6 步：  W =  [0.06503413] b=  [0.30355856]</span><br><span class="line">第 7 步：  W =  [0.07446799] b=  [0.30344316]</span><br><span class="line">第 8 步：  W =  [0.08103085] b=  [0.30336288]</span><br><span class="line">第 9 步：  W =  [0.08559645] b=  [0.30330706]</span><br><span class="line">第 10 步：  W =  [0.0887726] b=  [0.3032682]</span><br><span class="line">第 11 步：  W =  [0.09098216] b=  [0.30324116]</span><br><span class="line">第 12 步：  W =  [0.09251929] b=  [0.30322236]</span><br><span class="line">第 13 步：  W =  [0.09358863] b=  [0.30320928]</span><br><span class="line">第 14 步：  W =  [0.09433253] b=  [0.3032002]</span><br><span class="line">第 15 步：  W =  [0.09485004] b=  [0.30319384]</span><br><span class="line">第 16 步：  W =  [0.09521006] b=  [0.30318946]</span><br><span class="line">第 17 步：  W =  [0.09546052] b=  [0.3031864]</span><br><span class="line">第 18 步：  W =  [0.09563475] b=  [0.30318424]</span><br><span class="line">第 19 步：  W =  [0.09575596] b=  [0.30318278]</span><br></pre></td></tr></table></figure></p>
+<p>生成的图如下：<br><img src="https://img-blog.csdn.net/20180422142454345?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <hr>
-<p>假设有6次展示记录，有两次被点击了，得到一个展示序列（1:1,2:0,3:1,4:0,5:0,6:0），前面的表示序号，后面的表示点击（1）或没有点击（0）。<br>然后在这6次展示的时候都通过model算出了点击的概率序列。</p>
-<p>下面看三种情况。</p>
-<p>一、如果概率的序列是（1:0.9,2:0.7,3:0.8,4:0.6,5:0.5,6:0.4）。与原来的序列一起，得到序列（从概率从高到低排）<br>1 0.9<br>1 0.8<br>0 0.7<br>0 0.6<br>0 0.5<br>0 0.4<br>绘制的步骤是：<br>1）把概率序列从高到低排序，得到顺序（1:0.9,3:0.8,2:0.7,4:0.6,5:0.5,6:0.4）；<br>2）从概率最大开始取一个点作为正类，取到点1，计算得到TPR=0.5，FPR=0.0；<br>3）从概率最大开始，再取一个点作为正类，取到点3，计算得到TPR=1.0，FPR=0.0；<br>4）再从最大开始取一个点作为正类，取到点2，计算得到TPR=1.0，FPR=0.25;<br>5）以此类推，得到6对TPR和FPR。<br>然后把这6对数据组成6个点(0,0.5),(0,1.0),(0.25,1),(0.5,1),(0.75,1),(1.0,1.0)。<br>这6个点在二维坐标系中能绘出来。<br><img src="https://img-blog.csdn.net/20180415024426171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看看图中，那个就是ROC曲线。</p>
-<p>二、如果概率的序列是（1:0.9,2:0.8,3:0.7,4:0.6,5:0.5,6:0.4）。与原来的序列一起，得到序列（从概率从高到低排）<br>1 0.9<br>0 0.8<br>1 0.7<br>0 0.6<br>0 0.5<br>0 0.4<br>绘制的步骤是：<br>6）把概率序列从高到低排序，得到顺序（1:0.9,2:0.8,3:0.7,4:0.6,5:0.5,6:0.4）；<br>7）从概率最大开始取一个点作为正类，取到点1，计算得到TPR=0.5，FPR=0.0；<br>8）从概率最大开始，再取一个点作为正类，取到点2，计算得到TPR=0.5，FPR=0.25；<br>9）再从最大开始取一个点作为正类，取到点3，计算得到TPR=1.0，FPR=0.25;<br>10）     以此类推，得到6对TPR和FPR。<br>然后把这6对数据组成6个点(0,0.5),(0.25,0.5),(0.25,1),(0.5,1),(0.75,1),(1.0,1.0)。<br>这6个点在二维坐标系中能绘出来。<br><img src="https://img-blog.csdn.net/20180415024524722?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看看图中，那个就是ROC曲线。</p>
-<p>三、如果概率的序列是（1:0.4,2:0.6,3:0.5,4:0.7,5:0.8,6:0.9）。与原来的序列一起，得到序列（从概率从高到低排）<br>0 0.9<br>0 0.8<br>0 0.7<br>0 0.6<br>1 0.5<br>1 0.4<br>绘制的步骤是：<br>11）把概率序列从高到低排序，得到顺序（1:0.4,2:0.6,3:0.5,4:0.7,5:0.8,6:0.9）；<br>12）从概率最大开始取一个点作为正类，取到点6，计算得到TPR=0.0，FPR=0.25；<br>13）从概率最大开始，再取一个点作为正类，取到点5，计算得到TPR=0.0，FPR=0.5；<br>14）再从最大开始取一个点作为正类，取到点4，计算得到TPR=0.0，FPR=0.75;<br>15）以此类推，得到6对TPR和FPR。<br>然后把这6对数据组成6个点(0.25,0.0),(0.5,0.0),(0.75,0.0),(1.0,0.0),(1.0,0.5),(1.0,1.0)。<br>这6个点在二维坐标系中能绘出来。<br><img src="https://img-blog.csdn.net/20180415024654878?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看看图中，那个就是ROC曲线</p>
-<p>意义：<br>如上图的例子，总共6个点，2个正样本，4个负样本，取一个正样本和一个负样本的情况总共有8种。</p>
-<p>上面的第一种情况，从上往下取，无论怎么取，正样本的概率总在负样本之上，所以分对的概率为1，AUC=1。再看那个ROC曲线，它的积分是什么？也是1，ROC曲线的积分与AUC相等。</p>
-<p>上面第二种情况，如果取到了样本2和3，那就分错了，其他情况都分对了；所以分对的概率是0.875，AUC=0.875。再看那个ROC曲线，它的积分也是0.875，ROC曲线的积分与AUC相等。</p>
-<p>上面的第三种情况，无论怎么取，都是分错的，所以分对的概率是0，AUC=0.0。再看ROC曲线，它的积分也是0.0，ROC曲线的积分与AUC相等。</p>
-<p>很牛吧，其实AUC的意思是——Area Under roc Curve，就是ROC曲线的积分，也是ROC曲线下面的面积。</p>
-<p>绘制ROC曲线的意义很明显，不断地把可能分错的情况扣除掉，从概率最高往下取的点，每有一个是负样本，就会导致分错排在它下面的所有正样本，所以要把它下面的正样本数扣除掉（1-TPR，剩下的正样本的比例）。总的ROC曲线绘制出来了，AUC就定了，分对的概率也能求出来了。</p>
+<center>
+    <img src="http://img.blog.csdn.net/20180204165223361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="50%" height="50%">
+打开微信扫一扫，加入数据与算法交流大群
+</center>
+
+
+
+
 
       
 
@@ -263,11 +247,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AUC</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
         		</li>
       		
 		</ul>
@@ -288,7 +272,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/15/机器学习/机器学习中的AUC理解/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/04/22/TensorFlow/TensorFlow实现线性回归/">展开全文 >></a>
         </p>
       
 
@@ -320,7 +304,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
     </nav>
   
 
@@ -492,10 +476,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -512,7 +492,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,6 +501,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,6 +528,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -553,10 +541,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,6 +605,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

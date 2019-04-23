@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-NLP/资源分享：从数理统计到DL、RL，还不快来" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TensorFlow/深度学习中的epochs、batch_size、iterations详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/28/NLP/资源分享：从数理统计到DL、RL，还不快来/">资源分享：从数理统计到DL、RL，还不快来！</a>
+      <a class="article-title" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">深度学习中的epochs、batch_size、iterations详解</a>
     </h1>
   
 
         
-        <a href="/2019/01/28/NLP/资源分享：从数理统计到DL、RL，还不快来/" class="archive-article-date">
-  	<time datetime="2019-01-27T19:16:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-28</time>
+        <a href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/" class="archive-article-date">
+  	<time datetime="2019-02-25T16:32:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-26</time>
 </a>
         
       </header>
@@ -220,108 +220,35 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<p>之前在自己的年度总结里写到：19年的目标就是技术沉淀与突破。技术突破不仅包含现有技术的总结和反思，更是对未知技术的探索和求知，希望19年能够更上一层楼。</p>
-<p>这个repo是我一直维护和整理的一个技术资料分享的repo，是我包括群友一块整理的一个免费技术资料分享的库，不仅包含了机器学习，数据挖掘，深度学习，还包含了大数据，数理统计，强化学习等，希望在技术这条路上你能跑的更快。</p>
-<p>repo：<a href="https://github.com/Thinkgamer/books" target="_blank" rel="external">https://github.com/Thinkgamer/books</a></p>
-<p>先来张图片镇楼！！！<br><img src="https://img-blog.csdnimg.cn/20190128031446639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==,size_16,color_FFFFFF,t_70"></p>
-<h1 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h1><p>建立该Repo的目的有两个：</p>
+<blockquote>
+<p>深度学习中涉及到很多参数，如果对于一些参数不了解，那么去看任何一个框架都会有难度，在TensorFlow中有一些模型训练的基本参数，这些参数是训练模型的前提，也在一定程度上影响着模型的最终效果。下面主要介绍几个参数。</p>
+</blockquote>
 <ul>
-<li>本人在各个平台共享书籍，进行一个统一管理</li>
-<li>分享给各个搞技术的朋友，知识无私藏之说</li>
+<li>batch_size</li>
+<li>iterations</li>
+<li>epochs</li>
 </ul>
-<hr>
-<h1 id="What"><a href="#What" class="headerlink" title="What"></a>What</h1><p>该Repo会涉及包含以下类别书籍：</p>
+<h1 id="batch-size"><a href="#batch-size" class="headerlink" title="batch_size"></a>batch_size</h1><p>深度学习的优化算法，其实就是梯度下降，在之前的文章中我们也介绍过梯度下降，这里就不详细说明。梯度下降分为三种：</p>
 <ul>
-<li>机器学习</li>
-<li>数据挖掘</li>
-<li>深度学习</li>
-<li>NLP</li>
-<li>云计算</li>
-<li>统计学概率论</li>
-<li>收藏的论文</li>
-<li>杂乱无章</li>
+<li>批量梯度下降算法（BGD，Batch gradient descent algorithm）</li>
+<li>随机梯度下降算法（SGD，Stochastic gradient descent algorithm）</li>
+<li>小批量梯度下降算法（MBGD，Mini-batch gradient descent algorithm）</li>
 </ul>
-<hr>
-<h1 id="List"><a href="#List" class="headerlink" title="List"></a>List</h1><p>注明：排名无先后顺序</p>
-<h2 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h2><ul>
-<li>scikit-learn 中英文</li>
-<li>机器学习-周志华</li>
-<li>机器学习实战</li>
-<li>机器学习导论</li>
-<li>集体智慧编程中文版</li>
-<li>[英文版]叶斯思维：统计建模的Python学习法</li>
-</ul>
-<h2 id="数据挖掘"><a href="#数据挖掘" class="headerlink" title="数据挖掘"></a>数据挖掘</h2><ul>
-<li>python数据分析与挖掘实战</li>
-<li>利用python进行数据分析</li>
-<li>面向程序员的数据挖掘指南</li>
-<li>数据挖掘：概念与技术（中文第三版）</li>
-<li>数据挖掘应用20个案例分析</li>
-<li>数据挖掘与数据化运营实战_思路_方法_技巧与应用_完整版</li>
-</ul>
-<h2 id="深度学习"><a href="#深度学习" class="headerlink" title="深度学习"></a>深度学习</h2><ul>
-<li>神经网络与机器学习（加）Simon Haykin</li>
-<li>TensorFlow实战-黄文坚</li>
-<li>深度学习 中文版</li>
-<li>神经网络与深度学习</li>
-</ul>
-<h2 id="NLP"><a href="#NLP" class="headerlink" title="NLP"></a>NLP</h2><ul>
-<li>模式识别与机器学习 中文版</li>
-<li>NLP汉语自然语言处理原理与实践</li>
-<li>PYTHON自然语言处理中文版</li>
-</ul>
-<h2 id="推荐系统"><a href="#推荐系统" class="headerlink" title="推荐系统"></a>推荐系统</h2><ul>
-<li>推荐系统实践</li>
-<li>learning-to-rank.pdf </li>
-<li>Recommender Systems Handbook.pdf</li>
-<li>Context-Aware-Recommender-Systems-chapter-7.pdf</li>
-</ul>
-<h2 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h2><ul>
-<li>《快学Scala》</li>
-<li>Learning PySpark.pdf</li>
-<li>SparkMLlib机器学习</li>
-<li>Spark快速大数据分析</li>
-<li>数据算法  Hadoop Spark大数据处理技巧</li>
-</ul>
-<h2 id="统计学与概率论"><a href="#统计学与概率论" class="headerlink" title="统计学与概率论"></a>统计学与概率论</h2><ul>
-<li>《概率论与数理统计》浙大版（第四版）教材</li>
-<li>《概率论与数理统计习题全解指南》.浙大版（第四版）</li>
-<li>数理统计与数据分析原书第3版</li>
-<li>应用商务统计分析 王汉生(2008).pdf</li>
-</ul>
-<h2 id="收藏的论文"><a href="#收藏的论文" class="headerlink" title="收藏的论文"></a>收藏的论文</h2><ul>
-<li>平滑系数自适应的二次指数平滑模型及其应用</li>
-<li>The Structure of Collaborative Tagging Systems</li>
-<li>FM</li>
-<li>FFM</li>
-<li>DeepFFM</li>
-<li>Focal Loss for Dense Object Detection</li>
-<li>Attentive Group Recommendation.pdf</li>
-<li>Real-time Personalization using Embeddings for Search.pdf</li>
-</ul>
-<h2 id="杂乱无章"><a href="#杂乱无章" class="headerlink" title="杂乱无章"></a>杂乱无章</h2><ul>
-<li>阿里技术之瞳-p260</li>
-<li>数据敏感性测试</li>
-<li>正则表达式经典实例.（美）高瓦特斯，（美）利维森</li>
-<li>阿里广告中的机器学习平台.pdf</li>
-<li>广告数据上的大规模机器学习.pdf</li>
-<li>绿盟大数据安全分析平台 产品白皮书.pdf</li>
-<li>Xdef2013-基于机器学习和NetFPGA的智能高速入侵防御系统.ppt</li>
-<li>04-程佳-推荐广告机器学习实践</li>
-<li>A Gentle Introduction to Gradient Boosting.pdf</li>
-<li>GBDT算法原理与系统设计简介.pdf</li>
-<li>[微博] 机器学习在微博信息流推荐应用实践.pdf</li>
-<li>[知乎] 首页信息流系统的框架及机器学习技术在推荐策略中的应用.pdf</li>
-</ul>
-<h2 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h2><ul>
-<li>强化学习在阿里的技术演进与业务创新.pdf</li>
-</ul>
-<h2 id="技术集锦"><a href="#技术集锦" class="headerlink" title="技术集锦"></a>技术集锦</h2><ul>
-<li>AAAI2018.pdf</li>
-<li>数字经济下的算法力量.pdf</li>
-<li>2018美团点评算法系列.pdf</li>
-<li>Learning To Rank在个性化电商搜索中的应用</li>
-</ul>
+<p>批量梯度下降算法，每一次计算都需要遍历全部数据集，更新梯度，计算开销大，花费时间长，不支持在线学习。</p>
+<p>随机梯度下降算法，每次随机选取一条数据，求梯度更新参数，这种方法计算速度快，但是收敛性能不太好，可能在最优点附近晃来晃去，hit不到最优点。两次参数的更新也有可能互相抵消掉，造成目标函数震荡的比较剧烈。</p>
+<p>为了克服两种方法的缺点，现在一般采用的是一种折中手段，mini-batch gradient decent，小批的梯度下降，这种方法把数据分为若干个批，按批来更新参数，这样，一个批中的一组数据共同决定了本次梯度的方向，下降起来就不容易跑偏，减少了随机性。另一方面因为批的样本数与整个数据集相比小了很多，计算量也不是很大。</p>
+<p>tf框架中的batch_size指的就是更新梯度中使用的样本数。当然这里如果把batch_size设置为数据集的长度，就成了批量梯度下降算法，batch_size设置为1就是随机梯度下降算法。</p>
+<h1 id="iterations"><a href="#iterations" class="headerlink" title="iterations"></a>iterations</h1><p>迭代次数，每次迭代更新一次网络结构的参数。</p>
+<p>迭代是重复反馈的动作，神经网络中我们希望通过迭代进行多次的训练以到达所需的目标或结果。</p>
+<p>每一次迭代得到的结果都会被作为下一次迭代的初始值。</p>
+<p>一个迭代 = 一个（batch_size）数据正向通过（forward）+ 一个（batch_size）数据反向（backward）</p>
+<p><img src="https://img-blog.csdnimg.cn/2019022523170956.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="神经网络"></p>
+<p>前向传播：构建由（x1,x2,x3）得到Y（hwb(x)）的表达式</p>
+<p>反向传播：基于给定的损失函数，求解参数的过程</p>
+<h1 id="epochs"><a href="#epochs" class="headerlink" title="epochs"></a>epochs</h1><p>epochs被定义为前向和反向传播中所有批次的单次训练迭代。这意味着1个周期是整个输入数据的单次前向和反向传递。</p>
+<p>简单说，epochs指的就是训练过程中数据将被“轮”多少次</p>
+<p>例如在某次模型训练过程中，总的样本数是10000，batch_size=100，epochs=10，其对应的伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">data = </span><br><span class="line">batch_size = 100</span><br><span class="line">for i in range(epochs):</span><br><span class="line">    for j in range(int(data_length / batch_size - 1)):</span><br><span class="line">        x_data = data[begin:end, ]</span><br><span class="line">        y_data = data[begin:end, ]</span><br><span class="line">        mode.train(x_data, y_data)</span><br><span class="line">        begin += batch_size</span><br><span class="line">        end += batch_size</span><br></pre></td></tr></table></figure></p>
+<p>其中iterations = data_length / batch_size</p>
 
       
 
@@ -335,19 +262,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">资源</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">DL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">RL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ML</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorFlow</a>
         		</li>
       		
 		</ul>
@@ -368,7 +287,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/28/NLP/资源分享：从数理统计到DL、RL，还不快来/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/02/26/TensorFlow/深度学习中的epochs、batch_size、iterations详解/">展开全文 >></a>
         </p>
       
 
@@ -400,7 +319,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 
@@ -572,10 +491,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -592,7 +507,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,6 +516,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -624,6 +543,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -633,10 +556,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -701,6 +620,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

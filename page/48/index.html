@@ -193,70 +193,67 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/几种距离计算公式在数据挖掘中的应用场景分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/回归分析之Sklearn实现电力预测" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/20/机器学习/几种距离计算公式在数据挖掘中的应用场景分析/">几种距离计算公式在数据挖掘中的应用场景分析</a>
+      <a class="article-title" href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/">回归分析之Sklearn实现电力预测</a>
     </h1>
   
 
         
-        <a href="/2017/09/20/机器学习/几种距离计算公式在数据挖掘中的应用场景分析/" class="archive-article-date">
-  	<time datetime="2017-09-20T02:23:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-20</time>
+        <a href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/" class="archive-article-date">
+  	<time datetime="2017-11-07T05:39:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-07</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文涉及以下几种距离计算公式的分析，参考资料为《面向程序员的数据挖掘指南》</p>
-<ul>
-<li>曼哈顿距离</li>
-<li>欧几里得距离</li>
-<li>闵可夫斯基距离</li>
-<li>皮尔逊相关系数</li>
-<li>余弦相似度</li>
-</ul>
-<p>之前整理过一篇关于距离相关的文章：<a href="">机器学习算法中的距离和相似性计算公式，分析以及python实现</a></p>
-<h1 id="闵可夫斯基距离"><a href="#闵可夫斯基距离" class="headerlink" title="闵可夫斯基距离"></a>闵可夫斯基距离</h1><p>两个n维变量a(x11,x12,…,x1n)与 b(x21,x22,…,x2n)间的闵可夫斯基距离定义为：</p>
-<script type="math/tex; mode=display">\sqrt[p]{ \sum_{k=1}^{n} \left | x_{1k}-x_{2k} \right |^p}</script><p>其中p是一个变参数。</p>
-<p>当p=1时，就是曼哈顿距离</p>
-<p>当p=2时，就是欧氏距离</p>
-<p>当p→∞时，就是切比雪夫距离</p>
-<p>根据变参数的不同，闵氏距离可以表示一类的距离。</p>
-<p>p值越大，单个维度的差值大小会对整体距离有更大的影响</p>
-<h1 id="曼哈顿距离／欧几里得距离的瑕疵"><a href="#曼哈顿距离／欧几里得距离的瑕疵" class="headerlink" title="曼哈顿距离／欧几里得距离的瑕疵"></a>曼哈顿距离／欧几里得距离的瑕疵</h1><p>在《面向程序员的数据挖掘指南》中给出了这样一组样例数据, 下图为一个在线音乐网站的的用户评分情况，用户可以用1-5星来评价一个乐队，下边是8位用户对8个乐队的评价：<br><img src="http://img.blog.csdn.net/20170920102356159?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>表中的横线表示用户没有对乐队进行评价，我们在计算两个用户的距离时，只采用他们都评价过的乐队。</p>
-<p>现在来求Angelica和Bill的距离，因为他们共同评分过的乐队有5个，所以使用其对该5个乐队的评分进行曼哈顿距离的计算为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dis_1 = |3.5-2| + |2-3.5| + |5-2| + |1.5-3.5| + |2-3| = 9</span><br></pre></td></tr></table></figure>
-<p>同样使用欧式距离计算为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dis_2 = sqrt( (3.5-2)^2 + (2-3.5)^2 + (5-2)^2 + (1.5-3.5)^2 + (2-3)^2 ) = 4.3</span><br></pre></td></tr></table></figure></p>
-<p>当对Angelica和Bill，Bill和Chan进行距离对比时，由于两者的共同评分过的乐队均为5，数据都在一个5维空间里，是公平的，如果现在要计算Angelica和Hailey与Bill的距离时，会发现，Angelica与Bill共同评分的有5个乐队，Hailey与Bill共同评分的有3个乐队，也就是说两者数据一个在5维空间里，一个在三维空间里，这样明显是不公平的。这将会对我们进行计算时产生不好的影响，所以曼哈顿距离和欧几里得距离在数据完整的情况下效果最好。</p>
+        <p>参考原文：<a href="http://www.cnblogs.com/pinard/p/6016029.html" target="_blank" rel="external">http://www.cnblogs.com/pinard/p/6016029.html</a><br>这里进行了手动实现，增强记忆。</p>
+<h1 id="1：数据集介绍"><a href="#1：数据集介绍" class="headerlink" title="1：数据集介绍"></a>1：数据集介绍</h1><p>使用的数据是UCI大学公开的机器学习数据</p>
+<p>数据的介绍在这： <a href="http://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant" target="_blank" rel="external">http://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant</a></p>
+<p>数据的下载地址在这：<a href="http://archive.ics.uci.edu/ml/machine-learning-databases/00294/" target="_blank" rel="external">http://archive.ics.uci.edu/ml/machine-learning-databases/00294/</a></p>
+<p>里面是一个循环发电场的数据，共有9568个样本数据，每个数据有5列，分别是:AT（温度）, V（压力）, AP（湿度）, RH（压强）, PE（输出电力)。我们不用纠结于每项具体的意思。</p>
+<p>我们的问题是得到一个线性的关系，对应PE是样本输出，而AT/V/AP/RH这4个是样本特征， 机器学习的目的就是得到一个线性回归模型，即:</p>
+<script type="math/tex; mode=display">
+PE = \theta _{0} + \theta _{0} * AT + \theta _{0} * V +\theta _{0} * AP +\theta _{0}*RH</script><p>而需要学习的，就是θ0,θ1,θ2,θ3,θ4这5个参数。</p>
 <hr>
-<h1 id="用户问题／皮尔逊相关系数／分数膨胀"><a href="#用户问题／皮尔逊相关系数／分数膨胀" class="headerlink" title="用户问题／皮尔逊相关系数／分数膨胀"></a>用户问题／皮尔逊相关系数／分数膨胀</h1><h2 id="现象——用户问题"><a href="#现象——用户问题" class="headerlink" title="现象——用户问题"></a>现象——用户问题</h2><p>仔细观察用户对乐队的评分数据，可以发现每个用户的评分标准不同：</p>
-<ul>
-<li>Bill没有打出极端的分数，都在2-4分之间</li>
-<li>Jordyn似乎喜欢所有的乐队，打分都在4-5之间</li>
-<li>Hailey是一个有趣的人，他的评分不是1就是4</li>
-</ul>
-<p>那么如何比较这些用户呢？比如说Hailey的4分是相当于Jordyn的4分还是5分呢？我觉得更接近5分，这样一来，就影响推荐系统的准确性了！</p>
-<h2 id="解决该现象"><a href="#解决该现象" class="headerlink" title="解决该现象"></a>解决该现象</h2><p>解决该现象的办法之一就是 使用皮尔逊相关系数，例如下边这样的数据样例（Clara和Robert对五个乐队的评分）：</p>
-<p><img src="http://img.blog.csdn.net/20170920111425007?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>这种现象在数据挖掘领域被称为“分数膨胀“。我们将其评分画成图，如下：<br><img src="http://img.blog.csdn.net/20170920112804525?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>一条直线-完全吻合，代表着Clara和Robert的喜好完全一致。</p>
-<p>皮尔逊相关系数用于衡量两个变量之间的相关性，他的值在-1～1，1代表完全一致，-1代表完全相悖。所以我们可以利用皮尔逊相关系数来找到相似的用户。</p>
-<p>皮尔逊相关系数的计算公式为：<br><img src="http://img.blog.csdn.net/20170920114015874?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>该公式除了看起来比较复杂，另外需要对数据进行两次遍历，第一次遍历求出 x平均值和y平均值，第二次遍历才能出现结果，这里提供另外一个计算公式，能够计算皮尔逊相关系数的近似值：<br><img src="http://img.blog.csdn.net/20170920114326883?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h1 id="2：准备数据"><a href="#2：准备数据" class="headerlink" title="2：准备数据"></a>2：准备数据</h1><p>下载源数据之后，解压会得到一个xlsx的文件，打开另存为csv文件，数据已经整理好，没有非法数据，但是数据并没有进行归一化，不过这里我们可以使用sklearn来帮我处理</p>
+<p>sklearn的归一化处理参考：<a href="http://blog.csdn.net/gamer_gyt/article/details/77761884" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt/article/details/77761884</a></p>
 <hr>
-<h1 id="余弦相似度／稀疏数据"><a href="#余弦相似度／稀疏数据" class="headerlink" title="余弦相似度／稀疏数据"></a>余弦相似度／稀疏数据</h1><p>假设这样一个数据集，一个在线音乐网站，有10000w首音乐（这里不考虑音乐类型，年代等因素），每个用户常听的也就其中的几十首，这种情况下使用曼哈顿或者欧几里得或者皮尔逊相关系数进行计算用户之间相似性，计算相似值会非常小，因为用户之间的交集本来就很少，这样对于计算结果来讲是很不准确的，这个时候就需要余弦相似度了，余弦相似度进行计算时会自动略过这些非零值。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这里只是简答的介绍了这几种相似性距离度量的方法和场景，但是在实际环境中远比这个复杂许多。这里总结下：</p>
-<ul>
-<li>如果数据存在“分数膨胀“问题，就使用皮尔逊相关系数</li>
-<li>如果数据比较密集，变量之间基本都存在共有值，且这些距离数据都是非常重要的，那就使用欧几里得或者曼哈顿距离</li>
-<li>如果数据是稀疏的，就使用余弦相似度</li>
-</ul>
+<h1 id="3：使用pandas来进行数据的读取"><a href="#3：使用pandas来进行数据的读取" class="headerlink" title="3：使用pandas来进行数据的读取"></a>3：使用pandas来进行数据的读取</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line"># pandas 读取数据</span><br><span class="line">data = pd.read_csv(&quot;Folds5x2_pp.csv&quot;)</span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<p>然后会看到如下结果，说明数据读取成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	AT	V	AP	RH	PE</span><br><span class="line">0	8.34	40.77	1010.84	90.01	480.48</span><br><span class="line">1	23.64	58.49	1011.40	74.20	445.75</span><br><span class="line">2	29.74	56.90	1007.15	41.91	438.76</span><br><span class="line">3	19.07	49.69	1007.22	76.79	453.09</span><br><span class="line">4	11.80	40.66	1017.13	97.20	464.43</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="4：准备运行算法的数据"><a href="#4：准备运行算法的数据" class="headerlink" title="4：准备运行算法的数据"></a>4：准备运行算法的数据</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = data[[&quot;AT&quot;,&quot;V&quot;,&quot;AP&quot;,&quot;RH&quot;]]</span><br><span class="line">print X.shape</span><br><span class="line">y = data[[&quot;PE&quot;]]</span><br><span class="line">print y.shape</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(9568, 4)</span><br><span class="line">(9568, 1)</span><br></pre></td></tr></table></figure>
+<p>说明有9658条数据，其中”AT”,”V”,”AP”,”RH” 四列作为样本特征，”PE”列作为样本输出。</p>
+<hr>
+<h1 id="5：划分训练集和测试集"><a href="#5：划分训练集和测试集" class="headerlink" title="5：划分训练集和测试集"></a>5：划分训练集和测试集</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.cross_validation import train_test_split</span><br><span class="line"></span><br><span class="line"># 划分训练集和测试集</span><br><span class="line">X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=1)</span><br><span class="line">print X_train.shape</span><br><span class="line">print y_train.shape</span><br><span class="line">print X_test.shape</span><br><span class="line">print y_test.shape</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(7176, 4)</span><br><span class="line">(7176, 1)</span><br><span class="line">(2392, 4)</span><br><span class="line">(2392, 1)</span><br></pre></td></tr></table></figure>
+<p>75%的数据被划分为训练集，25的数据划分为测试集。</p>
+<hr>
+<h1 id="6：运行sklearn-线性模型"><a href="#6：运行sklearn-线性模型" class="headerlink" title="6：运行sklearn 线性模型"></a>6：运行sklearn 线性模型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">linreg = LinearRegression()</span><br><span class="line">linreg.fit(X_train,y_train)</span><br><span class="line"></span><br><span class="line"># 训练模型完毕，查看结果</span><br><span class="line">print linreg.intercept_</span><br><span class="line">print linreg.coef_</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ 447.06297099]</span><br><span class="line">[[-1.97376045 -0.23229086  0.0693515  -0.15806957]]</span><br></pre></td></tr></table></figure>
+<p>即我们得到的模型结果为：</p>
+<script type="math/tex; mode=display">
+PE = 447.06297099 - 1.97376045*AT - 0.23229086*V + 0.0693515*AP -0.15806957*RH</script><hr>
+<h1 id="7：模型评价"><a href="#7：模型评价" class="headerlink" title="7：模型评价"></a>7：模型评价</h1><p>我们需要评价模型的好坏，通常对于线性回归来讲，我么一般使用均方差（MSE，Mean Squared Error）或者均方根差（RMSE，Root Mean Squared Error）来评价模型的好坏</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">y_pred = linreg.predict(X_test)</span><br><span class="line">from sklearn import metrics</span><br><span class="line"></span><br><span class="line"># 使用sklearn来计算mse和Rmse</span><br><span class="line">print &quot;MSE:&quot;,metrics.mean_squared_error(y_test, y_pred)</span><br><span class="line">print &quot;RMSE:&quot;,np.sqrt(metrics.mean_squared_error(y_test, y_pred))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MSE: 20.0804012021</span><br><span class="line">RMSE: 4.48111606657</span><br></pre></td></tr></table></figure>
+<p>得到了MSE或者RMSE，如果我们用其他方法得到了不同的系数，需要选择模型时，就用MSE小的时候对应的参数。</p>
+<hr>
+<h1 id="8：交叉验证"><a href="#8：交叉验证" class="headerlink" title="8：交叉验证"></a>8：交叉验证</h1><p>我们可以通过交叉验证来持续优化模型，代码如下，我们采用10折交叉验证，即cross_val_predict中的cv参数为10：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 交叉验证</span><br><span class="line">from sklearn.model_selection import cross_val_predict</span><br><span class="line">predicted = cross_val_predict(linreg,X,y,cv=10)</span><br><span class="line">print &quot;MSE:&quot;,metrics.mean_squared_error(y, predicted)</span><br><span class="line">print &quot;RMSE:&quot;,np.sqrt(metrics.mean_squared_error(y, predicted))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MSE: 20.7955974619</span><br><span class="line">RMSE: 4.56021901469</span><br></pre></td></tr></table></figure>
+<p>可以看出，采用交叉验证模型的MSE比第6节的大，主要原因是我们这里是对所有折的样本做测试集对应的预测值的MSE，而第6节仅仅对25%的测试集做了MSE。两者的先决条件并不同。</p>
+<hr>
+<h1 id="9：画图查看结果"><a href="#9：画图查看结果" class="headerlink" title="9：画图查看结果"></a>9：画图查看结果</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 画图查看结果</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line">ax.scatter(y, predicted)</span><br><span class="line">ax.plot([y.min(), y.max()], [y.min(), y.max()], &apos;k--&apos;, lw=4)</span><br><span class="line">ax.set_xlabel(&apos;Measured&apos;)</span><br><span class="line">ax.set_ylabel(&apos;Predicted&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.blog.csdn.net/20171107133222238?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 
       
 
@@ -270,7 +267,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">距离计算</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回归分析</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">sklearn</a>
         		</li>
       		
 		</ul>
@@ -291,7 +292,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/20/机器学习/几种距离计算公式在数据挖掘中的应用场景分析/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/07/机器学习/回归分析之Sklearn实现电力预测/">展开全文 >></a>
         </p>
       
 
@@ -323,7 +324,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/47/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/49/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/47/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/49/">Next &raquo;</a>
     </nav>
   
 
@@ -495,10 +496,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -515,7 +512,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -524,6 +521,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,6 +548,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -556,10 +561,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -624,6 +625,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

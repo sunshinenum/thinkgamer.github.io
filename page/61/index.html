@@ -193,49 +193,41 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux/linux-ifconfig命令配置ip地址" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hadoop/hadoop命令——hdfs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">linux-ifconfig命令配置ip地址</a>
+      <a class="article-title" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">hadoop命令——hdfs</a>
     </h1>
   
 
         
-        <a href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/" class="archive-article-date">
-  	<time datetime="2015-07-08T04:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-08</time>
+        <a href="/2015/07/11/Hadoop/hadoop命令——hdfs/" class="archive-article-date">
+  	<time datetime="2015-07-11T09:11:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Linux下网卡命名规律：eth0，eth1。第一块以太网卡，第二块。<br>lo为环回接口，它的IP地址固定为127.0.0.1，掩码8位。它代表你的机器本身。 </p>
-<p>ifconfig</p>
-<p>是查看网卡的信息 ，如果不加参数查看的是所有的网卡信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123431916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>加上参数eth0的话是查看eth0网卡的信息 </p>
-<p><img src="http://img.blog.csdn.net/20150708123456712?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
-<p>网卡信息的一些解释：<br>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址） </p>
-<p>第二三行：网卡的IP地址、子网、掩码 </p>
-<p>第四行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）<br>MTU:1500（最大传输单元）：1500字节   www.2cto.com  </p>
-<p>下面就是接收、发送数据包情况统计和发送接受数据字节数的统计信息。 </p>
-<p>配置网卡的IP地址 </p>
-<p>ifconfig eth0 192.168.168.64 netmask 255.255.255.0  </p>
-<p>在eth0上配置上192.168.168.64 的IP地址及子网掩码。 </p>
-<p>配置网卡的硬件地址<br>ifconfig eth0 hw ether xx：xx：xx：xx：xx：xx  </p>
-<p>禁用网卡eth0<br>ifconfig eth0 down  </p>
-<p>启用网卡eth0<br>ifconfig eth0 up  </p>
-<p>另外启动和禁用网卡还可以使用ifup | ifdown  eth0</p>
+        <p>hdfs是hadoop大体系下的分布式文件管理系统，是英文Hadoop Distributed File System的简写，其常用命令如下：</p>
+<h1 id="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"><a href="#一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）" class="headerlink" title="一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）"></a>一：fs命令（和Linux终端运行命令一致，也是hdfs最常用命令）</h1><p><img src="http://img.blog.csdn.net/20150715110547708?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<p><img src="http://img.blog.csdn.net/20150715110719331?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="此处输入图片的描述"></p>
+<h1 id="二：其他相关命令"><a href="#二：其他相关命令" class="headerlink" title="二：其他相关命令"></a>二：其他相关命令</h1><p>1、hadoop 归档文件shell： hadoop archive -archiveName file.har -p /gyt/input /gyt/output (file.har为归档后的文件  /gyt/inut/为多个文件所在目录   /gyt/output/是归档后的输出目录)</p>
+<p>2、运行JAR程序包shell：hadoop jar /home/hadoop/hadoop-1.1.2/hadoop-examples-1.1.2.jar wordcount  /user/hadoop/input output（XXX.jar是程序目录，wordcount是程序入口，XXX/input是文件输入源，output是文件输出源）</p>
+<p>4、查看HDFS状态：hadoop dfsadmin -report比如有哪些datanode，每个datanode的情况</p>
+<p>5、离开安全模式：hadoop dfsadmin -safemode leave </p>
+<p>6、进入安全模式： hadoop dfsadmin -safemode enter</p>
 <hr>
 <center>
     <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     <br>
 打开微信扫一扫，关注公众号【数据与算法联盟】
 </center>
+
 
 
 
@@ -251,7 +243,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
         		</li>
       		
 		</ul>
@@ -272,7 +264,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/08/Linux/linux-ifconfig命令配置ip地址/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/07/11/Hadoop/hadoop命令——hdfs/">展开全文 >></a>
         </p>
       
 
@@ -304,7 +296,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/60/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="page-number current">61</span><a class="page-number" href="/page/62/">62</a><a class="page-number" href="/page/63/">63</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/62/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/60/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="page-number current">61</span><a class="page-number" href="/page/62/">62</a><a class="page-number" href="/page/63/">63</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/62/">Next &raquo;</a>
     </nav>
   
 
@@ -476,10 +468,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -496,7 +484,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -505,6 +493,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,6 +520,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -537,10 +533,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,6 +597,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

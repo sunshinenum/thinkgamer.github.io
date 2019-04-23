@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/线性模型之PLA数学公式推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TensorFlow/神经网络中的激活函数介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/">线性模型之PLA数学公式推导</a>
+      <a class="article-title" href="/2019/04/21/TensorFlow/神经网络中的激活函数介绍/">神经网络中的激活函数介绍</a>
     </h1>
   
 
         
-        <a href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/" class="archive-article-date">
-  	<time datetime="2019-04-16T11:13:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-16</time>
+        <a href="/2019/04/21/TensorFlow/神经网络中的激活函数介绍/" class="archive-article-date">
+  	<time datetime="2019-04-21T14:25:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-21</time>
 </a>
         
       </header>
@@ -220,107 +220,99 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>感知机（Perceptron）是一种广泛使用的线性分类器，相当于最简单的人工神经网络，只有一个神经元。其全称是PLA（Perceptron Linear Algorithm），线性感知机算法。</p>
-<p>感知机是对生物神经元的简单数学模型，有与生物神经元相对应的部件，比如权重（突触）、偏置（阈值）及激活函数（细胞体），输出值为 +1 或者 -1。</p>
-<script type="math/tex; mode=display">
-\hat{y} = sgn(w^Tx)</script><p>对于二分类问题，可以使用感知机算法来解决。PLA的原理是逐点解决，首先在超平面上随意取一条分类面，统计分类错误的点，然后随机对某个错误点修正，即变换直线的位置，使该错误点被修正，接着再随机选取另外一个错误点进行修正，分类面不断变化，直到所有点都分类正确了，就得到了最佳分类面。</p>
-<p>利用二维平面进行解释，第一种情况是错误的将正样本（y=1）分类为负样本（y=-1）。此时wx&lt;0，即w与x的夹角大于90度，分类线L的两侧。修正的方法是让夹角变小，修正w值，使二者位于直线同侧。</p>
-<script type="math/tex; mode=display">
-w:=w+x=w+yx</script><p>修正过程如下：<br><img src="https://img-blog.csdnimg.cn/20190415193607475.jpg" alt="修正过程"></p>
-<p>第二种情况就是错误的将负样本（y=-1）分类为正样本（y=1）。此时，wx&gt;0，即w与x的夹角小于90度，分类线L的同一侧。修正的方法是让夹角变大，修正w值，使二者位于分类线同侧。</p>
-<script type="math/tex; mode=display">
-w:=w-x=w+yx</script><p>修正过程如下：<br><img src="https://img-blog.csdnimg.cn/20190415193855372.jpg" alt="修正过程"></p>
-<p>经过上边两种情况分析，PLA每次更新参数w的表达式是一致的，掌握了每次w的优化表达式，那么PLA就能不断地将所有错误的分类样本纠正并分类正确。</p>
-<h1 id="参数学习"><a href="#参数学习" class="headerlink" title="参数学习"></a>参数学习</h1><p>给定N个训练集样本{(x^n, y^n)},n&lt;=N，其中y^n 属于{+1,-1}，感知机试图学习到参数w*，使得对于每个样本(x^n,y^n)<br>有：</p>
-<script type="math/tex; mode=display">
-y^n w^{*T}x^n>0,\forall n\in [1,N]</script><p>感知机算法是一种错误驱动的在线学习算法，先初始化一个权重向量w&lt;-0（通常是全零向量），然后每次分错一个样本（x,y）时，就用这个样本来更新权重。</p>
-<script type="math/tex; mode=display">
-w \leftarrow w + yx</script><p>具体的感知机算法伪代码如下（==算法-1==）：<br><img src="https://img-blog.csdnimg.cn/20190415202606770.png" alt="感知机算法伪代码"></p>
-<p>根据感知器的学习策略，可以反推出感知器的损失函数为：</p>
-<script type="math/tex; mode=display">
-L (w;x,y)=max(0, -yw^Tx)</script><p>采用随机梯度的下降，其每次更新的梯度为：</p>
-<script type="math/tex; mode=display">
-\frac{\partial L (w;x,y) }{ \partial w}=\begin{cases}
-0 & \text{ if } y^Tx>0 \\ 
--yx & \text{ if } y^Tx<0 
-\end{cases}</script><p>下图给出了感知机参数学习的过程，其中红色实心为正例，蓝色空心点为负例。黑色箭头表示权重向量，红色虚线箭头表示权重的更新方向。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190415203526997.png" alt="感知机参数学习的过程"></p>
-<h1 id="感知机的收敛"><a href="#感知机的收敛" class="headerlink" title="感知机的收敛"></a>感知机的收敛</h1><p>Novikoff证明对于两类问题，如果训练集是线性可分的，那么感知器<br>算法可以在有限次迭代后收敛。然而，如果训练集不是线性分隔的，那么这个算法则不能确保会收敛。</p>
-<p>当数据集是两类线性可分时，对于数据集D={(x^n,y^n)}，n属于N，其中x^n为样本的增广特征向量，y^n属于{-1，+1}，那么存在一个正的常数r(r&gt;0)和权重向量w，并且||w<em>||=1，对所有n都满足(w^</em>)(y^n x^n)&gt;r。</p>
-<p>可以证明如下定理（定理-1）。</p>
-<hr>
-<p>给定一个训练集</p>
-<script type="math/tex; mode=display">
-D={(x^n,y^n)},n\in {1,N}</script><p>假设R是训练集中最大的特征向量的模</p>
-<script type="math/tex; mode=display">
-R=\underset{n}{max} \left \| x^n \right \|</script><p>如果训练集D线性可分，感知机学习算法-1的权重更新次数不超过 R^2/ r^2</p>
-<hr>
-<p>证明：<br>感知机算法的权重更新方式为（==公式-1==）：</p>
-<script type="math/tex; mode=display">
-w_k = w_{k-1}+y^kx^k</script><p>其中x^k, y^k表示第k个错误分类的条件。<br>因为初始权重为0，在第K次更新时感知器的权重向量为（==公式-2==）：</p>
-<script type="math/tex; mode=display">
-w_k = =\sum_{k=1}^{K}y^kx^k</script><p>分别计算||w||^2的上下界：</p>
-<p><strong>计算其上界</strong>（公式-2）：</p>
-<script type="math/tex; mode=display">
-\left \| w_k^2 \right \|</script><script type="math/tex; mode=display">
-= \left\| w_{K_1} + y^K x^K \right \|^2</script><script type="math/tex; mode=display">
-= \left \|  w_{K-1} \right \| ^2 + \left \| y^Kx^K \right \| ^2+2y^Kw_{K-1}x^K</script><script type="math/tex; mode=display">
-\leqslant \left \| w_{K-1} \right \|^2 + R^2</script><script type="math/tex; mode=display">
-\leqslant\left \| w_{K-2} \right \|^2+2R^2</script><script type="math/tex; mode=display">
-\leqslant KR^2</script><p><strong>计算其下界</strong>（公式-3）：</p>
-<script type="math/tex; mode=display">
-\left \| w_k^2 \right \|</script><script type="math/tex; mode=display">
-=\left \| w^* \right \|^2 .\left \| w_K \right \|^2</script><script type="math/tex; mode=display">
-\geqslant \left \| w^{*T}w_K \right \| ^2</script><script type="math/tex; mode=display">
-=\left \| w^{*T}\sum_{k=1}^{K}(y^Kx^K) \right \|^2</script><script type="math/tex; mode=display">
-=\left \| \sum_{k=1}^{K}w^{*T}(y^Kx^K) \right \|^2</script><script type="math/tex; mode=display">
-\geq K^2r^2</script><p>==附==：两个向量内积的平方一定小于等于这两个向量的模的乘积。</p>
-<p>由公式-2和公式-3得到（公式-4）</p>
-<script type="math/tex; mode=display">
-K^2r^2 \leq \left \| w_K \right \|^2\leq KR^2</script><p>取最左和最右的两项，进一步得到K^2r^2 &lt;= K^2R^2，然后两边同时除以K，最终得到（公式-5）：</p>
-<script type="math/tex; mode=display">
-K\leq \frac{R^2}{r^2}</script><p>因此在线性可分的情况下，算法-1会在R^2 / r^2步内收敛。</p>
-<p>虽然感知机线性模型在线性可分的数据上可以保证收敛，但其存在以下不足：</p>
+<blockquote>
+<p>人工神经元（Artifical Neuron）简称神经元（Neuron），是构成神经网络的基本单元，其主要是模拟生物神经元的结构和特性，接受一组输入信息并产出输出。</p>
+</blockquote>
+<h1 id="激活函数（Activation-Function）"><a href="#激活函数（Activation-Function）" class="headerlink" title="激活函数（Activation Function）"></a>激活函数（Activation Function）</h1><p>是神经元中非常重要的一部分，为了增强网络的表示能力和学习能力，激活函数需要具备以下几点性质：</p>
 <ul>
-<li>在数据集线性可分时，感知器虽然可以找到一个超平面把两类数据分开， 但并不能保证能其泛化能力。</li>
-<li>感知器对样本顺序比较敏感。每次迭代的顺序不一致时，找到的分割超平 面也往往不一致。</li>
-<li>如果训练集不是线性可分的，就永远不会收敛。</li>
+<li>连续并可导的非线性函数，可导的激活函数可以直接利用数值优化的方法来学习网络参数。</li>
+<li>激活函数及其导函数要尽可能的简单，有利于提高网络计算效率。</li>
+<li>激活函数的导函数的值域要在一个合适的区间内，不能太大也不能太小，否则会影响训练的效率和温度性。</li>
 </ul>
-<h1 id="参数平均感知机"><a href="#参数平均感知机" class="headerlink" title="参数平均感知机"></a>参数平均感知机</h1><p>根据定理3.1，如果训练数据是线性可分的，那么感知器可以找到一个判别 函数来分割不同类的数据。如果间隔 γ 越大，收敛越快。但是感知器并不能保 证找到的判别函数是最优的(比如泛化能力高)，这样可能导致过拟合。</p>
-<p>感知机的学习到的权重向量和训练样本的顺序相关。在迭代次序上排在后 面的错误样本，比前面的错误样本对最终的权重向量影响更大。比如有 1, 000 个 训练样本，在迭代 100 个样本后，感知器已经学习到一个很好的权重向量。在 接下来的 899 个样本上都预测正确，也没有更新权重向量。但是在最后第 1, 000 个样本时预测错误，并更新了权重。这次更新可能反而使得权重向量变差。</p>
-<p>为了改善这种情况，可以使用“参数平均”的策略提高感知ji的鲁棒性，也叫投票感知机。</p>
-<p>投票感知机记录第k次更新参数之后的权重w_k在之后的训练过程中正确分类样本的次数c_k。这样最后的分类器形式为（公式-6）：</p>
+<h2 id="Sigmoid型激活函数"><a href="#Sigmoid型激活函数" class="headerlink" title="Sigmoid型激活函数"></a>Sigmoid型激活函数</h2><p>S型曲线函数，常见的Sigmoid函数有Logistic函数和tanh函数。</p>
+<blockquote>
+<p>知识点：对于函数f(x)，若x趋向于负无穷大，其导数f’(x)趋向于0，则称其为左饱和。若x趋向于正无穷大，其导数f’(x)趋向于0，则称其为右饱和。同时满足左右饱和时，称为两端饱和。</p>
+</blockquote>
+<ul>
+<li>Logistic 函数<script type="math/tex; mode=display">
+\sigma (x) = \frac{1} { 1+ exp(-x)}</script></li>
+<li>tanh函数</li>
+</ul>
 <script type="math/tex; mode=display">
-\hat{y} = sgn(\sum_{k=1}^{K}c_ksgn(w_k^Tx))</script><p>其中sgn(.)为符号函数。</p>
-<p>投票感知机虽然提高了模型的泛化能力，但是需要保存K个权重向量。在实际的操作中会带来额外的开销。因此经常会使用一个简化的版本，即平均感知机。其表达式如下（公式-7）：</p>
+tanh(x) = \frac{ exp(x)-exp(-x) }{ exp(x) + exp(-x) }</script><p>tanh函数可以看作是放大并平移的Logistic函数，其值域是(-1，1)。</p>
 <script type="math/tex; mode=display">
-\hat{y} = sgn(\sum_{k=1}^{K}c_k (w_k^Tx))
-=sgn( (\sum_{k=1}^{K}c_k w_k )^Tx )
-=sgn( \bar{w}^Tx)</script><p>其中 </p>
+tanh(x) = 2 \sigma(2x) - 1</script><p>tanh函数的输出是零中心化的（Zero-Centered），而Logistic函数的输出值恒大于0。非零中心化的输出会使得最后一层的神经元的输入发生位置偏移（Bias Shift），并进一步使得梯度下降的收敛速度变慢。</p>
+<p><img src="https://img-blog.csdnimg.cn/2019042122140374.jpg" alt="image"></p>
+<h2 id="修正线性单元"><a href="#修正线性单元" class="headerlink" title="修正线性单元"></a>修正线性单元</h2><p>Rectified Linear Unit（ReLU）也叫rectifier函数，是目前深层神经网络中经常使用的激活函数。ReLU实际上是一个斜坡函数，定义为：</p>
 <script type="math/tex; mode=display">
-\bar{w}</script><p>为平均的权重向量。</p>
-<p>假设w_{t,n}是在第t轮更新到第n个样本时的权重向量值，平均的权重向量也可以表示为（公式-8）：</p>
+ReLU(x) = \begin{cases}
+x & \text{ if } x \geq 0 \\ 
+0 & \text{ if } x < 0
+\end{cases}
+= max(0,x)</script><hr>
+<p>ReLU的优缺点：</p>
+<ul>
+<li>优点<blockquote>
+<p>采用ReLU的神经元只需要进行加，乘，和，比较的操作，计算上更加高效。Sigmoid型激活函数会导致一个非稀疏的神经网络，而ReLU却具有很好的稀疏性，大约50%的神经元会处于激活状态。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>在优化方面，由于Sigmoid型函数的两端饱和，ReLU函数为左饱和函数，且在x&gt;0时导数为1，在一定程度上缓解了神经网络的梯度消失问题，加速梯度下降的收敛速度。</p>
+</blockquote>
+<ul>
+<li>缺点<blockquote>
+<p>ReLU的输出是非零中心化的，给后一层的神经网络引入偏置偏移，会影响梯度下降的效率。此外ReLU神经元在训练时比较容易死亡。在训练时，如果参数在一次不恰当的更新后，第一个隐藏层中的某个ReLU神经元在所有的训练数据上都不能被激活，那么这个神经元自身参数的梯度永远都会是0，在以后的训练过程中永远不能被激活。这种现象称为死亡ReLU问题（Dying ReLU Problem），并且也有kennel会发生在其他隐藏层。</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<p>在实际使用中，为了避免上述情况，有集中ReLU的变种也会被广泛使用。</p>
+<h3 id="带泄漏的ReLU"><a href="#带泄漏的ReLU" class="headerlink" title="带泄漏的ReLU"></a>带泄漏的ReLU</h3><p>带泄漏的ReLU在输入x&lt;0时，保持一个很小的梯度 lambda。这样当神经元非激活时也能又一个非零的梯度可以更新参数，避免永远不能被激活。带泄漏的ReLU的定义如下：</p>
 <script type="math/tex; mode=display">
-\bar{w} = \frac{\sum_{t=1}^{T} \sum_{n=1}^{N}w_{t,n}}{nT}</script><p>这个方法实现简单，只需要在算法-1中增加一个平均向量，并且在处理每一个样本后，进行更新（公式-9）：</p>
+LeakyReLU(x) = \begin{cases}
+x & \text{ if } x > 0 \\ 
+\gamma x & \text{ if } x  \leq 0
+\end{cases}
+= max(0,x) + \gamma min(0,x)</script><p>其中 gamma是一个很小的常数，比如0.01。当gamma &lt; 1时，带泄漏的ReLU也可以写为：</p>
 <script type="math/tex; mode=display">
-\bar{w} = \bar{w}+ w_{t,n}</script><p>但这个方法需要在处理每一个样本时都要更新平均权重，因为</p>
+LeakyReLU(x) = max(x, \gamma x)</script><p>相当于是一个比较简单的maxout单元。</p>
+<h3 id="带参数的ReLU"><a href="#带参数的ReLU" class="headerlink" title="带参数的ReLU"></a>带参数的ReLU</h3><p>带参数的ReLU引入一个可学习的参数，不同神经元可以有不同的参数，对于第i个神经元，其PReLU的定义为：</p>
 <script type="math/tex; mode=display">
- \bar{w} ,w_{t,n}</script><p>都是稠密向量，因此更新操作比较费时。为了提高迭代速度，有很多改进的办法，让这个更新只需要在错误预测时才进行。下图给了一个改进的平均感知机算法的训练过程（算法-2）。<br><img src="https://img-blog.csdnimg.cn/20190416184043264.png" alt="改进的平均感知机算法的训练过程"></p>
-<h1 id="扩展到多分类"><a href="#扩展到多分类" class="headerlink" title="扩展到多分类"></a>扩展到多分类</h1><p>原始的感知机是二分类模型，但也很容易的扩展到多分类，甚至是更一般的结构化学习问题。</p>
-<p>之前介绍的线性分类模型中，分类函数都是在输入x的特征空间上。为了使得感知机可以处理更加复杂的输出，我们引入一个构建输入输出联合空间上的特征函数，将样本(x,y)对映射到一个特征向量空间。</p>
-<p>在联合特征空间中，我们可以建立一个广义的感知机模型（公式-10）：</p>
+PReLU(x) = \begin{cases}
+x & \text{ if } x > 0 \\ 
+\gamma _ix & \text{ if } x  \leq 0
+\end{cases}
+= max(0,x) + \gamma_imin(0,x)</script><p>其中γi为x≤0时函数的斜率。因此，PReLU是非饱和函数。如果γi =0，那 么 PReLU 就退化为 ReLU。如果 γi 为一个很小的常数，则 PReLU 可以看作带 泄露的 ReLU。PReLU 可以允许不同神经元具有不同的参数，也可以一组神经 元共享一个参数。</p>
+<hr>
+<h3 id="ELU"><a href="#ELU" class="headerlink" title="ELU"></a>ELU</h3><p>指数线性单元（Exponential Linear Unit）是一个近似的零中心化的非线性函数，其定义为：</p>
 <script type="math/tex; mode=display">
-\hat{y} = \underset{y\in Gen(x)}{ arg max} w^T \phi(x,y)</script><p>其中w为权重向量，Gen(x)表示输入x所有的输出目标集合。当处理C类分类问题时，Gen(x)={1,….,C}</p>
-<p>在C分类中，一种常用的特征函数（公式-11）</p>
+ELU(x) = \begin{cases}
+x & \text{ if } x > 0 \\ 
+\gamma (exp(x)-1) & \text{ if } x  \leq 0
+\end{cases}
+= max(0,x) + min(0,\gamma(exp(x)-1))</script><p>其中 γ ≥ 0是一个超参数，决定x ≤ 0时的饱和曲线，并调整输出均值在0附<br>近。</p>
+<hr>
+<h4 id="Softplus函数"><a href="#Softplus函数" class="headerlink" title="Softplus函数"></a>Softplus函数</h4><p>Softplus函数可以看作是rectifier函数的平滑版本，其定义为：</p>
 <script type="math/tex; mode=display">
-\phi(x,y)</script><p>是y和x的内积，其中y为类别的one-hot向量表示（公式-12）。</p>
+Softplus(x) = log(1 + exp(x))</script><p>Softplus函数及其导数刚好是Logistic函数。Softplus函数虽然也具有单侧抑制，宽兴奋边界的特征，却没有稀疏激活性。</p>
+<p>下图为几种激活函数的示例：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190421213409642.jpg" alt="激活函数对比"></p>
+<h2 id="Swish函数"><a href="#Swish函数" class="headerlink" title="Swish函数"></a>Swish函数</h2><p>Swish函数是一种自门控（self-Gated）激活函数，其定义为：</p>
 <script type="math/tex; mode=display">
- \phi(x,y) = vec(yx^T)\in R^{(d\times C)}</script><p>其中vec是向量化算子。</p>
-<p>给定样本(x,y)，若</p>
+swish(x) = x \sigma (\beta x)</script><p>其中 sigma(.)为logistic函数，beta为可学习的参数或一个固定超参数。 sigma(.) 属于 (0,1)可以看做是一种软性的门控机构。当sigma(beta x)接近于1时，门处于“开”状态，激活函数的输出近似于x本身；当sigma(beta x)接近于0时，门的状态为“关”，激活函数的输出近似于0。</p>
+<p>下图为Swish函数的示例：<br><img src="https://img-blog.csdnimg.cn/20190421214743755.jpg" alt="image"></p>
+<p>当 beta=0时，Swish函数变成线性函数 x/2。 当 beta=1时，Swish 函数在 x&gt;0时近似线性，在x &lt; 0时近似饱和，同时具有一定的非单调性。当beta趋向于正无穷大时， sigma(beta x)趋向于离散的0-1函数，Switch函数近似为ReLU函数。</p>
+<p>因此Swish函数可以看作时线性函数和ReLU函数之间的非线性插值函数，其程度由参数beta控制。</p>
+<hr>
+<h3 id="Maxout单元"><a href="#Maxout单元" class="headerlink" title="Maxout单元"></a>Maxout单元</h3><p>Maxout单元也是一种分段线性函数。Sigmoid型函数， ReLU等激活函数的输入是神经元的净输入z，是一个标量。而maxout单元的输入是上一层神经元的全部原始输入，是一个向量x=[x1;x2;…;x_d]。</p>
+<p>每个maxout单元有K个权重向量w_k 属于 R^d 和偏置 b_k（1 &lt;= k &lt;= K）。对于输入x，可以得到K个净输入z_k，1 &lt;= k &lt;=K。</p>
 <script type="math/tex; mode=display">
-x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https://img-blog.csdnimg.cn/20190416190108143.png" alt="y为第c维为1的one-hot向量"></p>
-<p>广义感知器算法的训练过程如算法-3所示：</p>
-<p><img src="https://img-blog.csdnimg.cn/20190416190225604.png" alt="广义感知器算法的训练过程"></p>
+z_k = w^T_kx + b_k</script><p>其中</p>
+<script type="math/tex; mode=display">
+w_k = [w_{k,1},w_{k,2},...,w_{k,d}]^T</script><p>为第k个权重向量。<br>Maxout单元的非线性函数定义为：</p>
+<script type="math/tex; mode=display">
+maxout(x) = \underset{k\in [1,K]}{max} (z_k)</script><p>Maxout单元不单是净输入到输出之间的非线性映射，而是整体学习输入到输出之间的非线性映射关系。Maxout激活函数可以看作任意凸函数的分段线性近似，并且在有限的点上是不可微的。</p>
 
       
 
@@ -334,19 +326,15 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">线性模型</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">PLA</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">感知机</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">神经网络</a>
         		</li>
       		
 		</ul>
@@ -367,7 +355,7 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/16/机器学习/线性模型之PLA数学公式推导/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/21/TensorFlow/神经网络中的激活函数介绍/">展开全文 >></a>
         </p>
       
 
@@ -399,7 +387,7 @@ x \in R^d</script><p>y为第c维为1的one-hot向量，则：<br><img src="https
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -571,10 +559,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -591,7 +575,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -600,6 +584,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,6 +611,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -632,10 +624,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -700,6 +688,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

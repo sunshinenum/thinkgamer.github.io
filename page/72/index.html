@@ -193,56 +193,50 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-随手记/十八岁，半夏锦年" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Python/Python中try-except-finally的理解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2012/06/10/随手记/十八岁，半夏锦年/">十八岁，半夏锦年</a>
+      <a class="article-title" href="/2015/01/05/Python/Python中try-except-finally的理解/">Python中try...except...finally的理解</a>
     </h1>
   
 
         
-        <a href="/2012/06/10/随手记/十八岁，半夏锦年/" class="archive-article-date">
-  	<time datetime="2012-06-10T06:25:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2012-06-10</time>
+        <a href="/2015/01/05/Python/Python中try-except-finally的理解/" class="archive-article-date">
+  	<time datetime="2015-01-05T15:24:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-01-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <center>
-散落一地，流离 
-<br>
-回忆不起，青石板长巷的雨季
-<br>
-独自撑伞，没有你陪伴的故地 
-<br>
-簌簌樱花，零落成思绪 
-<br>
-<br>
-一场雨，让我离开这里 
-<br>
-出其不意，燕啄泥 
-<br>
-诉说那十八岁半夏锦年 
-<br>
-未完的结局 
-<br>
-<br>
-风萧萧，雨寒寒 
-<br>
-断了谁的琴弦，无语问寒蝉 
-<br>
-倚窗边，空白回忆里 艰难婉转… 
+        <p>首先我们打开一个不存在的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fp = open(&quot;null.txt&quot;,&quot;r&quot;)</span><br></pre></td></tr></table></figure>
+<p>然后提示报错如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IOErro Traceback (most recent call last)  </span><br><span class="line">&lt;ipython-input-3-f70973547c7e&gt; in &lt;module&gt;()  </span><br><span class="line">----&gt; 1 fp = open(&quot;null.txt&quot;,&quot;r&quot;)  </span><br><span class="line">  </span><br><span class="line">IOError: [Errno 2] No such file or directory: &apos;null.txt&apos;</span><br></pre></td></tr></table></figure>
+<p>接着我们使用try…except…来执行这条语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [4]: try:  </span><br><span class="line">   ...:     fp = open(&quot;null.txt&quot;,&quot;r&quot;)  </span><br><span class="line">   ...: except:  </span><br><span class="line">   ...:     print &quot;open error&quot;  </span><br><span class="line">   ...:       </span><br><span class="line">open error</span><br></pre></td></tr></table></figure>
+<p>接着我们再在后面加一条finally语句，所谓的filally就是最后要执行的，它不管你前边是否发送错误<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">In [4]: try:  </span><br><span class="line">   ...:     fp =open(&apos;null.txt&apos;,&apos;r&apos;)  </span><br><span class="line">   ...: except:  </span><br><span class="line">   ...:     print &apos;opoen error&apos;  </span><br><span class="line">   ...: finally:  </span><br><span class="line">   ...:     print &apos;end&apos;  </span><br><span class="line">   ...:       </span><br><span class="line">opoen error  </span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>接着我们使用except打印出错误类型，然后观察错误的type</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [5]: try:  </span><br><span class="line">   ...:     fp = open(&apos;null.txt&apos;,&apos;r&apos;)  </span><br><span class="line">   ...: except Exception,e:  </span><br><span class="line">   ...:     print e  </span><br><span class="line">   ...:     print type(e)  </span><br><span class="line">   ...:       </span><br><span class="line">[Errno 2] No such file or directory: &apos;null.txt&apos;  </span><br><span class="line">&lt;type &apos;exceptions.IOError&apos;&gt;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到except把错误捕捉到赋值给e，然后将其打印出，可以看到为IOError，所以在这里我们可以修改上边为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [9]: try:  </span><br><span class="line">   ...:     fp = open(&apos;null.txt&apos;, &apos;r&apos;)  </span><br><span class="line">   ...: except IOError,e:  </span><br><span class="line">   ...:     print &quot;ioerror&quot;  </span><br><span class="line">   ...:       </span><br><span class="line">ioerror</span><br></pre></td></tr></table></figure></p>
+<p>当然这里如果不是IOError的话，上边except语句是捕捉不到的，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">In [10]: try:  </span><br><span class="line">   ....:     a = 10/0  </span><br><span class="line">   ....: except IOError,e:  </span><br><span class="line">   ....:     print &quot;ioerror&quot;  </span><br><span class="line">   ....:       </span><br><span class="line">---------------------------------------------------------------------------  </span><br><span class="line">ZeroDivisionError                         Traceback (most recent call last)  </span><br><span class="line">&lt;ipython-input-10-e17eff88239d&gt; in &lt;module&gt;()  </span><br><span class="line">      1 try:  </span><br><span class="line">----&gt; 2     a = 10/0  </span><br><span class="line">      3 except IOError,e:  </span><br><span class="line">      4     print &quot;ioerror&quot;  </span><br><span class="line">      5   </span><br><span class="line">  </span><br><span class="line">ZeroDivisionError: integer division or modulo by zero</span><br></pre></td></tr></table></figure>
+<p>这时我们需要另外的错误类型进行捕获，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [11]: try:  </span><br><span class="line">   ....:     a = 10/0  </span><br><span class="line">   ....: except IOError,e:  </span><br><span class="line">   ....:     print &quot;IOError&quot;  </span><br><span class="line">   ....: except ZeroDivisionError,e:  </span><br><span class="line">   ....:     print &quot;Zero Error&quot;  </span><br><span class="line">   ....:       </span><br><span class="line">Zero Error</span><br></pre></td></tr></table></figure></p>
+<p>可以看到第一个except并没有捕捉到错误，所以传给下一个except，当然如果所有的except都没有捕获到的话，程序就会抛出异常<br>在这里我们不得不注意的是，python的错误类型其实都是class，所有的错误类型都继承自BaseException，所以在使用except时需要注意的是，它不但捕获该类型的错误，还把其子类也“一网打尽”。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [14]: try:  </span><br><span class="line">   ....:     a = 10 /0  </span><br><span class="line">   ....: except StandardError,e:  </span><br><span class="line">   ....:     print &apos;standardError&apos;  </span><br><span class="line">   ....: except ZeroDivisionError,e:  </span><br><span class="line">   ....:     print &apos;zero error&apos;  </span><br><span class="line">   ....:       </span><br><span class="line">standardError</span><br></pre></td></tr></table></figure></p>
+<p>第二个except永远也捕获不到ValueError，因为ZeroDivisionError是StandardError的子类，如果有，也被第一个except给捕获了。<br>使用try…except…finally的另外一个好处是，可以跨越多层调用，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">In [15]: def foo(m):  </span><br><span class="line">   ....:     return 10/int(m)  </span><br><span class="line">   ....:   </span><br><span class="line">  </span><br><span class="line">In [16]: def goo():  </span><br><span class="line">   ....:     a = &quot;0&quot;  </span><br><span class="line">   ....:     foo(a)  </span><br><span class="line">   ....:       </span><br><span class="line">  </span><br><span class="line">In [17]: def main():  </span><br><span class="line">   ....:     goo()  </span><br><span class="line">   ....:       </span><br><span class="line">  </span><br><span class="line">In [18]: try:  </span><br><span class="line">   ....:     main()  </span><br><span class="line">   ....: except Exception,e:  </span><br><span class="line">   ....:     print e  </span><br><span class="line">   ....:       </span><br><span class="line">integer division or modulo by zero</span><br></pre></td></tr></table></figure>
+<p>在foo()函数中抛出的错误，然而在goo和main函数中都没有进行捕捉，在执行main函数时进行捕获，也可以捕获到</p>
+<p>除了try…except…finally之外还有python的logging模块，也可以进行错误调试，当然我们也可以使用raise抛出异常</p>
+<hr>
+<center>
+    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    <br>
+打开微信扫一扫，关注公众号【数据与算法联盟】
 </center>
-
-<blockquote>
-<p>送走了我的青春，迎来我未知的迷惘，将来我会身在何方，我将永世不忘。 再见！</p>
-</blockquote>
-
       
 
       
@@ -255,7 +249,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">随手记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
         		</li>
       		
 		</ul>
@@ -267,7 +261,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/随手记//" class="article-tag-list-link color4">随手记</a>
+        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
         		</li>
       		
 		</ul>
@@ -276,7 +270,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2012/06/10/随手记/十八岁，半夏锦年/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/01/05/Python/Python中try-except-finally的理解/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +302,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/71/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="page-number" href="/page/71/">71</a><span class="page-number current">72</span>
+      <a class="extend prev" rel="prev" href="/page/71/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/70/">70</a><a class="page-number" href="/page/71/">71</a><span class="page-number current">72</span><a class="page-number" href="/page/73/">73</a><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/73/">Next &raquo;</a>
     </nav>
   
 
@@ -480,10 +474,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -500,7 +490,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,6 +499,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,6 +526,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -541,10 +539,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,6 +603,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

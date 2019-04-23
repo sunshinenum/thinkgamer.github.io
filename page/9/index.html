@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/基于神经网络实现Mnist数据集的多分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/机器学习算法分类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/">基于神经网络实现Mnist数据集的多分类</a>
+      <a class="article-title" href="/2019/03/26/机器学习/机器学习算法分类/">机器学习算法分类</a>
     </h1>
   
 
         
-        <a href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/" class="archive-article-date">
-  	<time datetime="2019-03-09T13:19:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-09</time>
+        <a href="/2019/03/26/机器学习/机器学习算法分类/" class="archive-article-date">
+  	<time datetime="2019-03-26T09:43:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-26</time>
 </a>
         
       </header>
@@ -221,19 +221,30 @@
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
 <blockquote>
-<p>在之前的文章中介绍了基于Logistic Regression实现Mnist数据集的多分类，本篇文章主要介绍基于TensorFlow实现Mnist数据集的多分类。</p>
+<p>机器学习算法可以按照不同的标准进行分类。比如按函数f(X)的不同，机器学习算法可以分为线性模型和非线性模型；按照学习准则的不同，机器学习算法也可以分为统计方法和非统计方法。</p>
+<p>但一般而言，会按照训练样本提供的信息以及反馈方式不同，将机器学习算法分为以下几类，下面将一一细说。</p>
 </blockquote>
-<p>一个典型的神经网络训练图如下所示：<br><img src="https://img-blog.csdnimg.cn/20190308005540655.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p>只不过在Mnist数据集是十分类的，起输出由y1和y2换成y1，….，y10。本文实现的神经网络如下所示：</p>
-<p>这是使用的是两层的神经网络，第一层神经元个数是256，第二层为128，最终输出的是10个类别。对应的神经网络结果如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190309205947261.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70"></p>
-<p>接着我们创建一个MutilClass类，并初始化相关参数用来实现基于神经网络的多分类函数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">from tensorflow.examples.tutorials.mnist import input_data</span><br><span class="line"> </span><br><span class="line">class MutilClass:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        # 加载数据集</span><br><span class="line">        self.Mnsit = input_data.read_data_sets(&quot;./data/&quot;, one_hot=True)</span><br><span class="line"> </span><br><span class="line">        # 设置神经网络层参数</span><br><span class="line">        self.n_hidden_1 = 256</span><br><span class="line">        self.n_hidden_2 = 128</span><br><span class="line">        self.n_input = 784</span><br><span class="line">        self.n_classes = 10</span><br><span class="line"> </span><br><span class="line">        self.x = tf.placeholder(dtype=float, shape=[None, self.n_input], name=&quot;x&quot;)</span><br><span class="line">        self.y = tf.placeholder(dtype=float, shape=[None, self.n_classes], name=&quot;y&quot;)</span><br><span class="line">        # random_normal 高斯分布初始化权重</span><br><span class="line">        self.weights = &#123;</span><br><span class="line">            &quot;w1&quot;: tf.Variable(tf.random_normal([self.n_input, self.n_hidden_1],stddev = 0.1)),</span><br><span class="line">            &quot;w2&quot;: tf.Variable(tf.random_normal([self.n_hidden_1, self.n_hidden_2], stddev = 0.1)),</span><br><span class="line">            &quot;out&quot;: tf.Variable(tf.random_normal([self.n_hidden_2, self.n_classes], stddev = 0.1))</span><br><span class="line">        &#125;</span><br><span class="line">        self.bias = &#123;</span><br><span class="line">            &quot;b1&quot;: tf.Variable(tf.random_normal([ self.n_hidden_1 ])),</span><br><span class="line">            &quot;b2&quot;: tf.Variable(tf.random_normal([ self.n_hidden_2 ])),</span><br><span class="line">            &quot;out&quot;: tf.Variable(tf.random_normal([ self.n_classes ]))</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        print(&quot;参数初始化完成！&quot;)</span><br></pre></td></tr></table></figure>
-<p>神经网络首次循环，是根据初始化的参数和偏置，向前传播，经过两层隐层，最终的到一个对应各个类别的概率，然后再根据反向传播，最小化损失函数求解参数，所以这里创建一个前向传播和反向传播的函数，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 定义一个MLP，前向感知器</span><br><span class="line">def _multilayer_perceptron(self,_X, _weights, _bias):</span><br><span class="line">    layer_1 = tf.nn.sigmoid(tf.add ( tf.matmul(_X, _weights[&quot;w1&quot;]), _bias[&quot;b1&quot;] ) )</span><br><span class="line">    layer_2 = tf.nn.sigmoid(tf.add ( tf.matmul(layer_1, _weights[&quot;w2&quot;]), _bias[&quot;b2&quot;] ) )</span><br><span class="line">    return (tf.matmul( layer_2 ,_weights[&quot;out&quot;] ) + _bias[&quot;out&quot;])</span><br><span class="line"> </span><br><span class="line"># 定义反向传播</span><br><span class="line">def _back_propagation(self):</span><br><span class="line">    pred = self._multilayer_perceptron(self.x, self.weights, self.bias)</span><br><span class="line">    # logits 未归一化的概率</span><br><span class="line">    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=self.y) )</span><br><span class="line">    optimizer = tf.train.GradientDescentOptimizer( learning_rate= 0.001).minimize(cost)</span><br><span class="line">    corr = tf.equal(tf.argmax(pred, 1), tf.argmax(self.y, 1) )</span><br><span class="line">    accr =tf.reduce_mean(tf.cast(corr, dtype=float))</span><br><span class="line"> </span><br><span class="line">    init = tf.global_variables_initializer()</span><br><span class="line">    return init, optimizer,cost, accr</span><br></pre></td></tr></table></figure></p>
-<p>接着就是训练网络了，指定的迭代次数为：100，batch_size：100，其对应的函数未：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 训练模型</span><br><span class="line">def _train_model(self, _init, _optimizer, _cost, _accr):</span><br><span class="line">    epochs = 100</span><br><span class="line">    batch_size = 100</span><br><span class="line">    display_steps = 1</span><br><span class="line">    sess = tf.Session()</span><br><span class="line">    sess.run(_init)</span><br><span class="line"> </span><br><span class="line">    for epoch in range(epochs):</span><br><span class="line">        avg_cost = 0</span><br><span class="line">        total_batch = int (self.Mnsit.train.num_examples / batch_size)</span><br><span class="line">        for i in range(total_batch):</span><br><span class="line">            batch_xs, batch_ys = self.Mnsit.train.next_batch(batch_size)</span><br><span class="line">            feeds = &#123;self.x: batch_xs, self.y: batch_ys&#125;</span><br><span class="line">            sess.run(_optimizer, feed_dict=feeds)</span><br><span class="line">            avg_cost += sess.run(_cost, feed_dict=feeds)</span><br><span class="line">        avg_cost = avg_cost / total_batch</span><br><span class="line"> </span><br><span class="line">        if (epoch +1) % display_steps ==0:</span><br><span class="line">            print(&quot;Epoch: &#123;&#125; / &#123;&#125;, cost: &#123;&#125;&quot;.format(epoch, epochs, avg_cost))</span><br><span class="line">            feeds = &#123;self.x: batch_xs, self.y: batch_ys&#125;</span><br><span class="line">            train_acc = sess.run(_accr, feed_dict=feeds)</span><br><span class="line">            print(&quot;Train Accuracy: &#123;&#125;&quot;.format(train_acc))</span><br><span class="line"> </span><br><span class="line">            feeds = &#123;self.x : self.Mnsit.test.images, self.y: self.Mnsit.test.labels&#125;</span><br><span class="line">            test_acc = sess.run(_accr, feed_dict= feeds)</span><br><span class="line">            print(&quot;Test Accuracy: &#123;&#125;&quot;.format(test_acc))</span><br><span class="line">            print(&quot;-&quot; * 50)</span><br></pre></td></tr></table></figure>
-<p>创建主函数，进行迭代训练<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    network = MutilClass()</span><br><span class="line">    init, optimizer, cost, accr = network._back_propagation()</span><br><span class="line">    network._train_model(init, optimizer,cost, accr)</span><br></pre></td></tr></table></figure></p>
-<p>最后的迭代结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Epoch: 0 / 100, cost: 2.4407591546665537</span><br><span class="line">Train Accuracy: 0.12999999523162842</span><br><span class="line">Test Accuracy: 0.12960000336170197</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 1 / 100, cost: 2.290777679356662</span><br><span class="line">Train Accuracy: 0.12999999523162842</span><br><span class="line">Test Accuracy: 0.1469999998807907</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 2 / 100, cost: 2.2774649468335237</span><br><span class="line">Train Accuracy: 0.17000000178813934</span><br><span class="line">Test Accuracy: 0.21799999475479126</span><br><span class="line">--------------------------------------------------</span><br><span class="line"> </span><br><span class="line">.......</span><br><span class="line"> </span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 98 / 100, cost: 0.7186844098567963</span><br><span class="line">Train Accuracy: 0.8299999833106995</span><br><span class="line">Test Accuracy: 0.8371999859809875</span><br><span class="line">--------------------------------------------------</span><br><span class="line">Epoch: 99 / 100, cost: 0.7124480505423112</span><br><span class="line">Train Accuracy: 0.8100000023841858</span><br><span class="line">Test Accuracy: 0.8377000093460083</span><br><span class="line">--------------------------------------------------</span><br></pre></td></tr></table></figure></p>
-<p>从结果中可以看出，cost是一直在减少，训练集和测试集评估模型的准确率也在一直提高。当然我们也可以通过调节epoch，batch_size来重新训练模型。</p>
+<ul>
+<li>监督学习</li>
+<li>无监督学习</li>
+<li>强化学习</li>
+</ul>
+<h1 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h1><p>如果机器学习的目标是通过建模样本的特征x和标签y之间的关系：</p>
+<script type="math/tex; mode=display">
+y=f(x,\theta )</script><p>或</p>
+<script type="math/tex; mode=display">
+p(y|x,\theta)</script><p>并且训练集中的每个样本都有标签，那么这类学习称之为监督学习（Supervised Learning）。根据标签类型的不同，监督学习又可以分为回归和分类两种。</p>
+<h2 id="回归（Regression）"><a href="#回归（Regression）" class="headerlink" title="回归（Regression）"></a>回归（Regression）</h2><p>回归问题中的标签y是连续值（实数或者连续整数）</p>
+<script type="math/tex; mode=display">
+y=f(x,\theta )</script><p>的输出也是连续值。</p>
+<h2 id="分类（Classification）"><a href="#分类（Classification）" class="headerlink" title="分类（Classification）"></a>分类（Classification）</h2><p>分类问题中的标签y是离散的类别，在分类问题中，学习到的模型也成为分类器（Classifier）。分类问题根据其类别的数量又可以分为二分类（Binary Clssification）和多分类（Mutil-class Classification）。</p>
+<h2 id="机构化学习（Structured-Learning）"><a href="#机构化学习（Structured-Learning）" class="headerlink" title="机构化学习（Structured Learning）"></a>机构化学习（Structured Learning）</h2><p>结构化学习的输出对象是结构化的对象，比如序列、树、图等，由于结构化学习的输出空间比较大，因此我们一般定义一个联合特征空间，将x,y映射为该空间中的联合特征向量（x,y）,预测模型可以写为：</p>
+<script type="math/tex; mode=display">
+\hat{y}=\underset{y \in Gen(x)}{arg max f(\phi (x,y),\theta )}</script><p>其中gen(x)表示x所有可能的输出目标集合。计算arg max的过程也称为解码（decoding）过程，一般通过动态规划的方法来计算。</p>
+<h1 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h1><p>无监督学习（Unsupervised Learning）是指从不包含目标标签的训练样本中自动学习到一些有价值的信息。典型的无监督学习问题有聚类、密度估计、特征学习、降维等。</p>
+<h1 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h1><p>强化学习（Reinforcement Learning）是一类通过交互来学习的机器学习算法。在强化学习中，智能体根据环境的状态作出一个动作，并得到即时或延时的奖励。智能体在和环境的交互中不断学习并调整策略，以取得最大化的期望总回报。</p>
+<p>下表给出了三种机器学习类型</p>
+<p><img src="https://img-blog.csdnimg.cn/20190326174240856.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly90aGlua2dhbWVyLmJsb2cuY3Nkbi5uZXQ=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>监督学习需要每个样本都有标签，而无监督学习则不需要标签。一般而言，监督学习通常大量的有标签数据集，这些数据集是一般都需要由人工进行标注，成本很高。因此，也出现了很多弱监督学习（Weak Supervised Learning）和半监督学习（Semi-Supervised Learning）的方法，希望从大规模的无标注数据中充分挖掘有用的信息，降低对标注样本数量的要求。强化学习和监督学习的不同在于强化学习不需要显式地以“输入/输出对”的方式给出训练样本，是一种在线的学习机制。</p>
 
       
 
@@ -247,15 +258,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -276,7 +283,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/09/TensorFlow/基于神经网络实现Mnist数据集的多分类/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/03/26/机器学习/机器学习算法分类/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +315,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 
@@ -480,10 +487,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -500,7 +503,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,6 +512,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,6 +539,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -541,10 +552,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,6 +616,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

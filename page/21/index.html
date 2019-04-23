@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-机器学习/多分类逻辑回归（Multinomial Logistic Regression）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-NLP/基于TF-IDF算法的短标题关键词提取" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/">多分类逻辑回归（Multinomial Logistic Regression）</a>
+      <a class="article-title" href="/2019/01/03/NLP/基于TF-IDF算法的短标题关键词提取/">基于TF-IDF算法的短标题关键词提取</a>
     </h1>
   
 
         
-        <a href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/" class="archive-article-date">
-  	<time datetime="2018-12-21T07:53:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-21</time>
+        <a href="/2019/01/03/NLP/基于TF-IDF算法的短标题关键词提取/" class="archive-article-date">
+  	<time datetime="2019-01-02T19:27:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-03</time>
 </a>
         
       </header>
@@ -220,25 +220,8 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>分类从结果的数量上可以简单的划分为：</p>
-<ul>
-<li>二分类（Binary Classification）</li>
-<li>多分类（Multinomial  Classification）。</li>
-</ul>
-<p>其中二分类是最常见且使用最多的分类场景，解决二分类的算法有很多，比如：</p>
-<ul>
-<li>基本的KNN、贝叶斯、SVM</li>
-<li>Online Ranking中用来做二分类的包括FM、FFM、GBDT、LR、XGBoost等</li>
-</ul>
-<p>多分类中比如：</p>
-<ul>
-<li>改进版的KNN、改进版的贝叶斯、改进版的SVM等</li>
-<li>多类别的逻辑回归<br>啰嗦了这么多，其实就是为了说这个多分类的逻辑回归。</li>
-</ul>
-<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在统计学里，多类别逻辑回归是一个将逻辑回归一般化成多类别问题得到的分类方法。用更加专业的话来说，它就是一个用来预测一个具有类别分布的因变量不同可能结果的概率的模型。 </p>
-<p>另外，多类别逻辑回归也有很多其它的名字，包括polytomous LR，multiclass LR，softmax regression，multinomial logit，maximum entropy classifier，conditional maximum entropy model。 </p>
-<p>在多类别逻辑回归中，因变量是根据一系列自变量（就是我们所说的特征、观测变量）来预测得到的。具体来说，就是通过将自变量和相应参数进行线性组合之后，使用某种概率模型来计算预测因变量中得到某个结果的概率，而自变量对应的参数是通过训练数据计算得到的，有时我们将这些参数成为回归系数。</p>
-<h2 id="模型分析"><a href="#模型分析" class="headerlink" title="模型分析"></a>模型分析</h2><p>原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a> </p>
+<h1 id="TF-IDF算法介绍"><a href="#TF-IDF算法介绍" class="headerlink" title="TF-IDF算法介绍"></a>TF-IDF算法介绍</h1><p>TF-IDF（Term Frequency–InverseDocument Frequency）是一种用于资讯检索与文本挖掘的常用加权技术。TF-IDF的主要思想是：如果某个词或短语在一篇文章中出现的频率TF高，并且在其他文章中很少出现，则认为此词或者短语具有很好的类别区分能力，适合用来分类。</p>
+<p>完整内容请阅读：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85690389" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85690389</a> </p>
 
       
 
@@ -252,19 +235,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多分类</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">TF_IDF</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逻辑回归</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">短标题</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Logistic Regression</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">关键词提取</a>
         		</li>
       		
 		</ul>
@@ -285,7 +268,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/12/21/机器学习/多分类逻辑回归（Multinomial Logistic Regression）/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/03/NLP/基于TF-IDF算法的短标题关键词提取/">展开全文 >></a>
         </p>
       
 
@@ -317,7 +300,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
     </nav>
   
 
@@ -489,10 +472,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -509,7 +488,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -518,6 +497,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -541,6 +524,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -550,10 +537,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -618,6 +601,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

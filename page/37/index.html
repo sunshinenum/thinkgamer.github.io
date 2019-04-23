@@ -193,55 +193,89 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-随手记/Hexo-Yilia加入相册功能" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark/Spark提交参数说明和常见优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/">Hexo-Yilia加入相册功能</a>
+      <a class="article-title" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">Spark提交参数说明和常见优化</a>
     </h1>
   
 
         
-        <a href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/" class="archive-article-date">
-  	<time datetime="2017-12-14T09:55:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-14</time>
+        <a href="/2018/01/23/Spark/Spark提交参数说明和常见优化/" class="archive-article-date">
+  	<time datetime="2018-01-22T16:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>参考：<a href="http://maker997.com/2017/07/01/hexo-Yilia-%E4%B8%BB%E9%A2%98%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E7%9B%B8%E5%86%8C%E5%8A%9F%E8%83%BD" target="_blank" rel="external">点击查看</a></p>
-<p>但是其中有一些小问题，自己便重新整理了一下（本文适用于使用github存放照片）</p>
-<h1 id="主页新建相册链接"><a href="#主页新建相册链接" class="headerlink" title="主页新建相册链接"></a>主页新建相册链接</h1><p>主题_config.json文件的menu 中加入 相册和对应的链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">themes/yilia/_config.json</span><br><span class="line"></span><br><span class="line">menu:</span><br><span class="line">  主页: /</span><br><span class="line">  ... ...</span><br><span class="line">  相册: /photos</span><br></pre></td></tr></table></figure></p>
-<h1 id="新建目录并拷贝相应文件"><a href="#新建目录并拷贝相应文件" class="headerlink" title="新建目录并拷贝相应文件"></a>新建目录并拷贝相应文件</h1><p>使用的是litten 大神的博客 photos文件夹，对应的路径为：<br><a href="https://github.com/litten/BlogBackup/tree/master/source/photos" target="_blank" rel="external">https://github.com/litten/BlogBackup/tree/master/source/photos</a></p>
-<p>自己的项目根目录下的source文件夹下新建photos文件夹，将下载的几个文件放在该文件夹中，或者不用新建，直接将下载的photos文件夹放在source目录下。</p>
-<h1 id="文件修改"><a href="#文件修改" class="headerlink" title="文件修改"></a>文件修改</h1><ol>
-<li>修改 ins.js 文件的 render()函数<br>这个函数是用来渲染数据的<br>修改图片的路径地址.minSrc 小图的路径. src 大图的路径.修改为自己的图片路径(github的路径)<br>例如我的为：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i] + &apos;.min.jpg&apos;;</span><br><span class="line">var src = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/photos/&apos; + data.link[i];</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="生成json"><a href="#生成json" class="headerlink" title="生成json"></a>生成json</h1><p>1：下载相应python工具文件</p>
+        <p>最近在搞一个价格分类模型，虽说是分类，用的是kmeans算法，求出聚类中心，对每个价格进行级别定级。虽然说起来简单，但做起来却是并没有那么容易，不只是因为数据量大，在执行任务时要不是效率问题就是shuffle报错等。但在这整个过程中对scala编程,Spark rdd 机制，以及海量数据背景下对算法的认知都有很大的提升，这一篇文章主要是总结一些Spark在shell 终端提交jar包任务的时候的相关知识，在后续文章会具体涉及到相关的”实战经历“。</p>
+<h1 id="对Spark的认识"><a href="#对Spark的认识" class="headerlink" title="对Spark的认识"></a>对Spark的认识</h1><p>由于之前接触过Hadoop，对Spark也是了解一些皮毛，但中间隔了好久才重新使用spark，期间也产生过一些错误的认识。</p>
+<p>之前觉得MapReduce耗费时间，写一个同等效果的Spark程序很快就能执行完，很长一段时间自己都是在本地的单机环境进行测试学习，所以这种错误的认知就会更加深刻，但事实却并非如此，MR之所以慢是因为每一次操作数据都写在了磁盘上，大量的IO造成了时间和资源的浪费，但是Spark是基于内存的计算引擎，相比MR，减少的是大量的IO，但并不是说给一个Spark程序足够的资源，就可以为所欲为了，在提交一个spark程序时，不仅要考虑所在资源队列的总体情况，还要考虑代码本身的高效性，要尽量避免大量的shuffle操作和action操作，尽量使用同一个rdd。</p>
+<p>会用spark，会调api和能用好spark是两回事，在进行开发的过程中，不仅要了解运行原理，还要了解业务，将合适的方法和业务场景合适的结合在一起，才能发挥最大的价值。</p>
+<h1 id="spark-submit"><a href="#spark-submit" class="headerlink" title="spark-submit"></a>spark-submit</h1><p>进入spark的home目录，执行以下命令查看帮助<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/spark-submit --help</span><br></pre></td></tr></table></figure></p>
+<p>spark提交任务常见的两种模式<br>1：local/local[K]</p>
 <ul>
-<li>tools.py</li>
-<li>ImageProcess.py</li>
+<li>本地使用一个worker线程运行spark程序</li>
+<li>本地使用K个worker线程运行spark程序</li>
 </ul>
-<p>下载地址：<a href="https://github.com/Thinkgamer/GitBlog" target="_blank" rel="external">https://github.com/Thinkgamer/GitBlog</a></p>
-<p>2：新建photos和min_photos文件夹<br>在项目根目录下创建，用来存放照片和压缩后的照片<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir photos</span><br><span class="line">mkdir min_photos</span><br></pre></td></tr></table></figure></p>
-<p>3：py文件和文件夹都放在项目根目录下</p>
-<p>4：生成json<br>执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python tools.py</span><br></pre></td></tr></table></figure></p>
-<p>如果提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;tools.py&quot;, line 13, in &lt;module&gt;</span><br><span class="line">    from PIL import Image</span><br><span class="line">ImportError: No module named PIL</span><br></pre></td></tr></table></figure></p>
-<p>说明你没有安装pillow，执行以下命令安装即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pillow</span><br></pre></td></tr></table></figure></p>
-<p>如果报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ValueError: time data &apos;DSC&apos; does not match format &apos;%Y-%m-%d&apos;</span><br></pre></td></tr></table></figure></p>
-<p>说明你照片的命名方式不合格，这里必须命名为以下这样的格式（当然时间是随意的）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2016-10-12_xxx.jpg/png</span><br></pre></td></tr></table></figure></p>
-<p>ok，至此会在min_photos文件夹下生成同名的文件，但是大小会小很多</p>
-<h1 id="本地预览和部署"><a href="#本地预览和部署" class="headerlink" title="本地预览和部署"></a>本地预览和部署</h1><h2 id="本地预览"><a href="#本地预览" class="headerlink" title="本地预览"></a>本地预览</h2><p>项目根目录下执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure></p>
-<p>浏览器4000端口访问，按照上边的方式进行配置，正常情况下你是看不到图片的，通过调试可以发现图片的url中后缀变成了 xxx.jpg.jpg，所以我们要去掉一个jpg</p>
-<p>改正方法<br>ins.js/render 函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i] + &apos;.min.jpg&apos;;</span><br><span class="line"></span><br><span class="line">换成</span><br><span class="line"></span><br><span class="line">var minSrc = &apos;https://raw.githubusercontent.com/Thinkgamer/GitBlog/master/min_photos/&apos; + data.link[i];</span><br><span class="line"></span><br><span class="line">注释掉该行：</span><br><span class="line">src += &apos;.jpg&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>到这里没完，路径都对了，但是在浏览器中还是不能看到图片，调试发现，下载大神的photos文件夹的ins.js中有一行代码，饮用了一张图片，默认情况下，在你的项目中，这张图片是不存在的，改正办法就是在对应目录下放一张图片，并修改相应的名字</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">src=&quot;/assets/img/empty.png</span><br></pre></td></tr></table></figure>
-<p>ok，至此刷新浏览器是可以看到图片的，如果还看不到，应该就是浏览器缓存问题了，如果还有问题，可以加我微信进行沟通：gyt13342445911</p>
+<p>此种模式下适合小批量数据在本地调试代码</p>
+<p>2：yarn-client/yarn-cluster</p>
+<ul>
+<li>yarn-client：以client方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver在client运行。</li>
+<li>yarn-cluster：以cluster方式连接到YARN集群，集群的定位由环境变量HADOOP_CONF_DIR定义，该方式driver也在集群中运行。</li>
+</ul>
+<p>注意：若使用的是本地文件需要在file路径前加：file://</p>
+<p>在提交任务时的几个重要参数</p>
+<ul>
+<li>executor-cores —— 每个executor使用的内核数，默认为1</li>
+<li>num-executors —— 启动executors的数量，默认为2</li>
+<li>executor-memory —— executor内存大小，默认1G</li>
+<li>driver-cores —— driver使用内核数，默认为1</li>
+<li>driver-memory —— driver内存大小，默认512M</li>
+</ul>
+<p>下边给一个提交任务的样式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">spark-submit \</span><br><span class="line">  --master local[5]  \</span><br><span class="line">  --driver-cores 2   \</span><br><span class="line">  --driver-memory 8g \</span><br><span class="line">  --executor-cores 4 \</span><br><span class="line">  --num-executors 10 \</span><br><span class="line">  --executor-memory 8g \</span><br><span class="line">  --class PackageName.ClassName XXXX.jar \</span><br><span class="line">  --name &quot;Spark Job Name&quot; \</span><br><span class="line">  InputPath      \</span><br><span class="line">  OutputPath</span><br><span class="line">  </span><br><span class="line">如果这里通过--queue 指定了队列，那么可以免去写--master</span><br></pre></td></tr></table></figure></p>
+<p>以上就是通过spark-submit来提交一个任务</p>
+<h1 id="几个参数的常规设置"><a href="#几个参数的常规设置" class="headerlink" title="几个参数的常规设置"></a>几个参数的常规设置</h1><ul>
+<li><p>executor_cores*num_executors<br>表示的是能够并行执行Task的数目<br>不宜太小或太大！一般不超过总队列 cores 的 25%，比如队列总 cores 400，最大不要超过100，最小不建议低于 40，除非日志量很小。</p>
+</li>
+<li><p>executor_cores<br>不宜为1！否则 work 进程中线程数过少，一般 2~4 为宜。</p>
+</li>
+<li><p>executor_memory<br>一般 6~10g 为宜，最大不超过20G，否则会导致GC代价过高，或资源浪费严重。</p>
+</li>
+<li><p>driver-memory<br>driver 不做任何计算和存储，只是下发任务与yarn资源管理器和task交互，除非你是 spark-shell，否则一般 1-2g</p>
+</li>
+</ul>
+<hr>
+<p>增加每个executor的内存量，增加了内存量以后，对性能的提升，有三点：</p>
+<ul>
+<li>1、如果需要对RDD进行cache，那么更多的内存，就可以缓存更多的数据，将更少的数据写入磁盘，<br>甚至不写入磁盘。减少了磁盘IO。</li>
+<li>2、对于shuffle操作，reduce端，会需要内存来存放拉取的数据并进行聚合。如果内存不够，也会写入磁盘。如果给executor分配更多内存以后，就有更少的数据，需要写入磁盘，甚至不需要写入磁盘。减少了磁盘IO，提升了性能。</li>
+<li>3、对于task的执行，可能会创建很多对象。如果内存比较小，可能会频繁导致JVM堆内存满了，然后频繁GC，垃圾回收，minor GC和full GC。（速度很慢）。内存加大以后，带来更少的GC，垃圾回收，避免了速度变慢，性能提升。</li>
+</ul>
+<h1 id="常规注意事项"><a href="#常规注意事项" class="headerlink" title="常规注意事项"></a>常规注意事项</h1><ul>
+<li>预处理数据，丢掉一些不必要的数据</li>
+<li>增加Task的数量</li>
+<li>过滤掉一些容易导致发生倾斜的key</li>
+<li>避免创建重复的RDD</li>
+<li>尽可能复用一个RDD</li>
+<li>对多次使用的RDD进行持久化</li>
+<li>尽量避免使用shuffle算子</li>
+<li>在要使用groupByKey算子的时候,尽量用reduceByKey或者aggregateByKey算子替代.因为调用groupByKey时候,按照相同的key进行分组,形成RDD[key,Iterable[value]]的形式,此时所有的键值对都将被重新洗牌,移动,对网络数据传输造成理论上的最大影响.</li>
+<li>使用高性能的算子</li>
+</ul>
+<hr>
+<p>参考：<br>1：<a href="http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html" target="_blank" rel="external">http://www.cnblogs.com/haozhengfei/p/e570f24c43fa15f23ebb97929a1b7fe6.html</a><br>2：<a href="https://www.jianshu.com/p/4c584a3bac7d" target="_blank" rel="external">https://www.jianshu.com/p/4c584a3bac7d</a></p>
+<center>
+    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    <br>
+打开微信扫一扫，关注公众号【数据与算法联盟】
+</center>
+
 
       
 
@@ -255,7 +289,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		
 		</ul>
@@ -267,7 +301,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/随手记//" class="article-tag-list-link color4">随手记</a>
+        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
         		</li>
       		
 		</ul>
@@ -276,7 +310,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/14/随手记/Hexo-Yilia加入相册功能/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/01/23/Spark/Spark提交参数说明和常见优化/">展开全文 >></a>
         </p>
       
 
@@ -308,7 +342,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
     </nav>
   
 
@@ -480,10 +514,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -500,7 +530,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,6 +539,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,6 +566,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -541,10 +579,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,6 +643,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

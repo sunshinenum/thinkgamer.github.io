@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark/Spark求统计量的两种方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/推荐系统的一些思考" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/04/Spark/Spark求统计量的两种方法/">Spark求统计量的两种方法</a>
+      <a class="article-title" href="/2018/03/26/机器学习/推荐系统的一些思考/">推荐系统的一些思考</a>
     </h1>
   
 
         
-        <a href="/2018/02/04/Spark/Spark求统计量的两种方法/" class="archive-article-date">
-  	<time datetime="2018-02-04T07:04:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-04</time>
+        <a href="/2018/03/26/机器学习/推荐系统的一些思考/" class="archive-article-date">
+  	<time datetime="2018-03-25T21:55:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
 </a>
         
       </header>
@@ -214,31 +214,15 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>Spark对于统计量中的最大值，最小值，平均值和方差（均值）的计算都提供了封装，这里小编知道两种计算方法，整理一下分享给大家</p>
+<p>推荐系统一直以来都是电商网站必不可少的一项，在提升用户转化，增加GMV方面可谓功不可没，那么一个好的推荐算法必然会创造更大的价值，刚好最近听了一个关于推荐算法的讲座，写出来一些思考吧，算是分享一下。</p>
 </blockquote>
-<h1 id="DataFrame形式"><a href="#DataFrame形式" class="headerlink" title="DataFrame形式"></a>DataFrame形式</h1><h2 id="加载Json数据源"><a href="#加载Json数据源" class="headerlink" title="加载Json数据源"></a>加载Json数据源</h2><p>example.json文件格式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;name&quot;:&quot;thinkgamer&quot;,&quot;age&quot;:23,&quot;math&quot;:78,&quot;chinese&quot;:78,&quot;english&quot;:95&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;think&quot;,&quot;age&quot;:25,&quot;math&quot;:95,&quot;chinese&quot;:88,&quot;english&quot;:93&#125;</span><br><span class="line">&#123;&quot;name&quot;:&quot;gamer&quot;,&quot;age&quot;:24,&quot;math&quot;:93,&quot;chinese&quot;:68,&quot;english&quot;:88&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// persist(StorageLevel.MEMORY_AND_DISK) 当内存不够时cache到磁盘里</span><br><span class="line">val df = spark.read.json(&quot;/path/to/example.json&quot;).persist(StorageLevel.MEMORY_AND_DISK)</span><br><span class="line">df.show()</span><br><span class="line">df.describe()</span><br></pre></td></tr></table></figure>
-<p>我们便可以看到如下的形式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">+---+-------+-------+----+----------+</span><br><span class="line">|age|chinese|english|math|      name|</span><br><span class="line">+---+-------+-------+----+----------+</span><br><span class="line">| 23|     78|     95|  78|thinkgamer|</span><br><span class="line">| 25|     88|     93|  95|     think|</span><br><span class="line">| 24|     68|     88|  93|     gamer|</span><br><span class="line">+---+-------+-------+----+----------+</span><br><span class="line"></span><br><span class="line">+-------+----+-------+-----------------+-----------------+----------+</span><br><span class="line">|summary| age|chinese|          english|             math|      name|</span><br><span class="line">+-------+----+-------+-----------------+-----------------+----------+</span><br><span class="line">|  count|   3|      3|                3|                3|         3|</span><br><span class="line">|   mean|24.0|   78.0|             92.0|88.66666666666667|      null|</span><br><span class="line">| stddev| 1.0|   10.0|3.605551275463989| 9.29157324317757|      null|</span><br><span class="line">|    min|  23|     68|               88|               78|     gamer|</span><br><span class="line">|    max|  25|     88|               95|               95|thinkgamer|</span><br><span class="line">+-------+----+-------+-----------------+-----------------+----------+</span><br></pre></td></tr></table></figure></p>
-<p>如果是想看某列的通知值的话，可以用下面的方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.select(&quot;age&quot;).describe().show()</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+-------+----+</span><br><span class="line">|summary| age|</span><br><span class="line">+-------+----+</span><br><span class="line">|  count|   3|</span><br><span class="line">|   mean|24.0|</span><br><span class="line">| stddev| 1.0|</span><br><span class="line">|    min|  23|</span><br><span class="line">|    max|  25|</span><br><span class="line">+-------+----+</span><br></pre></td></tr></table></figure>
-<h1 id="RDD形式"><a href="#RDD形式" class="headerlink" title="RDD形式"></a>RDD形式</h1><p>假设同样还是上边的数据，只不过现在变成按\t分割的普通文本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">thinkgamer  23  78  78  95</span><br><span class="line">think   25  95  88  93</span><br><span class="line">gamer   24  93  68  88</span><br></pre></td></tr></table></figure></p>
-<p>这里可以将rdd转换成dataframe洗形式，也可以使用rdd计算，转化为df的样例如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val new_data = data_txt</span><br><span class="line">      .map(_.split(&quot;\\s+&quot;))</span><br><span class="line">      .map(one =&gt; Person(one(0),one(1).toInt,one(2).toDouble,one(3).toDouble,one(4).toDouble))</span><br><span class="line">      .toDF()</span><br></pre></td></tr></table></figure></p>
-<p>接下来就是进行和上边df一样的操作了。</p>
-<p>那么对于rdd形式的文件如何操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.spark.mllib.linalg.Vectors</span><br><span class="line">import org.apache.spark.mllib.stat.&#123;MultivariateStatisticalSummary, Statistics&#125;</span><br><span class="line"></span><br><span class="line">val data_txt = SparkSC.spark.sparkContext.textFile(input_txt).persist(StorageLevel.MEMORY_AND_DISK)</span><br><span class="line">    val new_data = data_txt</span><br><span class="line">      .map(_.split(&quot;\\s+&quot;))</span><br><span class="line">      .map(one =&gt; Vectors.dense(one(1).toInt,one(2).toDouble,one(3).toDouble,one(4).toDouble))</span><br><span class="line">    val summary: MultivariateStatisticalSummary = Statistics.colStats(new_data)</span><br><span class="line">    </span><br><span class="line">println(&quot;Max:&quot;+summary.max)</span><br><span class="line">println(&quot;Min:&quot;+summary.min)</span><br><span class="line">println(&quot;Count:&quot;+summary.count)</span><br><span class="line">println(&quot;Variance:&quot;+summary.variance)</span><br><span class="line">println(&quot;Mean:&quot;+summary.mean)</span><br><span class="line">println(&quot;NormL1:&quot;+summary.normL1)</span><br><span class="line">println(&quot;Norml2:&quot;+summary.normL2)</span><br></pre></td></tr></table></figure></p>
-<p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Max:[25.0,95.0,88.0,95.0]</span><br><span class="line">Min:[23.0,78.0,68.0,88.0]</span><br><span class="line">Count:3</span><br><span class="line">Variance:[1.0,86.33333333333331,100.0,13.0]</span><br><span class="line">Mean:[24.0,88.66666666666667,78.0,92.0]</span><br><span class="line">NormL1:[72.0,266.0,234.0,276.0]</span><br><span class="line">Norml2:[41.593268686170845,154.1363033162532,135.83813897429545,159.43023552638942]</span><br></pre></td></tr></table></figure></p>
-<p>这里可以得到相关的统计信息，主要区别在于dataframe得到的是标准差，而使用mllib得到的统计值中是方差，但这并不矛盾，两者可以相互转化得到。</p>
-<p>当然如果要求四分位数，可以转化成df，使用sql语句进行查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Select PERCENTILE(col,&lt;0.25,0.75&gt;) from tableName;</span><br></pre></td></tr></table></figure></p>
-<h1 id="自己实现"><a href="#自己实现" class="headerlink" title="自己实现"></a>自己实现</h1><p>下面是我自己实现的一个方法，传入的参数是一个rdd，返回的是一个字符串<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 计算最大值，最小值，平均值，方差，标准差，四分位数</span><br><span class="line">def getStat(data: RDD[String]):String= &#123;</span><br><span class="line">   val sort_data = data</span><br><span class="line">      .filter(one =&gt; Verify.istoDouble(one))</span><br><span class="line">      .map(_.toDouble)</span><br><span class="line">      .sortBy(line=&gt;line)</span><br><span class="line">      .persist(StorageLevel.MEMORY_AND_DISK)  // 默认是true 升序，false为降序</span><br><span class="line"></span><br><span class="line">   val data_list = sort_data.collect()</span><br><span class="line">   val len = data_list.length</span><br><span class="line">   val min = data_list(0)</span><br><span class="line">   val max = data_list(len-1)</span><br><span class="line">   val mean = sort_data.reduce((a,b) =&gt; a+b) / len</span><br><span class="line">   val variance = sort_data.map(one =&gt; math.pow(one-mean,2)).reduce((a,b)=&gt;a+b)/len</span><br><span class="line">   val stdder = math.sqrt(variance)</span><br><span class="line">   var quant = &quot;&quot;</span><br><span class="line">   if(len&lt;4)&#123;</span><br><span class="line">      val q1 = min</span><br><span class="line">      val q2 = min</span><br><span class="line">      val q3 = max</span><br><span class="line">      quant = q1+&quot;\t&quot;+q2+&quot;\t&quot;+q3</span><br><span class="line">   &#125;else &#123;</span><br><span class="line">      val q1 = data_list((len * 0.25).toInt - 1)</span><br><span class="line">      val q2 = data_list((len * 0.5).toInt - 1)</span><br><span class="line">      val q3 = data_list((len * 0.75).toInt - 1)</span><br><span class="line">      quant = q1+&quot;\t&quot;+q2+&quot;\t&quot;+q3</span><br><span class="line">   &#125;</span><br><span class="line">   max+&quot;\t&quot;+min+&quot;\t&quot;+mean+&quot;\t&quot;+variance+&quot;\t&quot;+stdder+&quot;\t&quot;+quant</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="本地碰见的一个错误"><a href="#本地碰见的一个错误" class="headerlink" title="本地碰见的一个错误"></a>本地碰见的一个错误</h1><p>1：错误1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scala.Predef$.refArrayOps([Ljava/lang/Object;)Lscala/collection/mutable/Array</span><br></pre></td></tr></table></figure></p>
-<p>原因是Spark中spark-sql_2.11-2.2.1 ，是用scala 2.11版本上编译的，而我的本地的scala版本为2.12.4，所以就错了，可以在<br>里边把相应的scala版本就行修改就行了</p>
-<p>2：错误2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoSuchMethodError: scala.Product.$init$(Lscala/Product;)V</span><br></pre></td></tr></table></figure></p>
-<p>原因也是因为我下载安装的scala2.12版本，换成scala2.11版本就可以了</p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
-</center>
+<h1 id="学术界的推荐系统"><a href="#学术界的推荐系统" class="headerlink" title="学术界的推荐系统"></a>学术界的推荐系统</h1><p>其实在大学期间也看过一些推荐的算法，还帮别人实现过关于推荐系统的毕设，但终究都是停留在协同过滤的层面，顶多是加了一些热门推荐来防止冷启动。不得不说，协同过滤打开了我对推荐系统认知的大门，当然在真实环境中这是远远不够的。</p>
+<p>传统的推荐系统无非就是评分和排序两种方案，评分即计算出用户对item的可能评分，根据评分的高低进行排序，排序则不关心具体的评分是多少，只是为了得到一个顺序（其实这一点和推荐系统即为相似）。传统的推荐算法典型的有协同过滤和基于内容的过滤。如果你不明白什么是协同过滤算法可以参考：<a href="https://blog.csdn.net/gamer_gyt/article/details/51346159" target="_blank" rel="external">https://blog.csdn.net/gamer_gyt/article/details/51346159</a> ,如果你不知道协同过滤与基于内容的过滤的区别可参考：<a href="https://www.zhihu.com/question/19971859。" target="_blank" rel="external">https://www.zhihu.com/question/19971859。</a></p>
+<p>大学数学术界关于推荐算法的论文都是对协同过滤的改进，而最终得到一个相对于原先的算法有很大的提升的结果，但是这些都过于理想化了，真实的环境远比实验要复杂的多，网上最有名的推荐系统数据集莫过于那个电影评分数据了，里边只有用户对电影的评分，和电影的一些信息数据。建立在这些数据上的推荐算法其实有点理想化了，他并不能模拟出真实的电商环境，数据的缺乏也是导致协同过滤算法大行其道的原因。</p>
+<h1 id="工业界的推荐系统"><a href="#工业界的推荐系统" class="headerlink" title="工业界的推荐系统"></a>工业界的推荐系统</h1><p>工业界的推荐系统，需要的是明确的价值走向，比如说电商网站的推荐系统是为了增加交易总额，那么在进行推荐的时候是不是应该适当过滤一些极其廉价的商品，是否应该根据用户对不同价格段的需求进行不同价格段商品的推送；如果电商的推荐系统是为了增加用户停留时间，提交CTR，那么推荐系统就不应该考虑过多别的因素，只找到用户最感兴趣的商品或者评论等，当然如何找到用户最感兴趣的也是一个问题，但是有一点不可否认的是这些如果用传统的协同过滤来做是很难满足需求的。这时候就需要开发出新的推荐架构，来适应不同的需求。</p>
+<p>目前工业界用的最多的算法莫过于GBDT，LR，DNN等，但所有的推荐算法都会面临一个海量数据的情况，这个时候的做法便是对数据集进行数据召回，得到用户比较感兴趣的一些数据，然后再根据我们的推荐模型进行素材偏好度排序，过滤掉用户已经购买过的类别数据，继而推送给用户。</p>
+<p>那么如何进行数据召回呢？这就需要一些基础的模型进行数据准备，比如说用户肖像，用户的价格段偏好，用户购买力水平等。根绝已有的用户数据和特征进行数据召回，适度拉取一些新的数据，保证召回结果的多样性，得到召回池数据之后，便是对模型的训练，其实模型本身难度不大，难度大的是如何选取有效的特征来作为模型的输入数据。你组合得到的有效特征越多，对于模型的训练结果就越准确。</p>
+<h1 id="推荐系统的多样性"><a href="#推荐系统的多样性" class="headerlink" title="推荐系统的多样性"></a>推荐系统的多样性</h1><p>如何保证推荐结果的多样性呢，首先我们要先认识到推荐的可能性，比如说电商网页首页的推荐，商品详细页面的推荐，不同年龄下的推荐，推荐的结果和被评估的指标都是不一样的。这个时候不能单一对所有情况下使用同一种算法或者特征，而是要找到能够区分出不同位置，不同年龄的推荐结果的特征，进行模型训练。</p>
 
       
 
@@ -252,7 +236,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">推荐系统</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -273,7 +261,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/04/Spark/Spark求统计量的两种方法/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/03/26/机器学习/推荐系统的一些思考/">展开全文 >></a>
         </p>
       
 
@@ -305,7 +293,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
     </nav>
   
 
@@ -477,10 +465,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -497,7 +481,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -506,6 +490,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,6 +517,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -538,10 +530,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,6 +594,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

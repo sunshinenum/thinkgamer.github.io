@@ -193,20 +193,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TensorFlow/TensorFlow 特征工程: feature_column" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/03/TensorFlow/TensorFlow 特征工程: feature_column/">TensorFlow 特征工程:feature_column</a>
+      <a class="article-title" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">多分类实现方式介绍和在Spark上实现多分类逻辑回归</a>
     </h1>
   
 
         
-        <a href="/2019/01/03/TensorFlow/TensorFlow 特征工程: feature_column/" class="archive-article-date">
-  	<time datetime="2019-01-03T05:18:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-03</time>
+        <a href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/" class="archive-article-date">
+  	<time datetime="2019-01-12T14:06:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-12</time>
 </a>
         
       </header>
@@ -220,16 +220,23 @@
 
 <p>转载请注明出处：<a href="http://blog.csdn.net/gamer_gyt" target="_blank" rel="external">http://blog.csdn.net/gamer_gyt</a><br>博主微博：<a href="http://weibo.com/234654758" target="_blank" rel="external">http://weibo.com/234654758</a><br>Github：<a href="https://github.com/thinkgamer" target="_blank" rel="external">https://github.com/thinkgamer</a></p>
 <hr>
-<h1 id="特征工程-feature-column"><a href="#特征工程-feature-column" class="headerlink" title="特征工程: feature_column"></a>特征工程: feature_column</h1><p>在使用很多模型的时候，都需要对输入的数据进行必要的特征工程处理。最典型的就是:one-hot处理，还有hash分桶等处理。为了方便处理这些特征，tensorflow提供了一些列的特征工程方法来方便使用.</p>
-<h2 id="公共的import"><a href="#公共的import" class="headerlink" title="公共的import"></a>公共的import</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">from tensorflow.python.estimator.inputs import numpy_io</span><br><span class="line">import numpy as np</span><br><span class="line">import collections</span><br><span class="line">from tensorflow.python.framework import errors</span><br><span class="line">from tensorflow.python.platform import test</span><br><span class="line">from tensorflow.python.training import coordinator</span><br><span class="line">from tensorflow import feature_column</span><br><span class="line"></span><br><span class="line">from tensorflow.python.feature_column.feature_column import _LazyBuilder</span><br></pre></td></tr></table></figure>
-<h2 id="numeric-column"><a href="#numeric-column" class="headerlink" title="numeric_column"></a>numeric_column</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">numeric_column(</span><br><span class="line">    key,</span><br><span class="line">    shape=(1,),</span><br><span class="line">    default_value=None,</span><br><span class="line">    dtype=tf.float32,</span><br><span class="line">    normalizer_fn=None</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在之前的文章中介绍了多分类逻辑回归算法的数据原理，参考文章链接</p>
+<p>CSDN文章链接：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85209496" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85209496</a><br>公众号：多分类逻辑回归（Multinomial Logistic Regression）<br>该篇文章介绍一下Spark中多分类算法，主要包括的技术点如下</p>
 <ul>
-<li>key：特征的名字。也就是对应的列名称</li>
-<li>shape：该key所对应的特征的shape. 默认是1，但是比如one-hot类型的，shape就不是1，而是实际的维度。总之，这里是key所对应的维度，不一定是1</li>
-<li>default_value：如果不存在使用的默认值</li>
-<li>normalizer_fn：对该特征下的所有数据进行转换。如果需要进行normalize，那么就是使用normalize的函数.这里不仅仅局限于normalize，也可以是任何的转换方法，比如取对数，取指数，这仅仅是一种变换方法</li>
+<li><p>多分类实现方式</p>
+<ul>
+<li>一对一 （One V One）</li>
+<li>一对其余（One V Remaining）</li>
+<li>多对多 （More V More）</li>
 </ul>
-<p>完整内容请阅读：<a href="https://blog.csdn.net/Gamer_gyt/article/details/85689840" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/85689840</a></p>
+</li>
+<li><p>Spark中的多分类实现</p>
+<h1 id="多分类实现方式"><a href="#多分类实现方式" class="headerlink" title="多分类实现方式"></a>多分类实现方式</h1><h2 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h2><p>假设某个分类中有N个类别，将这N个类别两两配对（继而转化为二分类问题），这样可以得到 N（N-1）/ 2个二分类器，这样训练模型时需要训练 N（N-1）/ 2个模型，预测时将样本输送到这些模型中，最终统计出现次数较多的类别结果作为最终类别。</p>
+</li>
+</ul>
+<p>假设现在有三个类别：类别A，类别B，类别C，类别D。一对一实现多分类如下图所示：<br><img src="https://img-blog.csdnimg.cn/20190112220044121.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dhbWVyX2d5dA==,size_16,color_FFFFFF,t_70"></p>
+<hr>
+<p>完整内容请阅读原文：<a href="https://blog.csdn.net/Gamer_gyt/article/details/86378882" target="_blank" rel="external">https://blog.csdn.net/Gamer_gyt/article/details/86378882</a> </p>
 
       
 
@@ -243,15 +250,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度学习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LR</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">特征过程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器学习</a>
         		</li>
       		
 		</ul>
@@ -272,7 +279,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/03/TensorFlow/TensorFlow 特征工程: feature_column/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/01/12/机器学习/多分类实现方式介绍和在Spark上实现多分类逻辑回归/">展开全文 >></a>
         </p>
       
 
@@ -304,7 +311,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
     </nav>
   
 
@@ -476,10 +483,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -496,7 +499,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -505,6 +508,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,6 +535,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -537,10 +548,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,6 +612,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">

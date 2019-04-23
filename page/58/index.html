@@ -193,47 +193,30 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Hadoop/MapReducer中的多次归约处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-夏未眠/这夏未眠-序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/">MapReducer中的多次归约处理</a>
+      <a class="article-title" href="/2016/09/15/夏未眠/这夏未眠-序/">这夏未眠.序</a>
     </h1>
   
 
         
-        <a href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/" class="archive-article-date">
-  	<time datetime="2015-07-28T01:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-07-28</time>
+        <a href="/2016/09/15/夏未眠/这夏未眠-序/" class="archive-article-date">
+  	<time datetime="2016-09-15T10:08:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-15</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>我们知道，MapReduce是分为Mapper任务和Reducer任务，Mapper任务的输出，通过网络传输到Reducer任务端，作为输入。</p>
-<p>在Reducer任务中，通常做的事情是对数据进行归约处理。既然数据来源是Mapper任务的输出，那么是否可以在Mapper端对数据进行归约处理，业务逻辑与Reducer端做的完全相同。处理后的数据再传送到Reducer端，再做一次归约。这样的好处是减少了网络传输的数量。</p>
-<p>可能有人疑惑几个问题：</p>
-<p>为什么需要在Mapper端进行归约处理？</p>
-<p>为什么可以在Mapper端进行归约处理？</p>
-<p>既然在Mapper端可以进行归约处理，为什么在Reducer端还要处理？</p>
-<p>回答第一个问题：因为在Mapper进行归约后，数据量变小了，这样再通过网络传输时，传输时间就变短了，减少了整个作业的运行时间。</p>
-<p>回答第二个问题：因为Reducer端接收的数据就是来自于Mapper端。我们在Mapper进行归约处理，无非就是把归约操作提前到Mapper端做而已。</p>
-<p>回答第三个问题：因为Mapper端的数据仅仅是本节点处理的数据，而Reducer端处理的数据是来自于多个Mapper任务的输出。因此在Mapper不能归约的数据，在Reducer端有可能归约处理。</p>
-<p>在Mapper进行归约的类称为Combiner。那么，怎么写Combiner哪？非常简单，就是我们自定义的Reducer类。那么，怎么用哪？更简单，见如下代码</p>
-<p>job.setCombineClass(Mapper.class)</p>
-<p>要注意的是，Combiner只在Mapper任务所在的节点运行，不会跨Mapper任务运行。Reduce端接收所有Mapper端的输出来作为输入。虽然两边的归约类是同一个，但是执行的位置完全不一样。</p>
-<p>并不是所有的归约工作都可以使用Combiner来做。比如求平均值就不能使用Combiner。因为对于平均数的归约算法不能多次调用。</p>
-<hr>
-<center>
-    <img src="http://img.blog.csdn.net/20171231111930492?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvR2FtZXJfZ3l0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-    <br>
-打开微信扫一扫，关注公众号【数据与算法联盟】
-</center>
-
-
+        <p>这本书的整体构思是小主大学一年级时刚去的时候的一个想法，当时刚刚步入大学的我们，心里是那么的迷茫与懵懂，开学前两周，除了军训还是军训，晚上偶尔有个空闲时间，我想大概也许是无聊的，记得那个时候坐在图书馆靠窗的位置，看着窗外，没有明月，没有佳人，有的只是一望无际的黑暗。</p>
+<p>那个时候，还没有遇到你所想遇到的人，或许回忆还沉淀在高中的时光里，或是幸福，或是苦涩，或是幸福之后的苦涩，回过头来，看着满屋子的学长学姐，心里是及其复杂的，有种说不出的难过，那时候我是不是在想，现在的你（们）会在哪里念大学呢？</p>
+<p>想着想着眼角便淌出了泪水，我想我的大学要完成一件至少我自己觉得满意的事，于是便有了你现在看到的这个序，不知道是不是受郭敬明的影响，因为我看过他的唯一一本小说，也是我看过的唯一一本小说——《夏至未至》，我想写一本书，或者更准确的说，我想写一个人的青春。</p>
+<p>在13年军训结束之后，我构思了整个体系，定了这本书的名字——《这夏未眠》，熟悉我的朋友，也知道这是我的QQ网名，QQ作为那个时代的记忆，总会残留一些悲伤的故事，于是我到现在四年了，我从没换过QQ网名，或许是害怕，害怕那些好久不联系的朋友，找不到我吧。</p>
 
       
 
@@ -247,7 +230,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">夏未眠</a>
         		</li>
       		
 		</ul>
@@ -259,7 +242,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/技术篇//" class="article-tag-list-link color4">技术篇</a>
+        			<a href="/categories/夏未眠//" class="article-tag-list-link color4">夏未眠</a>
         		</li>
       		
 		</ul>
@@ -268,7 +251,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/07/28/Hadoop/MapReducer中的多次归约处理/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/09/15/夏未眠/这夏未眠-序/">展开全文 >></a>
         </p>
       
 
@@ -300,7 +283,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/57/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/56/">56</a><a class="page-number" href="/page/57/">57</a><span class="page-number current">58</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/59/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/57/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/56/">56</a><a class="page-number" href="/page/57/">57</a><span class="page-number current">58</span><a class="page-number" href="/page/59/">59</a><a class="page-number" href="/page/60/">60</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/59/">Next &raquo;</a>
     </nav>
   
 
@@ -472,10 +455,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">资源</a>
               </li>
              
@@ -492,7 +471,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">资料</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -501,6 +480,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">资料</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -524,6 +507,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">神经网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">夏未眠</a>
               </li>
              
@@ -533,10 +520,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">机器学习</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,6 +584,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">集成学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
